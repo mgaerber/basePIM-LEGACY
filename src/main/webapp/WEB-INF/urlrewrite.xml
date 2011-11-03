@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE urlrewrite
+        PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+
+<urlrewrite use-query-string="true">
+
+    <rule>
+        <note>
+            The rule means that requests to /test/status/ will be redirected to
+            /rewrite-status
+            the url will be rewritten.
+        </note>
+        <from>/test/status/</from>
+        <to type="redirect">%{context-path}/rewrite-status</to>
+    </rule>
+  <rule>
+    <note>Controller with Action</note>
+    <from>^/app/([a-z]+)/([a-z]+)/?$</from>
+    <set name="xails.controller">$1</set>
+    <set name="xails.action">$2</set>
+    
+    <to>/index.xq?controller=$1&amp;action=$2</to>
+  </rule>
+  <rule>
+    <note>Controller with Action and parameter</note>
+    <from>^/app/(\w+)/(\w+)(/?)\?(.*)$</from>
+	<set name="xails.controller">$1</set>
+	<set name="xails.action">$2</set>
+
+	<to last="true">/index.xq?controller=$1&amp;action=$2</to>
+  </rule>
+  <rule >
+    <note>Controller without Action</note>
+     <from>^/app/(\w+)\/?$</from>
+     <set name="xails.controller">$1</set>
+    <set name="xails.action">index</set>
+     
+     <to last="true">/index.xq?controller=$1&amp;action=index</to>
+  </rule>
+  <rule>
+    <note>Controller with Action and parameter</note>
+    <from>^/app/(\w+)/\?(.*)$</from>
+    <set name="xails.controller">$1</set>
+    <set name="xails.action">view</set>
+    <to last="true">/index.xq?controller=$1&amp;action=view</to>
+  </rule>
+
+</urlrewrite>

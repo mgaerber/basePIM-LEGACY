@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>wrapper.xq</title>
+	<style type="text/css">
+/* Stylesheet generated from TextMate theme
+ *
+ * Railscasts
+ * 
+ *
+ */
+
+/* Mostly to improve view within the TextMate HTML viewer */
+body {
+	margin: 0;
+	padding: 0;
+}
+
+pre.textmate-source {
+	margin: 0;
+	padding: 0 0 0 2px;
+	font-family: DroidSansMono, monospace;
+	font-size: 12px;
+	line-height: 1.3em;
+	word-wrap: break-word;
+	white-space: pre;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -o-pre-wrap;
+}
+
+pre.textmate-source.railscasts {
+	color: #E6E1DC;
+	background-color: #2B2B2B;
+}
+
+pre.textmate-source .linenum {
+	width: 75px;
+	padding: 0.1em 1em 0.2em 0;
+	color: #888;
+	background-color: #eee;
+}
+pre.textmate-source.railscasts span {
+   padding-top: 0.2em;
+   padding-bottom: 0.1em;
+}
+pre.textmate-source.railscasts ::selection {
+	background-color: rgba(90, 100, 126, 0.88);
+}
+/* Source */
+pre.textmate-source.railscasts .source {
+	background-color: #232323;
+}
+
+/* Comment */
+pre.textmate-source.railscasts .comment {
+	color: #BC9458;
+	font-style: italic;
+}
+
+/* Keyword */
+pre.textmate-source.railscasts .keyword, pre.textmate-source.railscasts .storage {
+	color: #CC7833;
+}
+
+/* Function (definition) */
+pre.textmate-source.railscasts .entity_name_function, pre.textmate-source.railscasts .keyword_other_name-of-parameter_objc {
+	color: #FFC66D;
+}
+
+/* Class (definition) */
+pre.textmate-source.railscasts .entity_name {
+	color: #FFFFFF;
+}
+
+/* Number */
+pre.textmate-source.railscasts .constant_numeric {
+	color: #A5C261;
+}
+
+/* Variable */
+pre.textmate-source.railscasts .variable_language, pre.textmate-source.railscasts .variable_other {
+	color: #D0D0FF;
+}
+
+/* Constant */
+pre.textmate-source.railscasts .constant {
+	color: #6D9CBE;
+}
+
+/* Constant (other variable) */
+pre.textmate-source.railscasts .variable_other_constant {
+	color: #DA4939;
+}
+
+/* Constant (built-in) */
+pre.textmate-source.railscasts .constant_language {
+	color: #6E9CBE;
+}
+
+/* String */
+pre.textmate-source.railscasts .string {
+	color: #A5C261;
+}
+
+/* Library function */
+pre.textmate-source.railscasts .support_function {
+	color: #DA4939;
+}
+
+/* Library type */
+pre.textmate-source.railscasts .support_type {
+	color: #6E9CBE;
+}
+
+/* Library constant */
+pre.textmate-source.railscasts .support_constant {
+	color: #A5C261;
+}
+
+/* Markup tag */
+pre.textmate-source.railscasts .meta_tag, pre.textmate-source.railscasts .declaration_tag, pre.textmate-source.railscasts .entity_name_tag, pre.textmate-source.railscasts .entity_other_attribute-name {
+	color: #E8BF6A;
+}
+
+/* Invalid */
+pre.textmate-source.railscasts .invalid {
+	color: #FFFFFF;
+	background-color: #990000;
+}
+
+/* String interpolation */
+pre.textmate-source.railscasts .constant_character_escaped, pre.textmate-source.railscasts .constant_character_escape, pre.textmate-source.railscasts .string .source, pre.textmate-source.railscasts .string .source_ruby {
+	color: #519F50;
+}
+
+/* Diff Add */
+pre.textmate-source.railscasts .markup_inserted {
+	color: #E6E1DC;
+	background-color: #144212;
+}
+
+/* Diff Remove */
+pre.textmate-source.railscasts .markup_deleted {
+	color: #E6E1DC;
+	background-color: #660000;
+}
+
+/* Diff Header */
+pre.textmate-source.railscasts .meta_diff_header, pre.textmate-source.railscasts .meta_separator_diff, pre.textmate-source.railscasts .meta_diff_index, pre.textmate-source.railscasts .meta_diff_range {
+	background-color: #2F33AB;
+}
+
+
+
+	</style>
+</head>
+
+<body><pre class="textmate-source railscasts"><span class='linenum'>    1</span> <span class="source source_xquery">module namespace web=<span class="string string_quoted string_quoted_single string_quoted_single_xquery"><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_begin punctuation_definition_string_begin_xquery">"</span>http://basex.org/lib/web<span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_end punctuation_definition_string_end_xquery">"</span></span>;
+<span class='linenum'>    2</span> declare namespace basexweb = <span class="string string_quoted string_quoted_single string_quoted_single_xquery"><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_begin punctuation_definition_string_begin_xquery">"</span>java:org.basex.web.xquery.XQueryExternal<span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_end punctuation_definition_string_end_xquery">"</span></span>;
+<span class='linenum'>    3</span> <span class="comment comment_block comment_block_xquery">(:~
+<span class='linenum'>    4</span>  : 
+<span class='linenum'>    5</span>  : @param $type the content type
+<span class='linenum'>    6</span> :)</span>
+<span class='linenum'>    7</span> <span class="meta meta_definition meta_definition_function meta_definition_function_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_define-function keyword_other_directive_define-function_xquery">declare <span class="entity entity_name entity_name_function entity_name_function_xquery">function</span></span> web:content-type<span class="meta meta_definition meta_definition_param-list meta_definition_param-list_xquery">(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$type</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:string</span></span>)  </span>{
+<span class='linenum'>    8</span>     basexweb:contentType(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$type</span>)
+<span class='linenum'>    9</span> };
+<span class='linenum'>   10</span> 
+<span class='linenum'>   11</span> <span class="comment comment_block comment_block_xquery">(:~
+<span class='linenum'>   12</span>  : Returns a UUID
+<span class='linenum'>   13</span> :)</span>
+<span class='linenum'>   14</span> <span class="meta meta_definition meta_definition_function meta_definition_function_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_define-function keyword_other_directive_define-function_xquery">declare <span class="entity entity_name entity_name_function entity_name_function_xquery">function</span></span> web:uuid<span class="meta meta_definition meta_definition_param-list meta_definition_param-list_xquery">(</span>)  <span class="meta meta_definition meta_definition_function meta_definition_function_returns meta_definition_function_returns_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_as keyword_other_directive_as_xquery">as</span> <span class="storage storage_type storage_type_xquery">xs:string</span></span> </span>{
+<span class='linenum'>   15</span>     basexweb:uuid()
+<span class='linenum'>   16</span> };
+<span class='linenum'>   17</span> 
+<span class='linenum'>   18</span> <span class="comment comment_block comment_block_xquery">(:~
+<span class='linenum'>   19</span>  : Disable caching for this page
+<span class='linenum'>   20</span> :)</span>
+<span class='linenum'>   21</span> <span class="meta meta_definition meta_definition_function meta_definition_function_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_define-function keyword_other_directive_define-function_xquery">declare <span class="entity entity_name entity_name_function entity_name_function_xquery">function</span></span> web:no-cache<span class="meta meta_definition meta_definition_param-list meta_definition_param-list_xquery">(</span>)  </span>{
+<span class='linenum'>   22</span>     basexweb:disableCache()
+<span class='linenum'>   23</span> };
+<span class='linenum'>   24</span> 
+<span class='linenum'>   25</span> <span class="comment comment_block comment_block_xquery">(:~
+<span class='linenum'>   26</span>  : redirects the user to a given location, saves a message that is retrievable via web:flash()
+<span class='linenum'>   27</span>  : @param $location URI to redirect to
+<span class='linenum'>   28</span>  : @param $message system flash message
+<span class='linenum'>   29</span> :)</span>
+<span class='linenum'>   30</span> <span class="meta meta_definition meta_definition_function meta_definition_function_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_define-function keyword_other_directive_define-function_xquery">declare <span class="entity entity_name entity_name_function entity_name_function_xquery">function</span></span> web:redirect<span class="meta meta_definition meta_definition_param-list meta_definition_param-list_xquery">(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$location</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:string</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$message</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:string</span></span>)  </span>{
+<span class='linenum'>   31</span>     basexweb:redirect(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$location</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$message</span>)
+<span class='linenum'>   32</span> };
+<span class='linenum'>   33</span> 
+<span class='linenum'>   34</span> <span class="comment comment_block comment_block_xquery">(:~
+<span class='linenum'>   35</span>  : Retrieves the message saved in the current session flash cookie and deletes the cookie.
+<span class='linenum'>   36</span> :)</span>
+<span class='linenum'>   37</span> <span class="meta meta_definition meta_definition_function meta_definition_function_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_define-function keyword_other_directive_define-function_xquery">declare <span class="entity entity_name entity_name_function entity_name_function_xquery">function</span></span> web:flash<span class="meta meta_definition meta_definition_param-list meta_definition_param-list_xquery">(</span>)  <span class="meta meta_definition meta_definition_function meta_definition_function_returns meta_definition_function_returns_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_as keyword_other_directive_as_xquery">as</span> <span class="storage storage_type storage_type_xquery">xs:string</span></span> </span>{
+<span class='linenum'>   38</span>     basexweb:flash()
+<span class='linenum'>   39</span> };
+<span class='linenum'>   40</span> 
+<span class='linenum'>   41</span> <span class="comment comment_block comment_block_xquery">(:~
+<span class='linenum'>   42</span>  : Sets a cookie with the specified parameters.
+<span class='linenum'>   43</span>  : @param $name the cookie name
+<span class='linenum'>   44</span>  : @param $value the cookie value
+<span class='linenum'>   45</span>  : @param $expires expires in seconds
+<span class='linenum'>   46</span>  : @param $path the cookie path
+<span class='linenum'>   47</span> :)</span>
+<span class='linenum'>   48</span> <span class="meta meta_definition meta_definition_function meta_definition_function_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_define-function keyword_other_directive_define-function_xquery">declare <span class="entity entity_name entity_name_function entity_name_function_xquery">function</span></span> web:set-cookie<span class="meta meta_definition meta_definition_param-list meta_definition_param-list_xquery">(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$name</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:string</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$value</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:string</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$expires</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:integer</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$path</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:string</span></span>)  </span>{
+<span class='linenum'>   49</span>     basexweb:setCookie(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$name</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$value</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$expires</span>, <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$path</span>)
+<span class='linenum'>   50</span> };
+<span class='linenum'>   51</span> 
+<span class='linenum'>   52</span> <span class="comment comment_block comment_block_xquery">(:~
+<span class='linenum'>   53</span>  : 
+<span class='linenum'>   54</span>  : @param $name name of the cookie
+<span class='linenum'>   55</span> :)</span>
+<span class='linenum'>   56</span> <span class="meta meta_definition meta_definition_function meta_definition_function_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_define-function keyword_other_directive_define-function_xquery">declare <span class="entity entity_name entity_name_function entity_name_function_xquery">function</span></span> web:get-cookie<span class="meta meta_definition meta_definition_param-list meta_definition_param-list_xquery">(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$name</span> as <span class="storage storage_type storage_type_atomic storage_type_atomic_xquery">xs:string</span></span>)  <span class="meta meta_definition meta_definition_function meta_definition_function_returns meta_definition_function_returns_xquery"><span class="keyword keyword_other keyword_other_directive keyword_other_directive_as keyword_other_directive_as_xquery">as</span> <span class="storage storage_type storage_type_xquery">xs:string</span></span> </span>{
+<span class='linenum'>   57</span>     basexweb:getCookieValue(<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_xquery">$name</span>)
+<span class='linenum'>   58</span> };
+<span class='linenum'>   59</span> 
+<span class='linenum'>   60</span> 
+</span><span class='linenum'>   61</span> </pre>
+</body>
+</html>
