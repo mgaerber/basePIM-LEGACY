@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaces>
+    <workspace name="Produkte">
+        <node name="Motoren" id="b072caad-3a30-4e72-9694-ec9ebf198a7d">
+            <node name="Powermotor" type="motor" id="3989e517-6fc4-4018-b10d-7e3506561e42">
+                <property name="bezeichnung">
+                    <value>Motor 1.6</value>
+                    <value lang="fr">Moteur 1.7</value>
+                </property>
+                <property name="art-nr">
+                    <value>123000</value>
+                </property>
+                <property name="beschreibung">
+                    <value><strong>Dieselmotor</strong> mit Common Tail Technologie</value>
+                </property>
+                <property name="leistung">
+                    <value>90</value>
+                </property>
+                <property name="gewicht">
+                    <value>123</value>
+                </property>
+                <node name="Variante Luxus" type="motor-ausfuehrung" id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+                    <property name="bezeichnung">
+                        <value>Motor 1.7</value>
+                        <value lang="fr">Moteur 1.7</value>
+                    </property>
+                    <property name="art-nr">
+                        <value>123000-7</value>
+                    </property>
+                </node>
+            </node>
+        </node>
+    </workspace>
+    <workspace name="Bilder">
+        <node name="Alle">
+            <node name="Branchen">
+                <node name="Transport">
+                    <node name="Motoren" idref="b072caad-3a30-4e72-9694-ec9ebf198a7d">
+                        <node name="Frontsicht">
+                            <node name="Powermotor" idref="3989e517-6fc4-4018-b10d-7e3506561e42">
+                                <property name="Bild">
+                                    <value>/foo/bar/Bild.jpg</value>
+                                </property>
+                            </node>
+                        </node>
+                    </node>
+                </node>
+            </node>
+        </node>
+    </workspace>
+    <workspace name="Hauptkatalog">
+        <node name="Titel">
+            <property name="Titel">
+                <value>Catalog</value>
+                <value lang="de">Katalog</value>
+                <value lang="fr">Catalogue</value>
+            </property>
+            <node name="Kapitel 1">
+                <node name="Abschnitt 1">
+                    <node name="Produkt" idref="3989e517-6fc4-4018-b10d-7e3506561e42" />
+                </node>
+                <node name="Abschnitt 2">
+                    <node name="Produkt" idref="3989e517-6fc4-4018-b10d-7e3506561e42" />
+                    <node name="Produkt" idref="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc"/>
+                </node>
+            </node>                
+        </node>
+    </workspace>
+</workspaces>
