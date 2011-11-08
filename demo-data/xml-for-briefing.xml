@@ -5,7 +5,7 @@
             <node name="Powermotor" type="motor" id="3989e517-6fc4-4018-b10d-7e3506561e42">
                 <property name="bezeichnung">
                     <value>Motor 1.6</value>
-                    <value lang="fr">Moteur 1.7</value>
+                    <value lang="fr">Moteur 1.6</value>
                 </property>
                 <property name="art-nr">
                     <value>123000</value>
@@ -41,6 +41,11 @@
                                 <property name="Bild">
                                     <value>/foo/bar/Bild.jpg</value>
                                 </property>
+                                <node name="Variante Luxus" idref="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+                                    <property name="Bild">
+                                        <value>/foo/bar/Bild-Luxus.jpg</value>
+                                    </property> 
+                                </node>
                             </node>
                         </node>
                     </node>
