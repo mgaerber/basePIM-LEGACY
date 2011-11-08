@@ -32,11 +32,11 @@
         </node>
     </workspace>
     <workspace name="Bilder">
-        <node name="Alle">
-            <node name="Branchen">
-                <node name="Transport">
+        <node name="Alle" id="alle">
+            <node name="Branchen" id="branchen">
+                <node name="Transport" id="transport">
                     <node name="Motoren" idref="b072caad-3a30-4e72-9694-ec9ebf198a7d">
-                        <node name="Frontsicht">
+                        <node name="Frontsicht" id="frontansicht">
                             <node name="Powermotor" idref="3989e517-6fc4-4018-b10d-7e3506561e42">
                                 <property name="Bild">
                                     <value>/foo/bar/Bild.jpg</value>
