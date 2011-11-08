@@ -30,7 +30,7 @@ Installation
 
 1. Clone the project
 2. Run [BaseX](http://basex.org/ "BaseX | The XML Database") with the following commands
-3. `$ basex -c "REPO INSTALL /path/to/basePIM/src/main/webapp/basex-web-xq-1.0.1-distribution.zip"`
+3. `$ basex -c "REPO INSTALL /path/to/basePIM/basePIM-web/src/main/webapp/basex-web-xq-1.0.1-distribution.zip"`
 4. `$ basex -c "REPO INSTALL http://files.basex.org/xar/functx-1.0.xar"`
 5. Start the web server via ``cd basePIM-web && mvn jetty:run``
 6. Open [localhost:8080](http://localhost:8080) in a browser of your choice
