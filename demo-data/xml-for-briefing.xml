@@ -3,25 +3,69 @@
     <workspace name="Produkte">
         <node name="Motoren" id="b072caad-3a30-4e72-9694-ec9ebf198a7d">
             <node name="Powermotor" type="motor" id="3989e517-6fc4-4018-b10d-7e3506561e42">
-                <property name="bezeichnung">
-                    <value>Motor 1.6</value>
-                    <value lang="fr">Moteur 1.6</value>
+                
+                <!-- different slots for languages and brands, "any" as wildcard -->
+                <property name="bezeichnung">                
+                    <value lang="de" brand="any">Motor 1.6</value>
+                    <value lang="fr" brand="citroen">Moteur 1.6 green</value>
+                    <value lang="fr" brand="renault">Moteur 1.6 eco</value>
                 </property>
+                
+                <!-- unit could be a new attribute on values -->
+                <property name="leistung">
+                    <value unit="PS">90</value>
+                </property>
+                <!-- vs -->
+                <property name="gewicht">
+                    <value><num>123</num><unit>kg</unit></value>
+                </property>
+                <!-- vs -->
+                <property name="gewicht">
+                    <value>123</value>
+                    <unit>kg</unit>
+                </property>
+                
+                <!-- need a way to represent list of values: -->
+                <!-- elegant but collides with usage of multiple values for different slots: -->
+                <property name="key-features">
+                    <value lang="en">efficient</value>
+                    <value lang="en">clean</value>
+                    <value lang="en">quiet</value>
+                </property>
+                <!-- or simply add same property many times: -->
+                <property name="key-feature">
+                    <value lang="en">efficient</value>
+                </property>
+                <property name="key-feature">
+                    <value lang="en">clean</value>
+                </property>
+                <property name="key-feature">
+                    <value lang="en">quiet</value>
+                </property>
+                
+                <!-- compound values ? -->
+                <property name="temperature-range">
+                    <value>-10 °C ... 60 °C</value>
+                </property>
+                <!-- or -->
+                <property name="dimensions">
+                    <value>
+                        <height></height>
+                        <width></width>
+                        <length></length>
+                    </value>
+                </property>
+                
                 <property name="art-nr">
                     <value>123000</value>
                 </property>
                 <property name="beschreibung">
                     <value><strong>Dieselmotor</strong> mit Common Tail Technologie</value>
                 </property>
-                <property name="leistung">
-                    <value>90</value>
-                </property>
-                <property name="gewicht">
-                    <value>123</value>
-                </property>
+        
                 <node name="Variante Luxus" type="motor-ausfuehrung" id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
                     <property name="bezeichnung">
-                        <value>Motor 1.7</value>
+                        <value lang="de">Motor 1.7</value>
                         <value lang="fr">Moteur 1.7</value>
                     </property>
                     <property name="art-nr">
@@ -38,11 +82,19 @@
                     <node name="Motoren" idref="b072caad-3a30-4e72-9694-ec9ebf198a7d">
                         <node name="Frontsicht" id="frontansicht">
                             <node name="Powermotor" idref="3989e517-6fc4-4018-b10d-7e3506561e42">
-                                <property name="Bild">
-                                    <value>/foo/bar/Bild.jpg</value>
+                                <!-- the physical file can differ depending on lang, market and/or further conditions -->
+                                <property name="Bild-Web">
+                                    <value lang="de" market="eu">/foo/bar/Bild.jpg</value>
+                                    <value lang="en" market="uk">/foo/bar/Bild_en.jpg</value>
+                                    <value lang="en" market="us">/foo/bar/Bild_en_us.jpg</value>
+                                </property>
+                                <property name="Bild-Print">
+                                   <!-- "any" if no explicit slot is used, multiple assignments are valid also -->
+                                    <value lang="any" market="us, uk">/foo/bar/Bild.tif</value>
+                                    <value lang="any" market="eu">/foo/bar/Bild_eu.tif</value>
                                 </property>
                                 <node name="Variante Luxus" idref="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
-                                    <property name="Bild">
+                                    <property name="Bild-Web">
                                         <value>/foo/bar/Bild-Luxus.jpg</value>
                                     </property> 
                                 </node>
