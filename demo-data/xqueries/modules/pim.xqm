@@ -57,9 +57,8 @@ declare function pim:flatten(
   $props as map(*),
   $filter as xs:string*
 ) as map(*) {
-    let $b := trace(( $pr/@id),"Products")
+    (: let $trace := trace(( $pr/@id),"Products") :)
     
-	(:if(head($filter) ) then:)
 	  let $props := map:new(($props, pim:get-props($pr))),
 	     $prods2 := map:new((
 	       $prods,
@@ -77,8 +76,6 @@ declare function pim:flatten(
 	      if(head($filter)) then $pr/node[@id eq head($filter)]
 	      else $pr/node
 	    )
-(:	  else
-	  	$prods:)
 };
 (:~
     Constructs the properties Map including a nodes referenced properties.
@@ -89,20 +86,28 @@ declare function pim:get-props(
   $pr as element(node)
 ) as map(*)* {
   let $refs := map:new( 
-    for $prop in $pim:db//node[@idref eq $pr/@id]/property
+    (: get referenced properties :)
+    for $_prop in $pr/property[@idref]
+    let $prop := $pim:db//property[@id eq $_prop/@idref]
     return map:entry($prop/@name,
         map:new(
-        for $val in $prop/value
-        return map:entry(($val/@lang, 'default')[1], $val/node())
+          for $lang in distinct-values($prop/value/slot/@lang)
+          let $vals := $prop/value/slot[@lang = $lang]
+          (: let $trace := trace(string-join($vals), "INH-VAL") :)
+          let $map :=  pim:vals($vals)
+          return map:entry(($lang, 'any')[1], $map)
       ) 
     ))
   let $direct := 
   map:new(
-    for $prop in $pr/property
+    for $prop in $pr/property[not(@idref)]
     return map:entry($prop/@name,
       map:new(
-        for $val in $prop/value
-        return map:entry(($val/@lang, 'default')[1], $val/node())
+        for $lang in distinct-values($prop/value/slot/@lang)
+        let $vals := $prop/value/slot[@lang = $lang]
+        let $sl := trace(string-join($vals), "VAL") 
+        let $map :=  pim:vals($vals)
+        return map:entry(($lang, 'any')[1], $map)
       )
     )
   )
@@ -111,4 +116,6 @@ declare function pim:get-props(
   else $direct
 };
 
-
+declare function pim:vals($node){
+  string-join($node, ", ")
+};
