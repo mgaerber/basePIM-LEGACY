@@ -14,7 +14,7 @@
         <dependency>
             <groupId>org.basex</groupId>
             <artifactId>basex-web</artifactId>
-            <version>0.7.0</version>
+            <version>0.7.1</version>
         </dependency> 
        <dependency>
             <groupId>junit</groupId>
