@@ -21,4 +21,4 @@ declare function local:show-seq($seq as item()*) {
 let $uuid := $GET("guid"),  
 (: $map := nodes:flatten-product(nodes:get-product($uuid)) :)
 $prod := nodes:flatten-product(nodes:get-product($uuid))
-return local:show($prod)
+return  <prod>{(local:show($prod))}</prod>
