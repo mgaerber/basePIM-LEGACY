@@ -1,0 +1,131 @@
+<?xml-stylesheet href="xsltforms/xsltforms.xsl" type="text/xsl"?>
+<html 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:xf="http://www.w3.org/2002/xforms" 
+xmlns:ev="http://www.w3.org/2001/xml-events" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+   <head>
+      <title>BasePIM XSLTForms</title>
+      <xf:model>
+         <xf:instance>
+            <instance  xmlns="">
+               <MyDate />
+               <MyWidth />
+               <MyHeight />
+               <MyLength />
+               <slot lang="any">
+                 <width>
+                   <num>100</num>
+                   <unit>mm</unit>
+                 </width>
+                 <height>
+                   <num>200</num>
+                   <unit>mm</unit>
+                 </height>
+                 <length>
+                   <num>300</num>
+                   <unit>mm</unit>
+                 </length>
+               </slot>
+            </instance>
+         </xf:instance>
+
+         <xf:bind nodeset="MyDate" type="xs:date" />
+         <xf:bind nodeset="MyWidth" type="xs:int" />
+         <xf:bind nodeset="//slot/width/num" type="xs:int" />
+
+	 <xf:submission id="save" method="post" action="http://localhost/myData.xml" ref="//slot"/>
+
+         <xf:submission id="post-test" method="post" ref="//slot" 
+                        action="http://xformstest.org/cgi-bin/showinstance.sh"/>
+      </xf:model>
+   </head>
+   <body>
+
+     <p>MyXPath selected width:
+  	<br />
+        <xf:input ref="//slot/width/num">
+          <xf:label>Enter a dimension: </xf:label>
+        </xf:input>
+     </p>
+     <p>MyDate (with xs:date info):
+  	<br />
+        <xf:input ref="MyDate">
+          <xf:label>Enter a date: </xf:label>
+        </xf:input>
+     </p>
+     <p>MyWidth (with xs:int info):
+  	<br />
+        <xf:input ref="MyWidth">
+          <xf:label>Enter a dimension: </xf:label>
+        </xf:input>
+     </p>
+     <p>MyHeight:
+  	<br />
+        <xf:input ref="MyHeight">
+          <xf:label>Enter a dimension: </xf:label>
+        </xf:input>
+     </p>
+     <p>MyLength:
+  	<br />
+        <xf:input ref="MyLength">
+          <xf:label>Enter a dimension: </xf:label>
+        </xf:input>
+     </p>
+
+     <hr/>
+
+     <p>
+     <p>
+     <xf:output value="//slot/width/num">
+     	<xf:label>MyXPath selected width (out): </xf:label>
+     	<xf:help>Description of MyXPathWidth</xf:help>
+     </xf:output>
+     </p>
+
+     <xf:output ref="MyDate">
+     	<xf:label>MyDate (out): </xf:label>
+     	<xf:help>Description of MyDate</xf:help>
+     </xf:output>
+     </p>
+
+     <p>
+     <xf:output ref="MyWidth">
+     	<xf:label>MyWidth (out): </xf:label>
+     	<xf:help>Description of MyWidth</xf:help>
+     </xf:output>
+     </p>
+
+     <p>
+     <xf:output ref="MyHeight">
+     	<xf:label>MyHeight (out): </xf:label>
+     	<xf:help>Description of MyHeight</xf:help>
+     </xf:output>
+     </p>
+
+     <p>
+     <xf:output ref="MyLength">
+     	<xf:label>MyLength (out): </xf:label>
+     	<xf:help>Description of MyLength</xf:help>
+     </xf:output>
+     </p>
+
+     <p>
+     <xf:output value="19+23">
+     	<xf:label>MyXPath (out): </xf:label>
+     	<xf:help>Description of MyXPath</xf:help>
+     </xf:output>
+     </p>
+
+     <xf:submit submission="post-test">
+       <xf:label>HTTP Post Test</xf:label>
+     </xf:submit>
+
+     <xf:submit submission="save">
+       <xf:label>Save</xf:label>
+     </xf:submit>
+   </body>
+
+</html>
+

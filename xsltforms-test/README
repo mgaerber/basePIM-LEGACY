@@ -1,0 +1,82 @@
+Mi 15 Feb 2012 16:33:20 CET
+
+.
+├── README
+├── basePIM.xml  ...........................  Our demo input site
+├── xsltforms  .............................  xsltforms stuff
+│   ├── beautify.txs
+│   ├── config.xsl
+│   ├── config_cz.xsl
+│   ├── config_de.xsl
+│   ├── config_el.xsl
+│   ├── config_en.xsl
+│   ├── config_en_us.xsl
+│   ├── config_es.xsl
+│   ├── config_fr.xsl
+│   ├── config_gl.xsl
+│   ├── config_it.xsl
+│   ├── config_ja.xsl
+│   ├── config_nb_no.xsl
+│   ├── config_nl.xsl
+│   ├── config_nn_no.xsl
+│   ├── config_pt.xsl
+│   ├── config_ro.xsl
+│   ├── config_ru.xsl
+│   ├── config_si.xsl
+│   ├── config_sk.xsl
+│   ├── dump.php
+│   ├── echo.php
+│   ├── focus.gif
+│   ├── icon_error.gif
+│   ├── icon_help.gif
+│   ├── icon_hint.gif
+│   ├── poweredbyXSLTForms.png
+│   ├── returnasattachment.txs
+│   ├── savetodisk.txs
+│   ├── svg2xaml.xsl
+│   ├── tab.png
+│   ├── thBackground.png
+│   ├── titleBackground.png
+│   ├── txs.php
+│   ├── valid-xforms11.png
+│   ├── xsltforms.css
+│   ├── xsltforms.js
+│   └── xsltforms.xsl
+└── xsltforms-beta3RC.zip  .................  AlainCouthures (www.agencexml.com/xsltforms/)
+
+1 directory, 41 files
+
+* Request model from
+http://phobos38.inf.uni-konstanz.de:8080/app/nodes/property?name=dimensions
+
+<xf:model xmlns:xf="http://www.w3.org/2002/xforms">
+  <xf:instance>
+    <property name="dimensions" inheritable="true">
+      <value>
+        <slot lang="any">
+          <width>
+            <num>100</num>
+            <unit>mm</unit>
+          </width>
+          <height>
+            <num>500</num>
+            <unit>mm</unit>
+          </height>
+          <length>
+            <num>100</num>
+            <unit>mm</unit>
+          </length>
+        </slot>
+      </value>
+    </property>
+  </xf:instance>
+  <xf:bind nodeset="value/slot/width/num" type="xs:decimal"/>
+  <xf:bind nodeset="value/slot/width" type="xs:NCName"/>
+  <xf:bind nodeset="value/slot/height/num" type="xs:decimal"/>
+  <xf:bind nodeset="value/slot/height" type="xs:NCName"/>
+  <xf:bind nodeset="value/slot/length/num" type="xs:decimal"/>
+  <xf:bind nodeset="value/slot/length" type="xs:NCName"/>
+</xf:model>
+
+* The model is to be embedded into basePIM.xml
+  input and output forms work on the model once loaded into the browser
