@@ -1,7 +1,7 @@
 module namespace pim ="http://basepim.org/lib";
 
 (:~ the database instance, this should be refactored :)
-declare variable $pim:db := db:open('xml-for-briefing');
+declare variable $pim:db := db:open('ascherl-data');
 
 (:~
     Gets a single product identified by its uuid
@@ -9,7 +9,7 @@ declare variable $pim:db := db:open('xml-for-briefing');
     @return the product <node />
 :)
 declare function pim:get-product($uuid as xs:string) as element(node){
-    $pim:db//node[@id eq $uuid]
+    $pim:db//node[@guid eq $uuid]
 }; 
 
 (:~
@@ -20,10 +20,10 @@ declare function pim:get-product($uuid as xs:string) as element(node){
 declare function pim:flatten-product($prod as element(node)) as map(*){
     let $ids := 
 	   (for $id in 
-	       //node[@id = $prod/@id]/ancestor::*/@id
-        return string($id), $prod/@id)
+	       //node[@guid = $prod/@guid]/ancestor::*/@guid
+        return string($id), $prod/@guid)
     let $ws := $prod/ancestor::workspace
-    return pim:flatten($ws, $ids)($prod/@id)
+    return pim:flatten($ws, $ids)($prod/@guid)
 };
 
 (:~
@@ -47,7 +47,7 @@ declare function pim:flatten(
   fold-left(
     pim:flatten(?, ?, map:new(), tail($filter)),
     map:new(),
-    if(head($filter)) then $ws/node[@id eq head($filter)]
+    if(head($filter)) then $ws/node[@guid eq head($filter)]
     else $ws/node  )
 };
 
@@ -57,12 +57,12 @@ declare function pim:flatten(
   $props as map(*),
   $filter as xs:string*
 ) as map(*) {
-    (: let $trace := trace(( $pr/@id),"Products") :)
+    (: let $trace := trace(( $pr/@guid),"Products") :)
     
 	  let $props := map:new(($props, pim:get-props($pr))),
 	     $prods2 := map:new((
 	       $prods,
-	       map:entry($pr/@id,
+	       map:entry($pr/@guid,
 	         map{
 	           'name':=$pr/@name,
 	           'type':=$pr/@type,
@@ -73,7 +73,7 @@ declare function pim:flatten(
 	  return fold-left(
 	      pim:flatten(?, ?, $props, tail($filter) (: - 1 :)),
 	      $prods2,
-	      if(head($filter)) then $pr/node[@id eq head($filter)]
+	      if(head($filter)) then $pr/node[@guid eq head($filter)]
 	      else $pr/node
 	    )
 };
@@ -87,8 +87,8 @@ declare function pim:get-props(
 ) as map(*)* {
   let $refs := map:new( 
     (: get referenced properties :)
-    for $_prop in $pr/property[@idref]
-    let $prop := $pim:db//property[@id eq $_prop/@idref]
+    for $_prop in $pr/property[@guidref]
+    let $prop := $pim:db//property[@guid eq $_prop/@guidref]
     return map:entry($prop/@name,
         map:new(
           for $lang in distinct-values($prop/value/slot/@lang)
@@ -100,7 +100,7 @@ declare function pim:get-props(
     ))
   let $direct := 
   map:new(
-    for $prop in $pr/property[not(@idref)]
+    for $prop in $pr/property[not(@guidref)]
     return map:entry($prop/@name,
       map:new(
         for $lang in distinct-values($prop/value/slot/@lang)
@@ -119,3 +119,4 @@ declare function pim:get-props(
 declare function pim:vals($node){
   string-join($node, ", ")
 };
+
