@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="workspaces">
+      <element name="workspace">
+        <ref name="node"/>
+      </element>
+    </element>
+  </start>
+  <define name="node">
+    <element name="node">
+      <attribute name="guid">
+        <data type="NMTOKEN"/>
+      </attribute>
+      <attribute name="type">
+        <data type="NCName"/>
+      </attribute>
+      <zeroOrMore>
+        <choice>
+          <ref name="node"/>
+          <element name="property">
+            <optional>
+              <attribute name="inheritable">
+                <data type="NCName"/>
+              </attribute>
+            </optional>
+            <attribute name="name"/>
+            <optional>
+              <attribute name="type">
+                <data type="NCName"/>
+              </attribute>
+            </optional>
+            <oneOrMore>
+              <element name="value">
+                <element name="slot">
+                  <attribute name="lang">
+                    <data type="NCName"/>
+                  </attribute>
+                  <oneOrMore>
+                    <choice>
+                      <text/>
+                      <element name="height">
+                        <ref name="num"/>
+                        <ref name="unit"/>
+                      </element>
+                      <element name="length">
+                        <ref name="num"/>
+                        <ref name="unit"/>
+                      </element>
+                      <element name="name">
+                        <attribute name="language"/>
+                        <data type="NMTOKEN"/>
+                      </element>
+                      <element name="p">
+                        <optional>
+                          <attribute name="class">
+                            <data type="NCName"/>
+                          </attribute>
+                        </optional>
+                        <optional>
+                          <attribute name="style"/>
+                        </optional>
+                        <oneOrMore>
+                          <choice>
+                            <text/>
+                            <ref name="span"/>
+                            <element name="em">
+                              <element name="strong">
+                                <text/>
+                              </element>
+                            </element>
+                            <element name="font">
+                              <optional>
+                                <attribute name="color"/>
+                              </optional>
+                              <optional>
+                                <attribute name="face">
+                                  <data type="NCName"/>
+                                </attribute>
+                              </optional>
+                              <text/>
+                            </element>
+                            <element name="img">
+                              <attribute name="alt"/>
+                              <attribute name="src">
+                                <data type="anyURI"/>
+                              </attribute>
+                            </element>
+                            <element name="meta">
+                              <attribute name="content"/>
+                              <attribute name="http-equiv">
+                                <data type="NCName"/>
+                              </attribute>
+                              <text/>
+                            </element>
+                          </choice>
+                        </oneOrMore>
+                      </element>
+                      <element name="pubspec">
+                        <attribute name="pubspecid">
+                          <data type="integer"/>
+                        </attribute>
+                        <text/>
+                      </element>
+                      <element name="width">
+                        <ref name="num"/>
+                        <ref name="unit"/>
+                      </element>
+                    </choice>
+                  </oneOrMore>
+                </element>
+              </element>
+            </oneOrMore>
+          </element>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="num">
+    <element name="num">
+      <data type="decimal"/>
+    </element>
+  </define>
+  <define name="unit">
+    <element name="unit">
+      <data type="NCName"/>
+    </element>
+  </define>
+  <define name="span">
+    <element name="span">
+      <optional>
+        <attribute name="class">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="lang">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <oneOrMore>
+        <choice>
+          <text/>
+          <ref name="span"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+</grammar>
