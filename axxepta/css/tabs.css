@@ -1,0 +1,145 @@
+@charset "UTF-8";
+/* CSS Document */
+
+ul.tabs_list {
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+
+ul.tabs_list li {
+	float:left;
+	display:inline-block;
+}
+
+ul#tabs_main_sub {
+	position:absolute;
+	width:142px;
+	left:520px;
+	top:100px;
+	overflow:hidden;
+}
+
+ul.tabs_list li ul#tabs_main_sub li {
+	float:none;
+}
+
+ul#tabs_main_list li:nth-child(1n+5) {
+	float:left;
+	display:inline-block;
+	width:142px;
+}
+
+ul.tabs_list li,
+ul.tabs_list li:visited {
+	height:28px;
+	width:142px;
+	float:left;
+	display:inline-block;
+	background:url(../images/tab_main_background.png) no-repeat 0px 3px;
+}
+
+ul.tabs_list li:focus,
+ul.tabs_list li:hover {
+	height:28px;
+	cursor:pointer;
+	width:142px;
+	float:left;
+	display:inline-block;
+	background:url(../images/tab_main_background.png) no-repeat 0px 0px;
+}
+
+ul.tabs_list li.active,
+ul.tabs_list li.active:visited,
+ul.tabs_list li.active:focus,
+ul.tabs_list li.active:hover {
+	background:url(../images/tab_main_background_active.png) no-repeat 0px 0px;
+}
+
+ul#tabs_main_list li#tab_home,
+ul#tabs_main_list li#tab_home:visited {
+	height:28px;
+	width:30px;
+	display:inline-block;
+	background:url(../images/tab_home_background.png) no-repeat left top;
+}
+
+ul#tabs_main_list li#tab_home:focus,
+ul#tabs_main_list li#tab_home:hover {
+	background:url(../images/tab_home_background.png) no-repeat left bottom;
+}
+
+
+ul#tabs_main_list li#tab_home a {
+	height:28px;
+	width:30px;
+	display:inline-block;
+}
+
+div.tab_container {
+	position:relative;
+}
+
+div.tab_container h1 {
+	margin:0px;
+	padding:0px;
+	position:absolute;
+	left:10px;
+	top:8px;
+	font-size:12px;
+	height:12px;
+	display:inline-block;
+	white-space:nowrap;
+	width:120px;
+	overflow:hidden;
+	color:#fff;
+}
+
+ul.tabs_list li:nth-child(1n+5) div.tab_container h1 {
+	color:#F00;
+}
+
+ul.tabs_list li.active div.tab_container h1,
+ul.tabs_list li.active:visited div.tab_container h1,
+ul.tabs_list li.active:focus div.tab_container h1,
+ul.tabs_list li.active:hover div.tab_container h1 {
+	color:#000;
+}
+
+ul.tabs_list li:focus h1,
+ul.tabs_list li:hover h1,
+ul.tabs_list li.active,
+ul.tabs_list li.active:visited,
+ul.tabs_list li.active:focus,
+ul.tabs_list li.active:hover{
+	color:#999;
+}
+
+ul.tabs_list li div.tab_container a.close_button,
+ul.tabs_list li:focus div.tab_container a.close_button,
+ul.tabs_list li:hover div.tab_container a.close_button,
+ul.tabs_list li:focus div.tab_container a.close_button:visited,
+ul.tabs_list li:hover div.tab_container a.close_button:visited {
+	position:absolute;
+	z-index:2;
+	right:6px;
+	top:6px;
+	width:16px;
+	height:16px;
+	display:inline-block;
+	background:url(../images/button_close.png) no-repeat left top;
+}
+
+ul.tabs_list li:focus div.tab_container a.close_button:focus,
+ul.tabs_list li:hover div.tab_container a.close_button:hover,
+ul.tabs_list li:focus div.tab_container a.close_button:focus,
+ul.tabs_list li:hover div.tab_container a.close_button:hover {
+	background:url(../images/button_close_hover.png) no-repeat left top;
+}
+
+
+
+
+.ui-tabs .ui-tabs-hide {
+display: none !important;
+}
