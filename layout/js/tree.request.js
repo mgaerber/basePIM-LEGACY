@@ -6,8 +6,9 @@ loaded_tree['main'] = false;
 // --------------------------------------------------------------------------------	
 
 function buildMainTree () {
+
 	if (loaded_tree['main'] == false) {
-	$.getJSON('request/jsonData.php?id=catid_0', function(data) {
+	$.getJSON('http://phobos103.inf.uni-konstanz.de:8984/restxq/produkte/get-product', function(data) {
 		var output_tree = '<ul id="main_tree">';
 		$.each(data.categories, function(key, val) {
 			output_tree = output_tree + LayoutOutputTree(val);
