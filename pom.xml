@@ -29,28 +29,54 @@
       <name>BaseX Maven Repository</name>
       <url>http://files.basex.org/maven</url>
     </repository>
-    <repository>
-      <id>milton</id>
-      <name>Milton Maven Repository</name>
-      <url>http://www.ettrema.com/maven2</url>
-    </repository>
   </repositories>
   <organization>
     <name>BaseX Team</name>
     <url>http://basex.org</url>
   </organization>
-  <!-- <developers>
+  <developers>
     <developer>
-      <id>cg</id>
-      <name>Christian Gr&#xFC;n</name>
-      <email>christian.gruen@uni-konstanz.de</email>
+      <id>mg</id>
+      <name>Maximilian Gärber</name>
+      <email>gaerber@axxepta.de</email>
+      <organization>Axxepta GmbH</organization>
       <roles>
         <role>architect</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>cg</id>
+      <name>Christian Grün</name>
+      <email>cg@basex.org</email>
+      <organization>BaseX GmbH</organization>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>ms</id>
+      <name>Michael Seiferle</name>
+      <email>ms@basex.org</email>
+      <organization>BaseX GmbH</organization>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>ah</id>
+      <name>Alexander Holupirek</name>
+      <email>ah@basex.org</email>
+      <organization>BaseX GmbH</organization>
+      <roles>
         <role>developer</role>
       </roles>
       <timezone>+1</timezone>
     </developer>
   </developers>
+<!--
   <mailingLists>
     <mailingList>
       <name>BaseX Talk</name>
@@ -58,10 +84,11 @@
       <archive>https://mailman.uni-konstanz.de/mailman/listinfo/basex-talk</archive>
     </mailingList>
   </mailingLists>
+-->
   <issueManagement>
-    <system>GitHub Tracker</system>
-    <url>https://github.com/BaseXdb/basex/issues</url>
-  </issueManagement> -->
+    <system>BasePIM GitHub Tracker</system>
+    <url>https://github.com/mgaerber/basePIM/issues</url>
+  </issueManagement>
   <dependencies>
     <dependency>
       <groupId>org.basex</groupId>
@@ -77,8 +104,8 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.26</version>
         <configuration>
-					<contextPath>/</contextPath>
-					<webAppSourceDirectory>${basedir}/WWW</webAppSourceDirectory>
+          <contextPath>/</contextPath>
+          <webAppSourceDirectory>${basedir}/WWW</webAppSourceDirectory>
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
               <!-- Choose HTTP port -->
@@ -130,6 +157,7 @@
     <!-- Eclipse Maven plugin does not "support copy-dependencies" -->
     <!-- we need to tell it to ignore the goal -->
   </build>
+  <!--
   <distributionManagement>
     <repository>
       <id>basex.mvn</id>
@@ -137,4 +165,5 @@
       <url>ftp://basex.org/</url>
     </repository>
   </distributionManagement>
+  -->
 </project>
