@@ -66,7 +66,7 @@
     <dependency>
       <groupId>org.basex</groupId>
       <artifactId>basex-api</artifactId>
-      <version>7.1.2-SNAPSHOT</version>
+      <version>7.1.2i-fix-httpath-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>

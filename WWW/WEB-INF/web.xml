@@ -2,18 +2,18 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
-
   <display-name>basePIM Web Services</display-name>
   <description>providing you with superdata!</description>
-
+  <context-param>
+    <param-name>basexhttp</param-name>
+    <param-value>CORE/api</param-value>
+  </context-param>
   <servlet>
     <servlet-name>RESTful XQuery</servlet-name>
     <servlet-class>org.basex.api.restxq.RestXqServlet</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>RESTful XQuery</servlet-name>
     <url-pattern>/restxq/*</url-pattern>
   </servlet-mapping>
-
 </web-app>
