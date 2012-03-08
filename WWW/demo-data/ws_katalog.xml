@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+  <workspace name="Hauptkatalog">
+    <node name="Titel">
+      <property name="Titel">
+        <value>
+          <slot lang="en">Catalog</slot>
+        </value>
+        <value>
+          <slot lang="de">Katalog</slot>
+        </value>
+        <value>
+          <slot lang="fr">Catalogue</slot>
+        </value>
+      </property>
+      <node name="Kapitel 1">
+        <node name="Abschnitt 1">
+          <node name="Produkt" idref="3989e517-6fc4-4018-b10d-7e3506561e42"/>
+        </node>
+        <node name="Abschnitt 2">
+          <node name="Produkt" idref="3989e517-6fc4-4018-b10d-7e3506561e42"/>
+          <node name="Produkt" idref="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc"/>
+        </node>
+      </node>
+    </node>
+  </workspace>
