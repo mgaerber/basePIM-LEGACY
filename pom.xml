@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.basePIM</groupId>
+  <artifactId>PIM</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <name>BasePIM</name>
+  <properties>
+    <compileSource>1.6</compileSource>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.lib.directory>lib</project.lib.directory>
+  </properties>
+  <licenses>
+    <license>
+      <name>BSD License</name>
+      <url>http://www.opensource.org/licenses/bsd-license.php</url>
+    </license>
+  </licenses>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central Maven Repository</name>
+      <url>http://repo2.maven.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>basex</id>
+      <name>BaseX Maven Repository</name>
+      <url>http://files.basex.org/maven</url>
+    </repository>
+    <repository>
+      <id>milton</id>
+      <name>Milton Maven Repository</name>
+      <url>http://www.ettrema.com/maven2</url>
+    </repository>
+  </repositories>
+  <organization>
+    <name>BaseX Team</name>
+    <url>http://basex.org</url>
+  </organization>
+  <!-- <developers>
+    <developer>
+      <id>cg</id>
+      <name>Christian Gr&#xFC;n</name>
+      <email>christian.gruen@uni-konstanz.de</email>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <mailingLists>
+    <mailingList>
+      <name>BaseX Talk</name>
+      <post>basex-talk@mailman.uni-konstanz.de</post>
+      <archive>https://mailman.uni-konstanz.de/mailman/listinfo/basex-talk</archive>
+    </mailingList>
+  </mailingLists>
+  <issueManagement>
+    <system>GitHub Tracker</system>
+    <url>https://github.com/BaseXdb/basex/issues</url>
+  </issueManagement> -->
+  <dependencies>
+    <dependency>
+      <groupId>org.basex</groupId>
+      <artifactId>basex-api</artifactId>
+      <version>7.1.2-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.26</version>
+        <configuration>
+					<contextPath>/</contextPath>
+					<webAppSourceDirectory>${basedir}/WWW</webAppSourceDirectory>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <!-- Choose HTTP port -->
+              <port>8984</port>
+              <!-- Optionally limit HTTP host
+              <host>8984</host> -->
+              <maxIdleTime>60000</maxIdleTime>
+            </connector>
+          </connectors>
+          <systemProperties>
+            <!-- Choose client/server or local mode -->
+            <systemProperty>
+              <name>org.basex.local</name>
+              <value>false</value>
+            </systemProperty>
+            <!-- Choose default user/password
+            <systemProperty>
+              <name>org.basex.user</name>
+              <value>admin</value>
+            </systemProperty>
+            <systemProperty>
+              <name>org.basex.password</name>
+              <value>admin</value>
+            </systemProperty> -->
+          </systemProperties>
+          <!-- Key and port for stopping Jetty
+          <stopKey>keyToStopJetty</stopKey> 
+          <stopPort>8985</stopPort> -->
+        </configuration>
+      </plugin> 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-libs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.lib.directory}</outputDirectory>
+              <includeScope>compile</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <!-- Eclipse Maven plugin does not "support copy-dependencies" -->
+    <!-- we need to tell it to ignore the goal -->
+  </build>
+  <distributionManagement>
+    <repository>
+      <id>basex.mvn</id>
+      <name>BaseX Maven Repository</name>
+      <url>ftp://basex.org/</url>
+    </repository>
+  </distributionManagement>
+</project>
