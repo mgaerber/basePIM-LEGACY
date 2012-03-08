@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+  <workspace name="Produkte">
+    <node name="Motoren" id="b072caad-3a30-4e72-9694-ec9ebf198a7d">
+      <node name="Powermotor" type="motor" id="3989e517-6fc4-4018-b10d-7e3506561e42">
+        <!-- different slots for languages and brands, "any" as wildcard -->
+        <property name="art-nr">
+          <value>
+            <slot lang="any">123000</slot>
+          </value>
+        </property>
+
+        <property name="bezeichnung">
+          <value>
+            <slot lang="de en" brand="any">Motor 1.6</slot>
+            <slot lang="fr" brand="citroen">Moteur 1.6</slot>
+          </value>
+        </property>
+        <property name="gewicht">
+          <!-- value + unit -->
+          <value>
+            <slot lang="any">
+              <num>123</num>
+              <unit>kg</unit>
+            </slot>
+          </value>
+        </property>
+        <property name="key-features" inheritable="true">
+          <!-- multiple values -->
+          <value>
+            <slot lang="en">efficient</slot>
+            <slot lang="de">effizient</slot>
+          </value>
+          <value>
+            <slot lang="en">clean</slot>
+            <slot lang="en">quiet</slot>
+          </value>
+        </property>
+        <property name="dimensions">
+          <value>
+            <slot lang="any">
+              <width>
+                <num>100</num>
+                <unit>mm</unit>
+              </width>
+              <height>
+                <num>500</num>
+                <unit>mm</unit>
+              </height>
+              <length>
+                <num>100</num>
+                <unit>mm</unit>
+              </length>
+            </slot>
+          </value>
+        </property>
+        <node name="Variante Luxus" type="motor-ausfuehrung"
+          id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+          <property name="bezeichnung">
+            <value>
+              <slot lang="de">Motor 1.7</slot>
+              <slot lang="fr" brand="citroen">Moteur 1.7</slot>
+            </value>
+          </property>
+          <property name="art-nr">
+            <value>
+              <slot lang="any">123000-7</slot>
+            </value>
+          </property>
+          <property name="Bild" idref="171227e0-0f7d-11e1-be50-0800200c9a66"/>
+        </node>
+      </node>
+    </node>
+  </workspace>

@@ -39,3 +39,8 @@ License
 -------
 
 basePIM is licensed under [t.b.a.](http://www.opensource.org/licenses/alphabetical "Licenses by Name | Open Source Initiative")
+
+
+Conventions
+-----------
+
