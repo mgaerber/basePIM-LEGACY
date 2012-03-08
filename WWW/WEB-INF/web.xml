@@ -7,6 +7,16 @@
   <description>providing you with superdata!</description>
 
   <servlet>
+    <servlet-name>WebDAV</servlet-name>
+    <servlet-class>org.basex.api.webdav.WebDAVServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>WebDAV</servlet-name>
+    <url-pattern>/webdav/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>RESTful XQuery</servlet-name>
     <servlet-class>org.basex.api.restxq.RestXqServlet</servlet-class>
   </servlet>
