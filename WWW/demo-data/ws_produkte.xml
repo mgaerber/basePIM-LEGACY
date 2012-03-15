@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
-  <workspace name="Produkte">
-    <node name="Motoren" id="b072caad-3a30-4e72-9694-ec9ebf198a7d">
+<workspace name="Produkte">
+  
+  <!-- Basis Struktur
+    baugruppe
+     - motor
+       - motor-ausfuehrung
+  -->
+  
+    <node name="Motoren" type="baugruppe" id="b072caad-3a30-4e72-9694-ec9ebf198a7d">
+   
       <node name="Powermotor" type="motor" id="3989e517-6fc4-4018-b10d-7e3506561e42">
         <!-- different slots for languages and brands, "any" as wildcard -->
-        <property name="art-nr">
-          <value>
-            <slot lang="any">123000</slot>
-          </value>
-        </property>
 
         <property name="bezeichnung">
           <value>
@@ -32,7 +35,6 @@
           </value>
           <value>
             <slot lang="en">clean</slot>
-            <slot lang="en">quiet</slot>
           </value>
         </property>
         <property name="dimensions">
@@ -53,8 +55,11 @@
             </slot>
           </value>
         </property>
+        <property name="Bild" idref="171227e0-0f7d-11e1-be50-0800200c9a66" inheritable="true"/>
+        
         <node name="Variante Luxus" type="motor-ausfuehrung"
           id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+          <!-- key-features werden überschrieben -> muss ins Schema -->
           <property name="bezeichnung">
             <value>
               <slot lang="de">Motor 1.7</slot>
@@ -66,8 +71,45 @@
               <slot lang="any">123000-7</slot>
             </value>
           </property>
-          <property name="Bild" idref="171227e0-0f7d-11e1-be50-0800200c9a66"/>
+          <property name="price">
+            <value>
+              <slot lang="any">13000</slot>
+            </value>
+          </property>
+          
+          <property name="Bild" idref="11111111-0f7d-11e1-be50-0800200c9a66" inheritable="true"/>
         </node>
+        
+        <node name="Variante Standard" type="motor-ausfuehrung"
+          id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+          <!-- key-features werden überschrieben -> muss ins Schema für "motor-ausfuehrung" -->
+          <property name="bezeichnung">
+            <value>
+              <slot lang="de">Motor 1.7</slot>
+              <slot lang="fr" brand="citroen">Moteur 1.7</slot>
+            </value>
+          </property>
+          <property name="art-nr">
+            <value>
+              <slot lang="any">123000-7</slot>
+            </value>
+          </property>
+          <property name="price">
+            <value>
+              <slot lang="any">13000</slot>
+            </value>
+          </property>
+          <property name="key-features">
+            <!-- multiple values -->
+            <value>
+              <slot lang="de en">standard</slot>
+            </value>
+            <value>
+              <slot lang="en">clean</slot>
+            </value>
+          </property>
+        </node>
+      
       </node>
     </node>
   </workspace>
