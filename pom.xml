@@ -93,8 +93,8 @@
     <dependency>
       <groupId>org.basex</groupId>
       <artifactId>basex-api</artifactId>
-      <version>7.1.2i-fix-httpath-SNAPSHOT</version>
-    </dependency>
+       <version>7.2-SNAPSHOT</version>
+   </dependency>
   </dependencies>
   <build>
     <finalName>${project.artifactId}-${project.version}</finalName>
