@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+<config type="irgendwie">
+    <propertyType schema="xy.xsd">
+        
+    </propertyType>
+    
+    
+    <nodeType name="Motoren" version="">
+        <propertyType ref=""/>
+        <propertyType ref=""/>
+        <propertyType ref=""/>
+        <propertyType ref=""/>
+        <propertyType ref=""/>
+        
+        <allowedChildNodes>
+            
+        </allowedChildNodes>
+    </nodeType>
+</config>
+
+<config type="schema">
+    
+    
+</config>
+    
+    
+</configs>
+
+
+
