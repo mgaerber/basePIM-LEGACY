@@ -44,3 +44,15 @@ basePIM is licensed under [t.b.a.](http://www.opensource.org/licenses/alphabetic
 Conventions
 -----------
 
+.
+├── README.md  ....................................  this file
+├── CORE  .........................................  business logic (as xquery modules)
+│   ├── api  ......................................  public interfaces (restxq ..)
+│   │   └── nodes.xqm
+│   ├── services  .................................  general service modules 
+│   │   ├── node-service.xqm
+│   │   └── pim-service.xqm
+│   └── test
+│       └── test-json.xq
+├── DATA  .........................................  basePIM databases
+`── WWW  ..........................................  web root

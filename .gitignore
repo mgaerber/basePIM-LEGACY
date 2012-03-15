@@ -6,3 +6,5 @@
 /.settings
 /target/
 basePIM.xpr
+DATA/*
+!DATA/README
