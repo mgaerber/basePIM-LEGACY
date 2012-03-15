@@ -8,4 +8,4 @@ done
 echo "Database path is defined in ../.basex:"
 grep DBPATH ../.basex
 echo "Databases (../data):"
-ls ../data
+ls ../../DATA

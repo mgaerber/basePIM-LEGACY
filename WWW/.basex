@@ -1,7 +1,7 @@
 # Property File.
 # You can set additional options at the end of the file.
 
-DBPATH = WWW/data
+DBPATH = DATA
 HTTPPATH = CORE/api
 REPOPATH = WWW/repo
 LANG = English
