@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="" xmlns="http://relaxng.org/ns/structure/1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <!-- Concrete workspace "produkte" -->
+  <start>
+    <!--  The start element can be any of: -->
+    <choice>
+      <ref name="ws_produkte"/>
+      <ref name="nt_baugruppe"/>
+      <ref name="nt_motor"/>
+      <ref name="nt_motor-ausfuehrung"/>
+    </choice>
+  </start>
+  
+  <!-- TODO: move to include file -->
+  <define name="nt_common_attr">
+    <attribute name="id"></attribute>
+    <attribute name="name"></attribute>
+  </define>
+
+  <define name="ws_produkte">
+    <element name="workspace">
+      <attribute name="type">
+        <value type="Name">produkte</value>
+      </attribute>
+      <zeroOrMore>
+        <ref name="nt_baugruppe"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="nt_baugruppe">
+    <element name="node">
+      <ref name="nt_common_attr"></ref>
+      <attribute name="type">
+        <value type="Name">baugruppe</value>
+      </attribute>
+      <zeroOrMore>
+        <ref name="nt_motor"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="nt_motor">
+    <element name="node">
+      <ref name="nt_common_attr"></ref>
+    <attribute name="type">
+      <value type="Name">motor</value>
+    </attribute>
+    <zeroOrMore>
+      <ref name="nt_motor-ausfuehrung"/>
+    </zeroOrMore>
+    </element>
+  </define>
+  
+  <define name="nt_baugruppe_props">
+    <element name="property">
+     
+      <!-- some special property -->
+      <ref name="dimensions"></ref>
+    </element>
+    
+    
+  </define>
+
+  <define name="nt_motor-ausfuehrung">
+    <element name="node">
+      <ref name="nt_common_attr"></ref>
+    <attribute name="type">
+      <value type="Name">motor-ausfuehrung</value>
+    </attribute>
+    </element>
+  </define>
+
+  <define name="node">
+    <element name="node">
+      <attribute name="id"/>
+      <attribute name="name"/>
+      <optional>
+        <attribute name="type">
+          <data type="NCName"/>
+        </attribute>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <ref name="node"/>
+          <element name="property">
+            <optional>
+              <attribute name="idref"/>
+            </optional>
+            <optional>
+              <attribute name="inheritable">
+                <data type="boolean"/>
+              </attribute>
+            </optional>
+            <attribute name="name">
+              <data type="NCName"/>
+            </attribute>
+            <zeroOrMore>
+              <element name="value">
+                <oneOrMore>
+                  <element name="slot">
+                    <optional>
+                      <attribute name="brand">
+                        <data type="NCName"/>
+                      </attribute>
+                    </optional>
+                    <attribute name="lang"/>
+                    <oneOrMore>
+                      <choice>
+                        <text/>
+                        <ref name="num"/>
+                        <ref name="unit"/>
+                        <element name="height">
+                          <ref name="num"/>
+                          <ref name="unit"/>
+                        </element>
+                        <element name="length">
+                          <ref name="num"/>
+                          <ref name="unit"/>
+                        </element>
+                        <element name="width">
+                          <ref name="num"/>
+                          <ref name="unit"/>
+                        </element>
+                      </choice>
+                    </oneOrMore>
+                  </element>
+                </oneOrMore>
+              </element>
+            </zeroOrMore>
+          </element>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="unit">
+    <element name="unit">
+      <data type="NCName"/>
+    </element>
+  </define>
+  <define name="num">
+    <element name="num">
+      <data type="integer"/>
+    </element>
+  </define>
+
+  <define name="dimensions">
+    <element name="property">
+      <optional>
+        <attribute name="idref"/>
+      </optional>
+      <optional>
+        <attribute name="inheritable">
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+      <attribute name="name">
+        <data type="NCName"/>
+      </attribute>
+      <zeroOrMore>
+        <element name="value">
+          <oneOrMore>
+            <element name="slot">
+              <optional>
+                <attribute name="brand">
+                  <data type="NCName"/>
+                </attribute>
+              </optional>
+              <attribute name="lang"/>
+              <oneOrMore>
+                <choice>
+                  <text/>
+                  <ref name="num"/>
+                  <ref name="unit"/>
+                  <element name="height">
+                    <ref name="num"/>
+                    <ref name="unit"/>
+                  </element>
+                  <element name="length">
+                    <ref name="num"/>
+                    <ref name="unit"/>
+                  </element>
+                  <element name="width">
+                    <ref name="num"/>
+                    <ref name="unit"/>
+                  </element>
+                </choice>
+              </oneOrMore>
+            </element>
+          </oneOrMore>
+        </element>
+      </zeroOrMore>
+    </element>
+  </define>
+
+
+</grammar>

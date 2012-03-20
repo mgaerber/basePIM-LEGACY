@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configs>
 <config type="irgendwie">
+    
     <propertyType schema="xy.xsd">
-        
+        <!-- Struktur fix -->
+        <value>
+            <slot>
+                <!-- Inhalt variabel -->
+            </slot>
+        </value>
     </propertyType>
     
     
-    <nodeType name="Motoren" version="">
+    
+    
+    
+    
+    <!-- Struktur fix -->
+    <nodeType version="">
+        <!-- ref  common attr -->
+        <ref></ref>
+        
+        <!-- einschränkung -->
+        <attribute name="type">
+            <value>Motoren</value>
+        </attribute>
+        
+        <!-- variabel -->
         <propertyType ref=""/>
         <propertyType ref=""/>
         <propertyType ref=""/>
@@ -14,12 +34,15 @@
         <propertyType ref=""/>
         
         <allowedChildNodes>
-            
+            <!-- variabel -->
         </allowedChildNodes>
     </nodeType>
 </config>
+    
+    
 
 <config type="schema">
+    
     
     
 </config>
