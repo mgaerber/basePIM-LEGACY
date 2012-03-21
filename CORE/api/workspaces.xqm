@@ -1,5 +1,5 @@
 module namespace api = "http://basepim.org/ws";
-declare namespace rest = "http://exquery.org/ns/rest/annotation/";
+declare namespace rest = "http://exquery.org/ns/restxq";
 import module namespace ws = "http://basepim.org/ws" at "../services/workspace-service.xqm";
 
 (: [XQST0108] No output declarations allowed in modules.

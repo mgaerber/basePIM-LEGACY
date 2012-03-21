@@ -1,5 +1,5 @@
 module namespace nodes = "http://basepim.org/nodes";
-declare namespace rest = "http://exquery.org/ns/rest/annotation/";
+declare namespace rest = "http://exquery.org/ns/restxq";
 
 (:~
   This function says hello to everyone visiting /say/hello/<NAME>
