@@ -11,4 +11,3 @@ declare
   function nodes:hello-world($w as xs:string){
     <strong>Hello { $w }</strong>
   };
-  
