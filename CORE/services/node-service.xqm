@@ -1,18 +1,22 @@
-module namespace nodes = "http://www.basex.org/myapp/nodes";
-import module namespace web="http://basex.org/lib/web";
-
-
+module namespace nodes = "http://basepim.org/nodes";
 
 (:~ the database instance, this should be refactored :)
-declare variable $nodes:db := db:open('ascherl-data');
-
+declare variable $nodes:db := <test></test>; (:db:open('ws_produkte'); :)
 (:~
     Gets a single product identified by its uuid
     @param $uuid
     @return the product <node />
 :)
-declare function nodes:get-product($uuid as xs:string) as element(node){
-    $nodes:db//node[@guid eq $uuid]
+declare function nodes:get-product($type as xs:string, $uuid as xs:string) as element(node){
+    let $db := db:open($type)
+   (: return $db//node[@id eq $uuid] :)
+    return $db
+    
+    (:<node>{
+            element {"type"} {$type},
+            element {"uuid"} {$uuid}
+           }</node>
+           :)
 }; 
 
 (:~
@@ -108,7 +112,7 @@ declare function nodes:get-props(
       map:new(
         for $lang in distinct-values($prop/value/slot/@lang)
         let $vals := $prop/value/slot[@lang = $lang]
-        let $sl := trace(string-join($vals), "VALs") 
+        let $sl := trace(string-join($vals), "VAL") 
         let $map :=  nodes:vals($vals)
         return map:entry(($lang, 'any')[1], $map)
       )
@@ -120,6 +124,6 @@ declare function nodes:get-props(
 };
 
 declare function nodes:vals($node){
-  $node
+  string-join($node, ", ")
 };
 

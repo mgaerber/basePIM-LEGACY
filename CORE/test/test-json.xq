@@ -15,7 +15,9 @@ declare function local:nodelist-to-json($nodes as element(node)*, $list-name as 
 	 || ']'
 };
 
+
 db:list()
+
 
 (:local:node-to-json(<node guid="272-d1e43053-341024-..." type="foo">
   <property name="name">
