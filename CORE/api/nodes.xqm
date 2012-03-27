@@ -31,7 +31,7 @@ declare
 	%rest:path("/hello/receive-name")
 	%rest:form-param("name", "{$name}")
 	%output:method("html5")
-function nodes:result($name) {
+function api:result($name) {
 	<html>
 	<head>
 		<title>Howdy ...</title>
