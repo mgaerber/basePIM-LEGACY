@@ -13,3 +13,11 @@ declare function ws:list() {
         return <workspace> { doc($db)//workspace/@* } </workspace>
        }</workspaces>
 };
+
+declare function ws:get($uuid){
+	1
+};
+
+declare function ws:get-n($name){
+	1
+};
