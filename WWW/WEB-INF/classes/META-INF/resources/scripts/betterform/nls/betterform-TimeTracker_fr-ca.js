@@ -1,0 +1,1 @@
+dojo.provide("betterform.nls.betterform-TimeTracker_fr-ca");dojo.provide("dijit.nls.loading");dijit.nls.loading._built=true;dojo.provide("dijit.nls.loading.fr_ca");dijit.nls.loading.fr_ca={"loadingState":"Chargement...","errorState":"Une erreur est survenue"};
