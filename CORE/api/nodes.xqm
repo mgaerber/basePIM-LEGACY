@@ -21,3 +21,26 @@ declare
 function api:get-node($type as xs:string, $uuid as xs:string){
    nodes:get-product($type, $uuid)
 };
+
+
+(:
+ : Receive name from input form.
+ :)
+declare    
+	%rest:POST
+	%rest:path("/hello/receive-name")
+	%rest:form-param("name", "{$name}")
+	%output:method("html5")
+function nodes:result($name) {
+	<html>
+	<head>
+		<title>Howdy ...</title>
+        </head>
+        <body>
+            <p>Howdy, {
+		if ($name eq "") then "lazy bro" else $name
+		}!
+	    </p>
+        </body>
+    </html>
+};

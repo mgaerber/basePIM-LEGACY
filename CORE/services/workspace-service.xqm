@@ -1,13 +1,5 @@
 module namespace ws = "http://basepim.org/ws";
 
-(:
-: Module Name:
-: Module Version:
-: Date:
-: Copyright
-
-:)
-
 (:~
  : Lists all available workspaces.
  :
@@ -29,5 +21,3 @@ declare function ws:get($uuid){
 declare function ws:get-n($name){
 	1
 };
-
-
