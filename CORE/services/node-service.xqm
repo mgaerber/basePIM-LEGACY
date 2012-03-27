@@ -9,14 +9,19 @@ declare variable $nodes:db := <test></test>; (:db:open('ws_produkte'); :)
 :)
 declare function nodes:get-product($type as xs:string, $uuid as xs:string) as element(node){
     let $db := db:open($type)
-   (: return $db//node[@id eq $uuid] :)
-    return $db
+    return $db//node[@id eq $uuid]
     
     (:<node>{
             element {"type"} {$type},
             element {"uuid"} {$uuid}
            }</node>
            :)
+}; 
+
+declare function nodes:get-product-by-name($type as xs:string, $name as xs:string) as element(node){
+    let $db := db:open($type)
+   return $db//node[@name eq $name]
+   
 }; 
 
 (:~

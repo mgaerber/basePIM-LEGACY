@@ -9,10 +9,10 @@ module namespace util = "http://basepim.org/util";
  : will be converted to
  :
  : <node>
-    <_attributes>
+    <attributes>
         <uuid>3445-aba44</uuid>
         <type>product</type>
-    </_attributes>
+    </attributes>
  : </node>
  :)
 declare function util:attr-to-elem($elem as item()) as item() {

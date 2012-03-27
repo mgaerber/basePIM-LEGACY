@@ -22,6 +22,14 @@ function api:get-node($type as xs:string, $uuid as xs:string){
    nodes:get-product($type, $uuid)
 };
 
+declare
+%rest:GET
+%rest:path("/ws/{$type}/node/n/{$name}")
+%rest:produces("application/xml")
+function api:get-node-by-name($type as xs:string, $name as xs:string){
+   nodes:get-product-by-name($type, $name)
+};
+
 
 (:
  : Receive name from input form.
