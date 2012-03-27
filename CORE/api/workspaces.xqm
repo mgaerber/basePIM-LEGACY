@@ -7,9 +7,6 @@ declare
 %rest:GET
 %rest:path("/ws-x")
 %rest:produces("application/xml")
-	%rest:GET
-	%rest:path("/ws")
-	%rest:produces("application/xml")
 function api:list-workspaces-x(){
        ws:list() 
 };
