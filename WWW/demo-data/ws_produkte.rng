@@ -12,12 +12,6 @@
     </choice>
   </start>
   
-  <!-- TODO: move to include file -->
-  <define name="nt_common_attr">
-    <attribute name="id"></attribute>
-    <attribute name="name"></attribute>
-  </define>
-
   <define name="ws_produkte">
     <element name="workspace">
       <attribute name="type">
@@ -44,22 +38,52 @@
   <define name="nt_motor">
     <element name="node">
       <ref name="nt_common_attr"></ref>
+    <!-- type definition -->
     <attribute name="type">
       <value type="Name">motor</value>
     </attribute>
+    <!-- properties -->
+    <ref name="nt_motor_props"></ref>
+    <!-- allowed child nodes -->
     <zeroOrMore>
       <ref name="nt_motor-ausfuehrung"/>
     </zeroOrMore>
     </element>
   </define>
   
-  <define name="nt_baugruppe_props">
+  <define name="nt_motor_props">
+    
     <element name="property">
-     
-      <!-- some special property -->
-      <ref name="dimensions"></ref>
+      <attribute name="name">
+        <value>bezeichnung</value>
+      </attribute>
+      <ref name="vt_string"></ref>
     </element>
     
+    <element name="property">
+      <attribute name="name">
+        <value>gewicht</value>
+      </attribute>
+      <ref name="vt_num_unit"></ref>
+    </element>
+    
+    <element name="property">
+      <attribute name="name">
+        <value>key-features</value>
+      </attribute>
+    </element>
+    
+    <element name="property">
+      <attribute name="name">
+        <value>dimensions</value>
+      </attribute>
+    </element>
+    
+    <element name="property">
+      <attribute name="name">
+        <value>Bild</value>
+      </attribute>
+    </element>
     
   </define>
 
@@ -71,128 +95,85 @@
     </attribute>
     </element>
   </define>
-
-  <define name="node">
-    <element name="node">
-      <attribute name="id"/>
-      <attribute name="name"/>
-      <optional>
-        <attribute name="type">
-          <data type="NCName"/>
-        </attribute>
-      </optional>
+  
+  <define name="vt_string">
+    <element name="value">
       <zeroOrMore>
-        <choice>
-          <ref name="node"/>
-          <element name="property">
-            <optional>
-              <attribute name="idref"/>
-            </optional>
-            <optional>
-              <attribute name="inheritable">
-                <data type="boolean"/>
-              </attribute>
-            </optional>
-            <attribute name="name">
-              <data type="NCName"/>
-            </attribute>
-            <zeroOrMore>
-              <element name="value">
-                <oneOrMore>
-                  <element name="slot">
-                    <optional>
-                      <attribute name="brand">
-                        <data type="NCName"/>
-                      </attribute>
-                    </optional>
-                    <attribute name="lang"/>
-                    <oneOrMore>
-                      <choice>
-                        <text/>
-                        <ref name="num"/>
-                        <ref name="unit"/>
-                        <element name="height">
-                          <ref name="num"/>
-                          <ref name="unit"/>
-                        </element>
-                        <element name="length">
-                          <ref name="num"/>
-                          <ref name="unit"/>
-                        </element>
-                        <element name="width">
-                          <ref name="num"/>
-                          <ref name="unit"/>
-                        </element>
-                      </choice>
-                    </oneOrMore>
-                  </element>
-                </oneOrMore>
-              </element>
-            </zeroOrMore>
-          </element>
-        </choice>
+       <element name="slot">
+         <ref name="st_common_attr"></ref>
+         <text/>
+       </element>
       </zeroOrMore>
     </element>
   </define>
-  <define name="unit">
-    <element name="unit">
-      <data type="NCName"/>
-    </element>
-  </define>
-  <define name="num">
-    <element name="num">
-      <data type="integer"/>
-    </element>
-  </define>
-
-  <define name="dimensions">
-    <element name="property">
-      <optional>
-        <attribute name="idref"/>
-      </optional>
-      <optional>
-        <attribute name="inheritable">
-          <data type="boolean"/>
-        </attribute>
-      </optional>
-      <attribute name="name">
-        <data type="NCName"/>
-      </attribute>
+  
+  <define name="vt_num_unit">
+    <element name="value">
       <zeroOrMore>
-        <element name="value">
-          <oneOrMore>
-            <element name="slot">
-              <optional>
-                <attribute name="brand">
-                  <data type="NCName"/>
-                </attribute>
-              </optional>
-              <attribute name="lang"/>
-              <oneOrMore>
-                <choice>
-                  <text/>
-                  <ref name="num"/>
-                  <ref name="unit"/>
-                  <element name="height">
-                    <ref name="num"/>
-                    <ref name="unit"/>
-                  </element>
-                  <element name="length">
-                    <ref name="num"/>
-                    <ref name="unit"/>
-                  </element>
-                  <element name="width">
-                    <ref name="num"/>
-                    <ref name="unit"/>
-                  </element>
-                </choice>
-              </oneOrMore>
-            </element>
-          </oneOrMore>
+      <element name="slot">
+        <ref name="st_common_attr"></ref>
+       <ref name="num_unit"></ref>
+      </element>
+      </zeroOrMore>
+    </element>
+  </define>
+  
+  
+  <define name="vt_width_height_length">
+    <element name="value">
+      <zeroOrMore>
+        <element name="slot">
+          <ref name="st_common_attr"></ref>
+          <element name="width">
+            <ref name="num_unit"></ref>
+          </element>
+          <element name="height">
+            <ref name="num_unit"></ref>
+          </element>
+          <element name="length">
+            <ref name="num_unit"></ref>
+          </element>
         </element>
       </zeroOrMore>
     </element>
   </define>
-
+  
+  <define name="num_unit">
+    <element name="num">
+      <text/>
+    </element>
+    <element name="unit">
+      <text/>
+    </element>
+  </define>
+  
+  <!-- TODO: include as file -->
+  
+  <!-- node attr -->
+  <define name="nt_common_attr">
+    <attribute name="id"></attribute>
+    <attribute name="name"></attribute>
+  </define>
+  <!-- property attr -->
+  <define name="pt_common_attr">
+    <attribute name="name"></attribute>
+    <optional>
+      <attribute name="inheritable"></attribute>
+    </optional>
+  </define>
+  <!-- value attr -->
+  <!-- <define name="vt_common_attr">
+    </define>-->
+  <!-- slot -->
+  <define name="st_common_attr">
+    <optional>
+      <attribute name="lang"></attribute>
+    </optional>
+    <optional>
+      <attribute name="brand"></attribute>
+    </optional>
+  </define>
+  
+  <!-- end include as file -->
 
 </grammar>
