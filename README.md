@@ -43,7 +43,7 @@ basePIM is licensed under [t.b.a.](http://www.opensource.org/licenses/alphabetic
 
 Conventions
 -----------
-
+```
 .
 ├── README.md  ....................................  this file
 ├── CORE  .........................................  business logic (as xquery modules)
@@ -56,3 +56,4 @@ Conventions
 │       └── test-json.xq
 ├── DATA  .........................................  basePIM databases
 `── WWW  ..........................................  web root
+```
