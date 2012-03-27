@@ -1,88 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app
-  xmlns="http://java.sun.com/xml/ns/javaee"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-  version="2.5">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<display-name>basePIM Web Services</display-name>
+	<description>providing you with superdata!</description>
+	<!-- betterFORM integration:: -->
+	<context-param>
+		<param-name>betterform.configfile</param-name>
+		<param-value>WEB-INF/betterform-config.xml</param-value>
+	</context-param>
+	<filter>
+		<filter-name>BetterFormFilter</filter-name>
+		<filter-class>de.betterform.agent.web.filter.XFormsFilter</filter-class>
+		<!-- <init-param>
+      <param-name>xforms.engine.webcontext</param-name>
+      <param-value>betterform</param-value>
+    </init-param>
+    <init-param>
+      <param-name>xforms.engine.servlet</param-name>
+      <param-value>/repeater</param-value>
+    </init-param>
+    <init-param>
+      <param-name>xforms.engine.resources</param-name>
+      <param-value>/SampleApp/forms/forward</param-value>
+    </init-param> -->
+	</filter>
+	<filter-mapping>
+		<filter-name>BetterFormFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--
+  de.betterform.agent.web.resources.ResourceServlet is responsible for loading
+  all CSS, Script, XSLT and image files that are used by betterFORM.
 
-  <display-name>basePIM Web Services</display-name>
-  <description>providing you with superdata!</description>
-
-  <!-- The following parameters may also be passed on as system properties: -->
-
-  <!-- Operation mode: by default, the value is "local": the servlets will
+  To turn caching off please the value of the init-param 'caching' to 'false'.
+  Otherwise caching will always be turned on and to see changes to resources
+  the Java VM needs to be restarted!
+  -->
+	<servlet>
+		<servlet-name>ResourceServlet</servlet-name>
+		<servlet-class>de.betterform.agent.web.resources.ResourceServlet</servlet-class>
+		<init-param>
+			<param-name>caching</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ResourceServlet</servlet-name>
+		<url-pattern>/bfResources/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Flux</servlet-name>
+		<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<!-- DEPRECATED -->
+		<!--
+  		This entry may be uncommented to use relative paths in the served html-forms. Remember change the
+  		betterform.forms.uri.relative parameter of XFormsServlet as well.
+          <init-param>
+              <param-name>activeReverseAjaxEnabled</param-name>
+              <param-value>true</param-value>
+          </init-param>
+  -->
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Flux</servlet-name>
+		<url-pattern>/Flux/*</url-pattern>
+	</servlet-mapping>
+	<!-- ::betterFORM integration -->
+	<!-- The following parameters may also be passed on as system properties: -->
+	<!-- Operation mode: by default, the value is "local": the servlets will
        access and store data locally using ${org.basex.path}. If "client" is
        specified, all operations are performed on a remote server instance. -->
-  <context-param>
-    <param-name>org.basex.mode</param-name>
-    <param-value>local</param-value>
-  </context-param>
-
-  <!-- Database user: by default, no value is specified, and the credentials
+	<context-param>
+		<param-name>org.basex.mode</param-name>
+		<param-value>local</param-value>
+	</context-param>
+	<!-- Database user: by default, no value is specified, and the credentials
        must be specified by the client. Note that it is a clear security risk to
        store user credentials in this file. -->
-  <context-param>
-    <param-name>org.basex.user</param-name>
-    <param-value></param-value>
-  </context-param>
-
-  <!-- Database password: by default, no value is specified, and the credentials
+	<context-param>
+		<param-name>org.basex.user</param-name>
+		<param-value/>
+	</context-param>
+	<!-- Database password: by default, no value is specified, and the credentials
        must be specified by the client. Note that it is a clear security risk to
        store user credentials in this file. -->
-  <context-param>
-    <param-name>org.basex.password</param-name>
-    <param-value></param-value>
-  </context-param>
-
-  <!-- All database main options (DBATH, HTTPPPATH, etc.) can be overwritten by
+	<context-param>
+		<param-name>org.basex.password</param-name>
+		<param-value/>
+	</context-param>
+	<!-- All database main options (DBATH, HTTPPPATH, etc.) can be overwritten by
        adding additional context-param elements and prefixing the name with
        "org.basex.". Relative paths will be prefixed with the servlet path.
   -->
-  <context-param>
-    <param-name>org.basex.dbpath</param-name>
-    <param-value>../DATA</param-value>
-  </context-param>
-  <context-param>
-    <param-name>org.basex.httppath</param-name>
-    <param-value>../CORE/api</param-value>
-  </context-param>
-  <context-param>
-    <param-name>org.basex.repopath</param-name>
-    <param-value>repo</param-value>
-  </context-param>
-  <context-param>
-    <param-name>org.basex.lang</param-name>
-    <param-value>English</param-value>
-  </context-param>
-
-  <!--  WebDAV Service (can be deactivated by removing this entry) -->
-  <servlet>
-    <servlet-name>WebDAV</servlet-name>
-    <servlet-class>org.basex.http.webdav.WebDAVServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>WebDAV</servlet-name>
-    <url-pattern>/webdav/*</url-pattern>
-  </servlet-mapping>
-
-  <!--  REST Service (can be deactivated by removing this entry) -->
-  <servlet>
-    <servlet-name>REST</servlet-name>
-    <servlet-class>org.basex.http.rest.RESTServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>REST</servlet-name>
-    <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>
-
-  <!--  RESTXQ Service (can be deactivated by removing this entry) -->
-  <servlet>
-    <servlet-name>RESTXQ</servlet-name>
-    <servlet-class>org.basex.http.restxq.RestXqServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>RESTXQ</servlet-name>
-    <url-pattern>/restxq/*</url-pattern>
-  </servlet-mapping>
-
+	<context-param>
+		<param-name>org.basex.dbpath</param-name>
+		<param-value>../DATA</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.basex.httppath</param-name>
+		<param-value>../CORE/api</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.basex.repopath</param-name>
+		<param-value>repo</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.basex.lang</param-name>
+		<param-value>English</param-value>
+	</context-param>
+	<!--  WebDAV Service (can be deactivated by removing this entry) -->
+	<servlet>
+		<servlet-name>WebDAV</servlet-name>
+		<servlet-class>org.basex.http.webdav.WebDAVServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WebDAV</servlet-name>
+		<url-pattern>/webdav/*</url-pattern>
+	</servlet-mapping>
+	<!--  REST Service (can be deactivated by removing this entry) -->
+	<servlet>
+		<servlet-name>REST</servlet-name>
+		<servlet-class>org.basex.http.rest.RESTServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>REST</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	<!--  RESTXQ Service (can be deactivated by removing this entry) -->
+	<servlet>
+		<servlet-name>RESTXQ</servlet-name>
+		<servlet-class>org.basex.http.restxq.RestXqServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RESTXQ</servlet-name>
+		<url-pattern>/restxq/*</url-pattern>
+	</servlet-mapping>
 </web-app>
