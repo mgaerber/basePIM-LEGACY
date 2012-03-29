@@ -15,21 +15,25 @@ module namespace util = "http://basepim.org/util";
     </attributes>
  : </node>
  :)
-declare function util:attr-to-elem($elem as item()) as item() {
+declare function util:attr-to-elem($elem as element(), $wrapper as xs:string ) as element() {
 
-    let $has-attr := exists($elem/@*)
+    element {name($elem)} {
     
-    return element {name($elem)} {
-    
-       <attributes>{
-                for $a in $elem/(@*)
-                    return 
-                        element { name($a) } { data($a)}
-       }</attributes>,
+    (if($wrapper ne '') then element {$wrapper}{util:atts-to-elems($elem/@*)}
+     else util:atts-to-elems($elem/@*)),
        $elem/text(),
       (
-           for $n in $elem/node()
-            return util:attr-to-elem($n)
+           for $n in $elem/*
+            return util:attr-to-elem($n, $wrapper)
        )
        }
 };
+
+declare function util:atts-to-elems($atts as attribute()*) as element()* {
+
+        for $a in $atts
+                    return 
+                        element { name($a) } { data($a)}
+};
+
+

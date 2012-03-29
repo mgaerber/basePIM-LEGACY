@@ -34,10 +34,42 @@ declare function nodes:get-nodes-for($workspace as xs:string) as element(node)+{
 		db:open($workspace)//node
 };
 
+(:
+: returns a single node (no children)
+: TODO: check no sequence is returned
+:)
 declare function nodes:get-product-by-name($type as xs:string, $name as xs:string) as element(node){
     let $db := db:open($type)
-   return $db//node[@name eq $name]
-   
+    let $node := $db//node[@name eq $name]
+    let $child-count := count($node/node)
+    return
+        <node>
+        {$node/@*, attribute {'children'}{$child-count},
+        $node/* except $node/node
+        }
+        </node>
+    (: return $node except $node/node :)
+}; 
+
+(:
+: returns a single node with list of direct children (no properties)
+: TODO: check no sequence is returned
+:)
+declare function nodes:get-product-meta-by-name($type as xs:string, $name as xs:string) as element(node){
+    let $db := db:open($type)
+    let $node := $db//node[@name eq $name]
+    let $child-count := count($node/node)
+    return
+        <node>
+        {$node/@*, attribute {'child-count'}{$child-count},
+        <children>
+            {for $child in $node/node
+            return <node>{$child/@*, (if($child/node) then attribute {'children'}{} else ())
+            }</node>}
+        </children>
+        }
+        </node>
+    (: return $node except $node/node :)
 }; 
 
 (:~
