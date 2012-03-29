@@ -80,6 +80,16 @@
 		<servlet-name>Flux</servlet-name>
 		<url-pattern>/Flux/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+      <servlet-name>inspector</servlet-name>
+      <servlet-class>de.betterform.agent.web.servlet.XFormsInspectorServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>inspector</servlet-name>
+      <url-pattern>/inspector/*</url-pattern>
+  </servlet-mapping>
+  
 	<!-- ::betterFORM integration -->
 	<!-- The following parameters may also be passed on as system properties: -->
 	<!-- Operation mode: by default, the value is "local": the servlets will
