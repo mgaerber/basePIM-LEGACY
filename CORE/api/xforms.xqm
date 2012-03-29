@@ -32,6 +32,12 @@ function xforms:edit($workspace as xs:string,
               </data>
            </xf:instance>
 					<xf:submission action="/restxq/xforms/dump" id="dump" method="post" />
+					{
+						switch($property)
+						case "dimensions" return tmpl:dimensions-bind()
+						default return ()
+						
+					}
         </xf:model>
      </head>
      <body>

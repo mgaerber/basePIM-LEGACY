@@ -12,7 +12,7 @@ xquery version "3.0";
 
 module namespace tmpl = "http://basepim.org/tmpl";
 declare namespace rest = "http://exquery.org/ns/restxq";
-
+declare namespace xf = "http://www.w3.org/2002/xforms";
 (: import module namespace xmldb = "http://basex.org/basePIM/xmldb" at "../services/db-service.xqm"; :)
 
 (:~
@@ -53,12 +53,20 @@ declare function tmpl:bezeichnung() as element(div) {
 
 	</div>
 };
+declare function tmpl:dimensions-bind(){
+	<xf:bind nodeset="property/value/slot/width/num" type="xs:integer" required="true()" constraint=". &gt; 0"/>,
+  <xf:bind nodeset="property/value/slot/height/num" type="xs:decimal" required="true()" constraint=". &gt; 0"/>,
+  <xf:bind nodeset="property/value/slot/length/num" type="xs:decimal" required="true()" constraint=". &gt; 0"/>
+  
+};
 (:~
  : Template for property "dimension".
  :)
 declare function tmpl:dimensions() as element(div) {
 
-  <div xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events">
+  <div 
+		xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema" >
 	<style>
 		label {{width:60px}}
 	</style>
