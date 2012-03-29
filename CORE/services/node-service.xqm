@@ -17,6 +17,22 @@ declare function nodes:get-product($type as xs:string, $uuid as xs:string) as el
            }</node>
            :)
 }; 
+declare function nodes:get-property-for($workspace as xs:string,
+	$produkt as xs:string,
+	$property as xs:string) as element(property){
+		db:open($workspace)//node[@name = $produkt]/property[@name = $property]
+};
+(:~
+ :	Returns all Property children for a node with a given name.
+ :
+:)
+declare function nodes:get-properties-for($workspace as xs:string,
+	$nodename as xs:string) as element(property)*{
+		db:open($workspace)//node[@name = $nodename]/property
+};
+declare function nodes:get-nodes-for($workspace as xs:string) as element(node)+{
+		db:open($workspace)//node
+};
 
 declare function nodes:get-product-by-name($type as xs:string, $name as xs:string) as element(node){
     let $db := db:open($type)
