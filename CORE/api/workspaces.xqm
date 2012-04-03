@@ -22,7 +22,7 @@ function api:list-workspaces(){
      <json objects="json workspace attributes" arrays="workspaces"> 
      <workspaces>{
         for $w in $ws/workspace
-            return util:attr-to-elem($w)
+            return util:attr-to-elem($w, "attributes")
      }</workspaces></json>
 
 };
