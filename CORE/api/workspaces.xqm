@@ -13,7 +13,7 @@ function api:list-workspaces-x(){
 
 declare
 	%rest:GET
-	%rest:path("/ws-j")
+	%rest:path("/ws")
 	%rest:produces("application/json")
 	%output:method("json")
 function api:list-workspaces(){
@@ -22,7 +22,7 @@ function api:list-workspaces(){
      <json objects="json workspace attributes" arrays="workspaces"> 
      <workspaces>{
         for $w in $ws/workspace
-            return util:attr-to-elem($w, 'attributes')
+            return util:attr-to-elem($w, "attributes")
      }</workspaces></json>
 
 };

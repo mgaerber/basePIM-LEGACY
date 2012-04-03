@@ -16,7 +16,25 @@ declare function nodes:get-product($type as xs:string, $uuid as xs:string) as el
             element {"uuid"} {$uuid}
            }</node>
            :)
-}; 
+};
+(:~
+ : Returns a map containing all available languages for any given node’s properties.
+ : The map contains the language as its key and the number of properties with a given language
+ : as its value.
+ : 
+:)
+declare function nodes:get-languages-for($node) as element(lang)+{
+ let $langs :=
+    for $val in $node/descendant-or-self::*/@lang 
+    let $langs := fn:tokenize($val, " ")
+    return
+        for $lang in $langs
+        return element { "lang" } { $lang }
+   return for $lang in $langs
+   group by $l := $lang/text()
+   return element { "lang" }
+    { (attribute { "count" } { fn:count($lang) }, $l) }
+};
 declare function nodes:get-property-for($workspace as xs:string,
 	$produkt as xs:string,
 	$property as xs:string) as element(property){
