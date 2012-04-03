@@ -256,11 +256,14 @@
 				
 				var pane = registry.byId("id_"+object.id);
 				
+				/*content: "<h4>" + object.name + "</h4>" */
 				if(pane == undefined){
 					pane = new ContentPane({
 						id: "id_"+object.id,
 						title: object.name,
-						content: "<h4>" + object.name + "</h4>"
+						content: '<iframe src="/restxq/xforms/grid-edit/ws_produkte/'+object.name+'" width="100%" height="100%"></iframe>'
+						/*href: "/restxq/xforms/grid-edit/ws_produkte/Powermotor" */
+						
 					});
 					registry.byId("contentTabs").addChild(pane);
 					}else {
