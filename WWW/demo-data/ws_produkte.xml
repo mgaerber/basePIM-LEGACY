@@ -1,116 +1,106 @@
 <?xml version="1.0"?>
 <?xml-model href="ws_produkte.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <workspace type="produkte">
-  
   <!-- Basis Struktur
     baugruppe
      - motor
        - motor-ausfuehrung
   -->
-  
-    <node name="Motoren" type="baugruppe" id="b072caad-3a30-4e72-9694-ec9ebf198a7d">
-   
-      <node name="Powermotor" type="motor" id="3989e517-6fc4-4018-b10d-7e3506561e42">
-        <!-- different slots for languages and brands, "any" as wildcard -->
-
+  <node name="Motoren" type="baugruppe" id="b072caad-3a30-4e72-9694-ec9ebf198a7d">
+    <node name="Powermotor" type="motor" id="3989e517-6fc4-4018-b10d-7e3506561e42">
+      <!-- different slots for languages and brands, "any" as wildcard -->
+      <property name="bezeichnung">
+        <value>
+          <slot lang="de" brand="any" id="a319ae44-4380-4634-9564-b5da87fc160b">Motor 1.6</slot>
+          <slot lang="fr" brand="citroen" id="a3518775-8930-4537-abb2-d72eb40f96d8">Moteur 1.6</slot>
+        </value>
+      </property>
+      <property name="gewicht">
+        <!-- value + unit -->
+        <value>
+          <slot lang="any" id="cee6bef9-7f78-4dc3-a7aa-a156161fbe59">
+            <num>123</num>
+            <unit>kg</unit>
+          </slot>
+        </value>
+      </property>
+      <property name="key-features" inheritable="true">
+        <!-- multiple values -->
+        <value>
+          <slot lang="en" id="e15a53f6-96e4-4eb4-8035-253f62d34de7">efficient</slot>
+          <slot lang="de" id="65572d98-532f-484e-8e78-75fef730a01e">effizient</slot>
+        </value>
+        <value>
+          <slot lang="en" id="a85f8cbb-6255-4176-993a-ffff810dc4bf">clean</slot>
+        </value>
+      </property>
+      <property name="dimensions">
+        <value>
+          <slot lang="any" id="2ee57faa-bde5-49a4-81ef-aa1b30a9e637">
+            <width>
+              <num>100</num>
+              <unit>mm</unit>
+            </width>
+            <height>
+              <num>500</num>
+              <unit>mm</unit>
+            </height>
+            <length>
+              <num>100</num>
+              <unit>mm</unit>
+            </length>
+          </slot>
+        </value>
+      </property>
+      <property name="Bild" idref="171227e0-0f7d-11e1-be50-0800200c9a66" inheritable="true"/>
+      <node name="Variante Luxus" type="motor-ausfuehrung" id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+        <!-- key-features werden überschrieben -> muss ins Schema -->
         <property name="bezeichnung">
           <value>
-            <slot lang="de en" brand="any">Motor 1.6</slot>
-            <slot lang="fr" brand="citroen">Moteur 1.6</slot>
+            <slot lang="de" id="3234cb13-9266-4cc5-80db-442dcec76779">Motor 1.7</slot>
+            <slot lang="fr" brand="citroen" id="73457461-31d4-40ed-88fa-5ee2b0e23ea5">Moteur 1.7</slot>
           </value>
         </property>
-        <property name="gewicht">
-          <!-- value + unit -->
+        <property name="art-nr">
           <value>
-            <slot lang="any">
-              <num>123</num>
-              <unit>kg</unit>
-            </slot>
+            <slot lang="any" id="35004ea1-c919-44bf-86c4-48c386dc3d0b">123000-7</slot>
           </value>
         </property>
-        <property name="key-features" inheritable="true">
+        <property name="price">
+          <value>
+            <slot lang="any" id="c81ac124-5184-45b3-ab29-441221be6a53">13000</slot>
+          </value>
+        </property>
+        <property name="Bild" idref="11111111-0f7d-11e1-be50-0800200c9a66" inheritable="true"/>
+      </node>
+      <node name="Variante Standard" type="motor-ausfuehrung" id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+        <!-- key-features werden überschrieben -> muss ins Schema für "motor-ausfuehrung" -->
+        <property name="bezeichnung">
+          <value>
+            <slot lang="de" id="0f305788-a0f4-4efd-b6f4-c220a1a8ac22">Motor 1.7</slot>
+            <slot lang="fr" brand="citroen" id="05b03bae-250f-43aa-8ed6-95a9ea8f9f6d">Moteur 1.7</slot>
+          </value>
+        </property>
+        <property name="art-nr">
+          <value>
+            <slot lang="any" id="6b235563-4f78-4686-ac36-679dd89645db">123000-7</slot>
+          </value>
+        </property>
+        <property name="price">
+          <value>
+            <slot lang="any" id="a4627c9d-ad86-431f-858d-03ab0dd9ff46">13000</slot>
+          </value>
+        </property>
+        <property name="key-features">
           <!-- multiple values -->
           <value>
-            <slot lang="en">efficient</slot>
-            <slot lang="de">effizient</slot>
+            <slot lang="de" id="7c93f7d2-19c2-4033-a4e8-09e10d50d00b">standard</slot>
           </value>
           <value>
-            <slot lang="en">clean</slot>
+            <slot lang="en" id="16976c86-5121-41b4-94b7-16af7abc0785">clean</slot>
           </value>
         </property>
-        <property name="dimensions">
-          <value>
-            <slot lang="any">
-              <width>
-                <num>100</num>
-                <unit>mm</unit>
-              </width>
-              <height>
-                <num>500</num>
-                <unit>mm</unit>
-              </height>
-              <length>
-                <num>100</num>
-                <unit>mm</unit>
-              </length>
-            </slot>
-          </value>
-        </property>
-        <property name="Bild" idref="171227e0-0f7d-11e1-be50-0800200c9a66" inheritable="true"/>
-        
-        <node name="Variante Luxus" type="motor-ausfuehrung"
-          id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
-          <!-- key-features werden überschrieben -> muss ins Schema -->
-          <property name="bezeichnung">
-            <value>
-              <slot lang="de">Motor 1.7</slot>
-              <slot lang="fr" brand="citroen">Moteur 1.7</slot>
-            </value>
-          </property>
-          <property name="art-nr">
-            <value>
-              <slot lang="any">123000-7</slot>
-            </value>
-          </property>
-          <property name="price">
-            <value>
-              <slot lang="any">13000</slot>
-            </value>
-          </property>
-          
-          <property name="Bild" idref="11111111-0f7d-11e1-be50-0800200c9a66" inheritable="true"/>
-        </node>
-        
-        <node name="Variante Standard" type="motor-ausfuehrung"
-          id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
-          <!-- key-features werden überschrieben -> muss ins Schema für "motor-ausfuehrung" -->
-          <property name="bezeichnung">
-            <value>
-              <slot lang="de">Motor 1.7</slot>
-              <slot lang="fr" brand="citroen">Moteur 1.7</slot>
-            </value>
-          </property>
-          <property name="art-nr">
-            <value>
-              <slot lang="any">123000-7</slot>
-            </value>
-          </property>
-          <property name="price">
-            <value>
-              <slot lang="any">13000</slot>
-            </value>
-          </property>
-          <property name="key-features">
-            <!-- multiple values -->
-            <value>
-              <slot lang="de en">standard</slot>
-            </value>
-            <value>
-              <slot lang="en">clean</slot>
-            </value>
-          </property>
-        </node>
-      
       </node>
     </node>
-  </workspace>
+  </node>
+</workspace>
