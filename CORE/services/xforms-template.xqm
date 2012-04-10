@@ -26,6 +26,10 @@ declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, 
           <xf:submission action="/restxq/xforms/dump" id="dump" method="post" />
           {$bindings}
         </xf:model>
+			  <style>
+			    label {{width:160px}}
+			  </style>
+
      </head>
      <body>
      {$content}
@@ -39,6 +43,38 @@ declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, 
   
   
 };
+declare function tmpl:path-to-slot($child as node()){
+	string-join($child/ancestor-or-self::*/name(.)[not(. = ("value", "node", "property", "workspace", "slot"))], "/")
+};
+(:~
+ : Creates a generic edit template
+ :
+ :
+:)
+declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) as element(div){
+  <div xmlns:xf="http://www.w3.org/2002/xforms">
+	{
+		for $child in $slot//(@*, *)
+
+		let $path := typeswitch($child)
+			case element(*) return tmpl:path-to-slot($child)
+			case attribute(*) return tmpl:path-to-slot($child) || "/@" || name($child)
+			default return ()
+
+		where typeswitch($child)
+			case element(*) return $child/text()
+			case attribute(*) return fn:true()
+			default return ()
+
+		return <div>
+			<xf:input ref="instance('ii_{$uuid}')/{$path}">
+				<xf:label>{$path}</xf:label>
+			</xf:input>
+		</div>
+		}
+  </div>
+};
+
 (:~
  : Template for property "gewicht".
  :)
@@ -61,6 +97,7 @@ declare function tmpl:edit-gewicht($uuid as xs:string) as element(div){
   </div>
   </div>
 };
+
 (:~
  : Template for property "gewicht".
  :)
@@ -102,9 +139,6 @@ declare function tmpl:bezeichnung-bind($uuid as xs:string) as empty-sequence(){
 declare function tmpl:edit-dimensions($uuid as xs:string) as element(div) {
 
   <div>
-  <style>
-    label {{width:60px}}
-  </style>
   <div>
    <xf:input ref="instance('ii_{$uuid}')/width/num">
      <xf:label>Width </xf:label>
