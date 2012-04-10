@@ -12,8 +12,8 @@ import module namespace nodes = "http://basepim.org/nodes" at "../services/node-
 :)
 declare
   %rest:path("/xforms/edit-slot/{$workspace}/{$uuid}")
-  %output:method("xhtml")
-function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as element() {
+	%rest:produces("application/xml")
+function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()+ {
      let $slot  := nodes:get-slot-by-id($workspace, $uuid)
 		 let $prop  := $slot/ancestor::property
      let $binds :=

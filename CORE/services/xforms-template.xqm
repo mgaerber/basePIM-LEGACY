@@ -16,8 +16,11 @@ declare namespace xf = "http://www.w3.org/2002/xforms";
 (: import module namespace xmldb = "http://basex.org/basePIM/xmldb" at "../services/db-service.xqm"; :)
 
 declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, $content as element()){
-  <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
+(	<?xml-stylesheet href="/xsltforms/xsltforms.xsl" type="text/xsl"?>,
+	<?xsltforms-options debug="yes"?>,
+	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
      <head>
+<link rel="stylesheet" href="/xsltforms/xsltforms.css" type="text/css" media="screen" title="XSLTForms" charset="utf-8" />
         <title>Hello World in XForms</title>
         <xf:model>
            <xf:instance id="ii_{$model/@id}" xmlns="">
@@ -40,7 +43,7 @@ declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, 
       </xf:submit>
      </body>
   </html>
-  
+)  
   
 };
 declare function tmpl:path-to-slot($child as node()){

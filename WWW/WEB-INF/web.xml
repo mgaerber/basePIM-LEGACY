@@ -37,7 +37,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>BetterFormFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/disabled/*</url-pattern>
 	</filter-mapping>
 	<!--
   de.betterform.agent.web.resources.ResourceServlet is responsible for loading
