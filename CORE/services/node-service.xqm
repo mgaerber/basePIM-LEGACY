@@ -17,6 +17,10 @@ declare function nodes:get-product($type as xs:string, $uuid as xs:string) as el
            }</node>
            :)
 };
+declare function nodes:get-slot-by-id($workspace as xs:string,
+		$uuid as xs:string) as element(slot){
+	db:open($workspace)//slot[@id = $uuid]
+};
 (:~
  : Returns a map containing all available languages for any given node’s properties.
  : The map contains the language as its key and the number of properties with a given language
