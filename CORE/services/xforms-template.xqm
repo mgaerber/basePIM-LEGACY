@@ -1,13 +1,3 @@
-(: <p>Type your first name in the input box. <br/>
-  If you are running XForms, the output should be displayed in the output area.</p>   
-   <xf:input ref="PersonGivenName" incremental="true">
-      <xf:label>Please enter your first name: </xf:label>
-   </xf:input>
-   <br />
-   <xf:output value="concat('Hello ', PersonGivenName, '. We hope you like XForms!')">
-      <xf:label>Output: </xf:label>
-   </xf:output>
-:)
 xquery version "3.0";
 
 module namespace tmpl = "http://basepim.org/tmpl";
