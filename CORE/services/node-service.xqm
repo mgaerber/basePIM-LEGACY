@@ -18,8 +18,8 @@ declare function nodes:get-product($type as xs:string, $uuid as xs:string) as el
            :)
 };
 declare function nodes:get-slot-by-id($workspace as xs:string,
-		$uuid as xs:string) as element(slot){
-	db:open($workspace)//slot[@id = $uuid]
+    $uuid as xs:string) as element(slot){
+  db:open($workspace)//slot[@id = $uuid]
 };
 (:~
  : Returns a map containing all available languages for any given node’s properties.
@@ -40,20 +40,20 @@ declare function nodes:get-languages-for($node) as element(lang)+{
     { (attribute { "count" } { fn:count($lang) }, $l) }
 };
 declare function nodes:get-property-for($workspace as xs:string,
-	$produkt as xs:string,
-	$property as xs:string) as element(property){
-		db:open($workspace)//node[@name = $produkt]/property[@name = $property]
+  $produkt as xs:string,
+  $property as xs:string) as element(property){
+    db:open($workspace)//node[@name = $produkt]/property[@name = $property]
 };
 (:~
- :	Returns all Property children for a node with a given name.
+ :  Returns all Property children for a node with a given name.
  :
 :)
 declare function nodes:get-properties-for($workspace as xs:string,
-	$nodename as xs:string) as element(property)*{
-		db:open($workspace)//node[@name = $nodename]/property
+  $nodename as xs:string) as element(property)*{
+    db:open($workspace)//node[@name = $nodename]/property
 };
 declare function nodes:get-nodes-for($workspace as xs:string) as element(node)+{
-		db:open($workspace)//node
+    db:open($workspace)//node
 };
 
 (:
@@ -101,8 +101,8 @@ declare function nodes:get-product-meta-by-name($type as xs:string, $name as xs:
 :)
 declare function nodes:flatten-product($prod as element(node)) as map(*){
     let $ids := 
-	   (for $id in 
-	       $nodes:db//node[@guid = $prod/@guid]/ancestor::*/@guid
+     (for $id in 
+         $nodes:db//node[@guid = $prod/@guid]/ancestor::*/@guid
         return string($id), $prod/@guid)
     let $ws := $prod/ancestor::workspace
     return nodes:flatten($ws, $ids)($prod/@guid)
@@ -114,8 +114,8 @@ declare function nodes:flatten-product($prod as element(node)) as map(*){
     @return a map() containing all products with their properties
 :)
 declare function nodes:flatten(
-	$ws as element(workspace)) as map(*){
-	nodes:flatten($ws, (""))
+  $ws as element(workspace)) as map(*){
+  nodes:flatten($ws, (""))
 };
 (:~
 
@@ -141,23 +141,23 @@ declare function nodes:flatten(
 ) as map(*) {
     (: let $trace := trace(( $pr/@guid),"Products") :)
     
-	  let $props := map:new(($props, nodes:get-props($pr))),
-	     $prods2 := map:new((
-	       $prods,
-	       map:entry($pr/@guid,
-	         map{
-	           'name':=$pr/@name,
-	           'type':=$pr/@type,
-	           'properties':=$props
-	         }
-	       )
-	     ))
-	  return fold-left(
-	      nodes:flatten(?, ?, $props, tail($filter) (: - 1 :)),
-	      $prods2,
-	      if(head($filter)) then $pr/node[@guid eq head($filter)]
-	      else $pr/node
-	    )
+    let $props := map:new(($props, nodes:get-props($pr))),
+       $prods2 := map:new((
+         $prods,
+         map:entry($pr/@guid,
+           map{
+             'name':=$pr/@name,
+             'type':=$pr/@type,
+             'properties':=$props
+           }
+         )
+       ))
+    return fold-left(
+        nodes:flatten(?, ?, $props, tail($filter) (: - 1 :)),
+        $prods2,
+        if(head($filter)) then $pr/node[@guid eq head($filter)]
+        else $pr/node
+      )
 };
 (:~
     Constructs the properties Map including a nodes referenced properties.
