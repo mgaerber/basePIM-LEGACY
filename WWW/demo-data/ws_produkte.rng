@@ -167,6 +167,9 @@
   <!-- slot -->
   <define name="st_common_attr">
     <optional>
+      <attribute name="id"></attribute>
+    </optional>
+    <optional>
       <attribute name="lang"></attribute>
     </optional>
     <optional>

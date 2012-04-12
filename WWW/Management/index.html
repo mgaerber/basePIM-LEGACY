@@ -6,50 +6,14 @@
 
     	<!-- style + demo .css -->
     	<style>
-    			/*start demo.css */
-				* {
-				    outline: none !important;
-				}
-				
-				body {
-				    margin: 0;
-				    padding: 2em;
-				    font-family: Lucida Sans,Lucida Grande,Arial !important;
-				    font-size: 13px !important;
-				    background: white;
-				    color: #333;
-				}
-				
-				button {
-					-webkit-transition: background-color 0.2s linear;
-					border-radius:4px;
-					-moz-border-radius: 4px 4px 4px 4px;
-					-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
-					background-color: #E4F2FF;
-					background-image: url("http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dijit/themes/claro/form/images/button.png");
-					background-position: center top;
-					background-repeat: repeat-x;
-					border: 1px solid #769DC0;
-					padding: 2px 8px 4px;
-					font-size:1em;
-				}
-				
-				button:hover {
-					background-color: #AFD9FF;
-					color: #000000;
-				}
-				
-				h1 {
-					font-size:1.5em;
-				}
-				
-    			/* Any demo specific styling needed for this tutorial only */
-				html, body {
-				    height: 100%;
-				    margin: 0;
-				    overflow: hidden;
-				    padding: 0;
-				}
+
+    			html, body { 
+	    			height: 100%; 
+	    			width: 100%; 
+	    			padding: 0; 
+	    			border: 0;
+	    			/*overflow: hidden;*/
+    			}
 				
 				#appLayout {
 				    height: 100%;
@@ -59,92 +23,26 @@
 				}
 				
 				.claro .demoLayout .edgePanel {
-				    background-color: #d0e9fc;
+				   /* background-color: #d0e9fc; */
 				}
-				
-				#viewsChart {
-					width: 550px;
-					height: 550px;
-				}
-				
-			
 			
     	</style>
-    	<link rel="stylesheet"
-    		href="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dijit/themes/claro/claro.css"
+   	<link rel="stylesheet"
+    		href="http://ajax.googleapis.com/ajax/libs/dojo/1.7.2/dijit/themes/claro/claro.css"
     		media="screen" />
-    	<!-- isDebug: true -->
-    	<!-- -->
-    	<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dojo/dojo.js"
-				data-dojo-config="isDebug: true, async: true">
-		</script>
     	
-    	<!--<script>
-    			require(["dojo/on", "dojo/dom", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dojo/domReady!"],
-			function(on, dom, registry, BorderContainer, TabContainer, ContentPane){
-				function addTab(name) {
-				var pane = new ContentPane({
-					title: name,
-					content: "<h4>" + name + "</h4>"
-				});
-				registry.byId("contentTabs").addChild(pane);
-			}
-
-				// create the BorderContainer and attach it to our appLayout div
-				var appLayout = new BorderContainer({
-					design: "headline"
-				}, "appLayout");
-
-
-				// create the TabContainer
-				var contentTabs = new TabContainer({
-					region: "center",
-					id: "contentTabs",
-					tabPosition: "bottom",
-					"class": "centerPanel",
-					href: "contentCenter.html"
-				})
-
-				// add the TabContainer as a child of the BorderContainer
-				appLayout.addChild( contentTabs );
-
-				// create and add the BorderContainer edge regions
-				appLayout.addChild(
-					new ContentPane({
-						region: "top",
-						"class": "edgePanel",
-						content: "Header content (top)"
-					})
-				)
-				appLayout.addChild(
-					new ContentPane({
-						region: "left",
-						id: "leftCol", "class": "edgePanel",
-						content: "Sidebar content (left)",
-						splitter: true
-					})
-				);
-
-				// Add initial content to the TabContainer
-				contentTabs.addChild(
-					new ContentPane({
-						title: "Start"
-					}, "startContent")
-				);
-
-				var tabCounter = 1;
-				on(dom.byId("createTabBtn"), "click", function(evt){
-					addTab("Tab " + (++tabCounter));
-				});
-
-				// start up and do layout
-				appLayout.startup();
-			});
-    	</script>-->
+    	<!--<link rel="stylesheet" href="css/themes/claro/claro.css" media="screen" />-->
+    	
+    	<!-- isDebug: true -->
+  
+    	<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js"
+				data-dojo-config="isDebug: true, async: true">
+    	</script>
+    	
     	 <script>
 			
-			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query"], 
-			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, JsonRest, Observable, Tree, dndSource, query) {
+			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dijit/Dialog", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query"], 
+			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, JsonRest, Observable, Tree, dndSource, query) {
 				
 				parser.parse();
 				
@@ -152,7 +50,8 @@
 				
 				workspace = JsonRest({
 					//target:"data/",
-					target:"/restxq/ws/ws_produkte/nodej-meta/n/",
+					//target:"/restxq/ws/ws_produkte/nodej-meta/n/",
+					target:"/restxq/ws/ws_bootsmotoren/nodej-meta/n/",
 					mayHaveChildren: function(object){
 						// see if it has a children property
 						return "children" in object
@@ -173,7 +72,9 @@
 					},
 					getRoot: function(onItem, onError){
 						// get the root object, we will do a get() and callback the result
-						this.get("Motoren").then(onItem, onError);
+						//this.get("Motoren").then(onItem, onError);
+						this.get("Bootsmotoren").then(onItem, onError);
+						
 					},
 					getLabel: function(object){
 						// just get the name
@@ -216,6 +117,7 @@
 						return JsonRest.prototype.remove.apply(this, arguments);
 					}
 				});
+				
 				tree = new Tree({
 					model: workspace,
 					dndController: dndSource
@@ -256,12 +158,18 @@
 				
 				var pane = registry.byId("id_"+object.id);
 				
-				/*content: "<h4>" + object.name + "</h4>" */
+				/*content: "<h4>" + object.name + "</h4>", */
+    	 		//content: '<iframe src="/restxq/xforms/grid-edit/ws_produkte/'+object.name+'" width="100%" height="100%"></iframe>',
 				if(pane == undefined){
 					pane = new ContentPane({
 						id: "id_"+object.id,
 						title: object.name,
-						content: '<iframe src="/restxq/xforms/grid-edit/ws_produkte/'+object.name+'" width="100%" height="100%"></iframe>'
+						content: "<h4>" + object.name + "</h4>",
+    	 	  			closable: true,
+            			onClose: function(){
+               				// confirm() returns true or false, so return that.
+               				return confirm("Do you really want to Close this?");
+           					 }
 						/*href: "/restxq/xforms/grid-edit/ws_produkte/Powermotor" */
 						
 					});
@@ -270,11 +178,32 @@
 					 registry.byId("contentTabs").selectChild(pane);
 					}
 					
-					}, true);		
+					}, true);	
+					
+						/*scope ? */
+				showDialog = function() {
+					registry.byId("propDialog").show();
+				}
+				// Hide the dialog
+				hideDialog = function() {
+					registry.byId("PropDialog").hide();
+				}
+			
 				
 			}); /* end ready() */
 		}); 
-		</script>
+		
+	
+    	 </script>
+    	<!--<script>
+    		//need to destroy widgets after removing
+    		destroyRecursive();
+    		
+    		//watch tab changes
+    		myTabContainer.watch("selectedChildWidget", function(name, oval, nval){
+    			console.log("selected child changed from ", oval, " to ", nval);
+			});
+    	</script>-->
     </head>
     <body class="claro">
     	<div id="appLayout" class="demoLayout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
@@ -286,15 +215,51 @@
     			</div>
     			<div data-dojo-type="dijit.layout.ContentPane" title="Group Two">
     				<h4>Group 2 Content</h4>
-    			</div>
-    			<div data-dojo-type="dijit.layout.ContentPane" title="Long Tab Label for this One">
-    				<h4>Group 3 Content</h4>
-    			</div>
-    			-->
+    				</div>-->
+    			
+    			
+    			<!--<div data-dojo-type="dijit.layout.ContentPane" title="Test Panel">
+    				<h4>Dialog Test</h4>
+    				
+    				<div class="dijitHidden">
+    					<!-\- dialog that gets its content via ajax, uses loading message -\->
+    					<div data-dojo-type="dijit.Dialog" style="width:600px;" id="propDialog">
+    						<!-\-<p>some content</p>-\->
+    					<!-\-	<iframe src="http://localhost:8984/restxq/xforms/edit/ws_produkte/Powermotor/dimensions" width="100%" height="100%"></iframe>-\->
+    						<!-\-
+    						<iframe src="/restxq/xforms/edit-slot/ws_produkte/2ee57faa-bde5-49a4-81ef-aa1b30a9e637" width="100%" height="100%"></iframe>
+    						-\->
+    					</div>
+    				</div>
+    				
+    				<table style="border: solid 1px grey;">
+    					<thead>
+    						<th>
+    							Merkmal
+    						</th>
+    						<th>
+    							Wert
+    						</th>
+    					</thead>
+    					<tbody>
+    						<tr>
+    							<td>Bezeichnung</td>
+    							<td onclick="showDialog();">XYZ Lorem Ipsum</td>
+    						</tr>
+    						<tr>
+    							<td>Farbe</td>
+    							<td onclick="showDialog();">blau</td>
+    						</tr>
+    					</tbody>
+    					
+    				</table>
+    	</div> <!-\- end Test Panel -\->-->
+    	
     			
     		</div>
     		<div class="edgePanel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">Header content (top)</div>
     		<div id="leftCol" class="edgePanel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'left', splitter: true">
+    			
     			<div id="tree"></div>
     			<!-- <p>
     				<button id="add-new-child">Add new child to selected item</button>
