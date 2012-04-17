@@ -118,7 +118,6 @@
     </element>
   </define>
   
-  
   <define name="vt_width_height_length">
     <element name="value">
       <zeroOrMore>

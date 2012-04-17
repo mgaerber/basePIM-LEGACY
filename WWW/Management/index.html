@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Tree</title>
+        <title>Index</title>
 
     	<!-- style + demo .css -->
     	<style>
@@ -12,7 +12,7 @@
 	    			width: 100%; 
 	    			padding: 0; 
 	    			border: 0;
-	    			/*overflow: hidden;*/
+	    			overflow: hidden;
     			}
 				
 				#appLayout {
@@ -41,8 +41,12 @@
     	
     	 <script>
 			
-			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dijit/Dialog", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query"], 
-			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, JsonRest, Observable, Tree, dndSource, query) {
+			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dijit/Dialog", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query", 
+			"dojox/grid/DataGrid",
+			"dojo/store/Memory",
+			"dojo/data/ObjectStore", "dojo/_base/xhr], 
+			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, JsonRest, Observable, Tree, dndSource, query,
+			DataGrid, Memory, ObjectStore, xhr) {
 				
 				parser.parse();
 				
@@ -156,7 +160,10 @@
 				
 				tree.on("click", function(object){	
 				
-				var pane = registry.byId("id_"+object.id);
+				var pane = registry.byId('pane_grid');
+				createGrid(object.id);
+				
+				//var pane = registry.byId("id_"+object.id);
 				
 				/*content: "<h4>" + object.name + "</h4>", */
     	 		//content: '<iframe src="/restxq/xforms/grid-edit/ws_produkte/'+object.name+'" width="100%" height="100%"></iframe>',
@@ -188,6 +195,30 @@
 				hideDialog = function() {
 					registry.byId("PropDialog").hide();
 				}
+				
+			/*	createGrid = function(id){
+				
+					xhr.get({
+					url: "http://localhost:8984/restxq/ws/ws_bootsmotoren/n/36088-d1e365206-346297/slots.json",
+					handleAs: "json"
+				}).then(function(data){
+					store = new Memory({ data: data.items });
+					dataStore = new ObjectStore({ objectStore: store });
+	
+					grid = new DataGrid({
+						store: dataStore,
+						query: { name: "*" },
+						structure: [
+							{ name: "Name", field: "name", width: "84px" },
+							{ name: "Slot DE", field: "slot_de", width: "84px" },
+							{ name: "Slot DE ID", field: "slot_de_id", width: "70px" }
+						]
+					}, "grid");
+					
+					// since we created this grid programmatically, call startup to render it
+					grid.startup();
+				
+				}*/
 			
 				
 			}); /* end ready() */
@@ -209,15 +240,11 @@
     	<div id="appLayout" class="demoLayout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
     		<div id="contentTabs" class="centerPanel" data-dojo-type="dijit.layout.TabContainer" data-dojo-props="region: 'center', tabPosition: 'bottom'">
     			
-    		<!--	<div data-dojo-type="dijit.layout.ContentPane" title="Group 1">
-    				<h4>Group 1 Content</h4>
-    				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    			</div>
-    			<div data-dojo-type="dijit.layout.ContentPane" title="Group Two">
-    				<h4>Group 2 Content</h4>
-    				</div>-->
-    			
-    			
+    		<div data-dojo-type="dijit.layout.ContentPane" id="pane_grid" title="Grid">
+    				<h4>Grid</h4>
+    				<div id="grid"></div>
+    		</div>
+ 
     			<!--<div data-dojo-type="dijit.layout.ContentPane" title="Test Panel">
     				<h4>Dialog Test</h4>
     				
