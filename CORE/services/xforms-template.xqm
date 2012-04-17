@@ -58,6 +58,11 @@ declare function tmpl:filterbuilder($workspace as xs:string){
       <filter property="bezeichnung" type="contains" value="boot"/>
       <filter property="bezeichnung" type="contains" value="motor"/>
         <any>
+	      <all>
+	        <filter property="art-nr" type="starts-with" value="84"/>
+	        <filter property="price" type="gt" value="1000"/>
+	      </all>
+
           <filter property="art-nr" type="starts-with" value="e"/>
           <filter property="price" type="gt" value="f"/>
         </any>
