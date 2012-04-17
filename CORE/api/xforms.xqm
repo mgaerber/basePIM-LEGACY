@@ -5,6 +5,7 @@ declare namespace rest = "http://exquery.org/ns/restxq";
 
 import module namespace tmpl = "http://basepim.org/tmpl" at "../services/xforms-template.xqm";
 import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
+declare namespace xf = "http://www.w3.org/2002/xforms";
 
 (:~
  : Edit a given Slot referenced by its ID
@@ -39,3 +40,13 @@ function xforms:dump($body){
 	<pre>{serialize($body)}</pre>
 };
 
+(:~
+ : Returns a FilterBuilder based on given data
+ : 
+:)
+declare
+  %rest:path("/xforms/filterbuilder/{$workspace}")
+	%rest:produces("application/xml")
+function xforms:filterbuilder($workspace as xs:string) as node()+ {
+	tmpl:filterbuilder($workspace)
+};
