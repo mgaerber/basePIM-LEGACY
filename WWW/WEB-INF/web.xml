@@ -37,7 +37,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>BetterFormFilter</filter-name>
-		<url-pattern>/disabled/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<!--
   de.betterform.agent.web.resources.ResourceServlet is responsible for loading
@@ -52,7 +52,7 @@
 		<servlet-class>de.betterform.agent.web.resources.ResourceServlet</servlet-class>
 		<init-param>
 			<param-name>caching</param-name>
-			<param-value>false</param-value>
+			<param-value>true</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
