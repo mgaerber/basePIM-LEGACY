@@ -1,0 +1,282 @@
+<!DOCTYPE html SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>HXHR/GET/PUT File test page</title>
+        <style type='text/css'>
+           body {
+               font-family: sans-serif;
+           }
+           #multiple_file_upload {
+                border: 0.2em solid #DDDDDD;
+           }
+           #dropbox {
+            	width: 670px;
+            	height: 150px;
+            	margin: 0 auto 1em;
+            	color: #514721;
+            	border: 0.2em solid #DDDDDD;
+            	background-color: #FFFFEE;
+            	text-align: center;
+            	-moz-border-radius: 4px 4px;
+            	-webkit-border-radius: 4px 4px;
+            	border-bottom-left-radius: 4px 4px;
+            	border-bottom-right-radius: 4px 4px;
+            	border-top-left-radius: 4px 4px;
+            	border-top-right-radius: 4px 4px;
+            }
+            #selected_files, #server_file_list {
+            	width: 670px;
+            	height: 150px;
+            	margin: 0 auto 1em;
+            	color: #514721;
+            	border: 0.2em solid #DDDDDD;
+            	background-color: #EEEEEE;
+            	text-align: left;
+            	-moz-border-radius: 4px 4px;
+            	-webkit-border-radius: 4px 4px;
+            	border-bottom-left-radius: 4px 4px;
+            	border-bottom-right-radius: 4px 4px;
+            	border-top-left-radius: 4px 4px;
+            	border-top-right-radius: 4px 4px;
+            }
+            .thumb {
+                  height: 75px;
+                  border: 1px solid #000;
+                  margin: 10px 5px 0 0;
+            }
+        </style>
+        <script type="text/javascript">
+            <!--
+            /** Startup code. */
+            window.onload = function() {
+                // Check for the various File API support.
+                if (window.File && window.FileReader && window.FileList && window.Blob) {
+                    // Great success! All the File APIs are supported.
+                    init_dropbox();
+                } else {
+                    alert('The File APIs are not fully supported in this browser.');
+                }
+            };
+            
+            /* DropBox */
+            function init_dropbox() {
+                var dropbox;  
+      
+                dropbox = document.getElementById("dropbox");  
+                dropbox.addEventListener("dragenter", dragenter, false);  
+                dropbox.addEventListener("dragleave", dragleave, false);
+                dropbox.addEventListener("drop", drop, false);
+            }
+            
+            function dragenter(e) {
+               e.stopPropagation();
+               e.preventDefault();
+               var status = document.getElementById("upload-status-text");
+               status.innerHTML = "<h3>Uhh, my god, here they come.</h3>";
+            }
+            
+            function dragleave(e) {
+               e.stopPropagation();
+               e.preventDefault();
+               var status = document.getElementById("upload-status-text");
+               status.innerHTML = "<h3>Oh noes, they are leaving.</h3>";
+            }
+            
+            function drop(e) {
+                e.stopPropagation();
+                e.preventDefault();
+              
+                var dt = e.dataTransfer;
+                var files = dt.files;
+              
+                select_files(files);
+            }
+            /* Tests XHR via GET. */
+            function test_GET() {
+                var xhReq = new XMLHttpRequest();
+                xhReq.open("GET", "/restxq/upload/file/get/answer/42", true);
+                 xhReq.onreadystatechange = function() {
+                    if (xhReq.readyState != 4)  {
+                        alert("Not ready yet.");
+                        return;
+                    }
+                    var serverResponse = xhReq.responseText;
+                    alert(serverResponse); // Shows "PUTvalue sent back from server"
+                };
+                xhReq.send(null);
+            }
+            /* Tests XHR via PUT. */
+            function test_PUT(PUTdata) {
+               var xhReq = new XMLHttpRequest();
+                xhReq.open("PUT", "/restxq/upload/file/test/put/answer/" + PUTdata, true);
+                xhReq.onreadystatechange = function() {
+                    if (xhReq.readyState != 4)  {
+                        alert("Not ready yet.");
+                        return;
+                    }
+                    var serverResponse = xhReq.responseText;
+                    alert(serverResponse); // Shows "PUTvalue sent back from server"
+                };
+                xhReq.send(null);
+            }
+            /* Reacts on user choice and displays selected files. */
+            function select_files(files) {
+                var oSelectedFiles = document.getElementById('selected_files');
+                var fileList = '<ul>';
+                for (i = 0; i < files.length; i++) {
+                    fileList += '<li>' + files[i].name + ', ' + files[i].lastModifiedDate + '</li>';
+                }
+                fileList += '</ul>';
+                oSelectedFiles.innerHTML = fileList;
+                // Preceed with loading files into memory.
+                load_files(files)
+            }
+            /* Load selected files into memory and PUT them to DB server. */
+            function load_files(files) {
+                var holder = document.getElementById('list');
+                while(holder.hasChildNodes()){
+                	holder.removeChild(holder.lastChild);
+                }
+                
+                // Loop through FileList Object.
+                for (var i = 0, f; f = files[i]; i++) {
+                    // Only process image files.
+                    if (!f.type.match('image.*')) {
+                      continue;
+                    }
+                    
+                    var reader = new FileReader();
+                    
+                    // Closure to capture the file information.
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            // Render thumbnail.
+                            var span = document.createElement('span');
+                            var fdataURL = e.target.result
+                            var fname = escape(theFile.name)
+                            span.innerHTML = ['<img class="thumb" src="', fdataURL,
+                                              '" title="', fname, '"/>'].join('');
+                            document.getElementById('list').insertBefore(span, null);
+                            // Send to server (as DataURL, data:image/jpeg;base64,/9j/4Sd+RXhpZgAAS...)
+                            var fblob = dataURL_to_blob(fdataURL);
+                            put_file(fblob, fname);
+                        };
+                    })(f);
+                    // Read in the image file as a dataURL.
+                    reader.readAsDataURL(f);
+                }
+            }
+            /* Uploads file data via XHR and PUT. */
+            function put_file(data, name) {
+               var xhReq = new XMLHttpRequest();
+                xhReq.open("PUT", "/restxq/upload/image/put/" + name, true);
+                xhReq.setRequestHeader('Content-Type', 'application/octet-stream');
+                xhReq.onreadystatechange = function() {
+                    if (xhReq.readyState != 4)  {
+                        //alert("Not ready yet.");
+                        return;
+                    }
+                    /* Server is ready, files have been uploaded.
+                     * Since we use an 'updating function' in XQuery, no server
+                     * response can be expected. Therefore, we explicitly request (GET)
+                     * the information of what is stored in the server.
+                     */
+                };
+                xhReq.send(data);
+            }
+            /* Converts file read as dataURL (reader.readAsDataURL(f);) to blob.
+             * DataURL: data:image/jpeg;base64,/9j/4Sd+RXhpZgAAS...
+             */
+            function dataURL_to_blob(dataURI) {
+                // convert base64 to raw binary data held in a string
+                // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+                var byteString = atob(dataURI.split(',')[1]);
+
+                // separate out the mime component
+                var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+            
+                // write the bytes of the string to an ArrayBuffer
+                var ab = new ArrayBuffer(byteString.length);
+                var ia = new Uint8Array(ab);
+                for (var i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                
+                // write the ArrayBuffer to a blob, and you're done
+                if (window.BlobBuilder) {
+                  bb = new BlobBuilder();
+                } else if (window.WebKitBlobBuilder) {
+                  bb = new WebKitBlobBuilder();
+                }
+                bb.append(ab);
+                return bb.getBlob(mimeString);
+            }
+            /* Lists files. */
+            function list_files() {
+                var xhReq = new XMLHttpRequest();
+                xhReq.open("GET", "/restxq/file/list", false);
+                 xhReq.onreadystatechange = function() {
+                    if (xhReq.readyState != 4)  {
+                        return;
+                    }
+                    var serverResponse = xhReq.responseText;
+                    alert(serverResponse); // Shows "PUTvalue sent back from server"
+                };
+                xhReq.send(null);
+            }
+            //-->
+        </script>
+    </head>
+    <body>
+        <h4>Use basic XmlHttpRequest and Javascript to GET an answer from RESTXQ:</h4>
+        <button id="GETButton" onclick="test_GET()">XHR GETs _the_ answer!</button><br />        
+        <hr/>
+        <h4>Use basic XmlHttpRequest and Javascript to PUT a value and to receive an answer from RESTXQ:</h4>
+        <button onclick="test_PUT(99)">PUTs the input value (99) to RESTXQ and receives answer</button>
+        <hr/>
+        <h4>Use PUT with external tool:</h4>
+        <pre>curl -s -i -X PUT -H "Content-Type: application/octet-stream" -T "./WWW/test/powermotor.png" "admin:admin@localhost:8984/restxq//upload/file/test/put/pm.png"</pre>
+        <hr/>
+        <h4>Multiple file upload with HTML5, XmlHttpRequest/PUT, and RESTXQ</h4>
+        <ul>
+            <li>Use HTML5 to allow multiple file selection via input button or drag and drop</li>
+            <li>Upload files to server using XmlHttpRequest and PUT (watch directory <code>DATA/ws_bilder/raw</code>)</li>
+        </ul>
+        <div id="multiple_file_upload">
+            <p>
+                Select (multiple) files:
+            </p>
+            <input id="filebutton" type="file" multiple onchange="select_files(this.files)"/>
+            <hr/>
+            <p>
+                Drop (multiple) files:
+            </p>
+            <div id="dropbox">
+                <div>
+                    <p id="upload-status-text">
+                        Drag and Drop files here ...
+                    </p>
+                </div>
+                <div id="upload-status-progressbar"></div>
+                <output id="list"></output>
+            </div> 
+            <hr/>
+            <div>
+                <p>Currently selected files (will be uploaded to server):</p>
+                <div id="selected_files"></div>
+            </div>
+            <div>
+                <button onclick="list_files()">List files stored on server</button> 
+            </div>
+        </div>
+        <hr/>
+        <h4>Use POST and a Dojo widget.</h4>
+        <a href="dojo_file_upload.html">Dojo multiple file widget</a>
+        <!-- <a href="http://www.script-tutorials.com/pure-html5-file-upload/">Pure HTML5 upload with progress</a> -->
+        <!-- <a href="http://www.w3.org/TR/FileAPI/">File API</a> -->
+        <!-- <a href="https://developer.mozilla.org/en/Using_files_from_web_applications">Dropbox et al.</a> -->
+        <!-- <a href="http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-reading-files">HTML5 rocks w/ files</a> -->
+        <!-- <a href="http://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata">From DataURL to Binary</a> -->
+        <!-- <a href="http://code.google.com/p/chrome-screen-capture/source/browse/trunk/src/ajax.js?r=356">Fix BlobBuilder bug </a> -->
+    </body>
+</html>
