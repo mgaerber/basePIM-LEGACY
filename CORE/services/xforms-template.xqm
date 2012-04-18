@@ -6,21 +6,32 @@ declare namespace xf = "http://www.w3.org/2002/xforms";
 (: import module namespace xmldb = "http://basex.org/basePIM/xmldb" at "../services/db-service.xqm"; :)
 
 declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, $content as element()){
-(	<?xml-stylesheet href="/xsltforms/xsltforms.xsl" type="text/xsl"?>,
-	<?xsltforms-options debug="no"?>,
+	
+	let $id := if($model/@id) then attribute {"id"} {"ii_{$model/@id}"} else ()
+	return
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
      <head>
-<link rel="stylesheet" href="/xsltforms/xsltforms.css" type="text/css" media="screen" title="XSLTForms" charset="utf-8" />
         <title>Hello World in XForms</title>
         <xf:model>
-           <xf:instance id="ii_{$model/@id}" xmlns="">
+           <xf:instance  xmlns="">
+							{ $id }
               { $model }
-           		</xf:instance>
+           	</xf:instance>
           <xf:submission action="/restxq/xforms/dump" id="dump" method="post" />
           {$bindings}
         </xf:model>
 			  <style>
 			    label {{width:160px}}
+			    .any, .all {{
+	          padding:10px;
+	        }}
+	        .any {{
+	          border-left:5px solid #004080;
+	        }}
+	        .all {{
+	          border-left:5px solid #408000;
+	        }}
+	    
 			  </style>
 
      </head>
@@ -33,9 +44,33 @@ declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, 
       </xf:submit>
      </body>
   </html>
-)  
+  
   
 };
+
+declare function tmpl:filterbuilder($workspace as xs:string){
+	let $m := <data><filters>
+    <all>
+      <all>
+        <filter property="art-nr" type="starts-with" value="84"/>
+        <filter property="price" type="gt" value="1000"/>
+      </all>
+      <filter property="bezeichnung" type="contains" value="boot"/>
+      <filter property="bezeichnung" type="contains" value="motor"/>
+        <any>
+	      <all>
+	        <filter property="art-nr" type="starts-with" value="84"/>
+	        <filter property="price" type="gt" value="1000"/>
+	      </all>
+
+          <filter property="art-nr" type="starts-with" value="e"/>
+          <filter property="price" type="gt" value="f"/>
+        </any>
+    </all>
+  </filters></data>
+	return tmpl:body($m, (), tmpl:generate-search($m/*, "" ))
+};
+
 declare function tmpl:path-to-slot($child as node()){
 	string-join($child/ancestor-or-self::*/name(.)[not(. = ("value", "node", "property", "workspace", "slot"))], "/")
 };
@@ -203,4 +238,67 @@ declare function tmpl:dimensions-bind($uuid){
   <xf:bind nodeset="instance('ii_{$uuid}')/height/num" type="xs:decimal" required="true()" constraint=". &gt; 0"/>,
   <xf:bind nodeset="instance('ii_{$uuid}')/length/num" type="xs:decimal" required="true()" constraint=". &gt; 0"/>
   
+};
+(: XForms Filter Builder! :)
+declare function tmpl:generate-search($node, $root as xs:string){
+ 
+	if(name($node) = "filters") then tmpl:generate-search($node/*, "filters/"||$root) else 
+	<xf:repeat class="{name($node)}" nodeset="{$root}{name($node)}">
+	{
+	for $item in $node/filter[1]
+	return
+		<xf:repeat nodeset="filter">
+			<xf:group>
+			<table><tr><td>
+				<xf:select1 ref="@property">{tmpl:properties("ws_produkte")}</xf:select1>
+				</td>
+				<td>
+				<xf:select1 ref="@type">{tmpl:items()}</xf:select1> 
+				</td>
+				<td>
+				<xf:input ref="@value" />
+				</td>
+				</tr></table>
+			</xf:group>
+	  </xf:repeat>
+	}
+	{
+		for $item in $node/(all | any)
+		return tmpl:generate-search($item, "")
+	}
+	</xf:repeat>
+};
+
+declare function tmpl:properties($name){
+	for $prop in distinct-values(db:open($name)//property/@name)
+	return <xf:item>
+                    <xf:label>{string($prop)}</xf:label>
+                    <xf:value>{string($prop)}</xf:value> 
+                </xf:item>
+};
+declare function tmpl:items(){
+                <data><xf:item>
+                    <xf:label>contains text</xf:label>
+                    <xf:value>contains</xf:value> 
+                </xf:item>
+                <xf:item>
+                    <xf:label>starts with</xf:label>
+                    <xf:value>starts-with</xf:value>
+                </xf:item>
+                <xf:item>
+                    <xf:label>ends with</xf:label>
+                    <xf:value>ends-with</xf:value>
+                </xf:item>
+                <xf:item>
+                    <xf:label>&gt;</xf:label>
+                    <xf:value>gt</xf:value>
+                </xf:item>
+                <xf:item>
+                    <xf:label>&lt;</xf:label>
+                    <xf:value>lt</xf:value>
+                </xf:item>
+                <xf:item>
+                    <xf:label>=</xf:label>
+                    <xf:value>eq</xf:value>
+                </xf:item></data>//*:item
 };
