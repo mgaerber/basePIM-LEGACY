@@ -3,6 +3,7 @@ xquery version "3.0";
 module namespace tmpl = "http://basepim.org/tmpl";
 declare namespace rest = "http://exquery.org/ns/restxq";
 declare namespace xf = "http://www.w3.org/2002/xforms";
+declare namespace ev = "http://www.w3.org/2001/xml-events";
 (: import module namespace xmldb = "http://basex.org/basePIM/xmldb" at "../services/db-service.xqm"; :)
 
 declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, $content as element()){
@@ -47,28 +48,70 @@ declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, 
   
   
 };
+declare function tmpl:body($tmpls, 
+	$model as element(), $bindings as element(xf:bind)*, $content as element()){
+	
+	let $id := if($model/@id) then attribute {"id"} {"ii_{$model/@id}"} else ()
+	return
+	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
+     <head>
+        <title>Hello World in XForms</title>
+        <xf:model>
+           <xf:instance  xmlns="">
+							{ $id }
+              { $model }
+           	</xf:instance>
+						<xf:instance xmlns="" id="tmpl">
+							<tmpl>{$tmpls}</tmpl>
+						</xf:instance>
+          <xf:submission action="/restxq/xforms/dump" id="dump" method="post" />
+          {$bindings}
+        </xf:model>
+			  <style>
+			    label {{width:160px}}
+			    .any, .all {{
+	          padding:10px;
+	        }}
+	        .any {{
+	          border-left:5px solid #004080;
+	        }}
+	        .all {{
+	          border-left:5px solid #408000;
+	        }}
+	    
+			  </style>
+
+     </head>
+     <body>
+     {$content}
+      <br />
+      <hr />
+      <xf:submit submission="dump">
+        <xf:label>Dump Changes</xf:label>
+      </xf:submit>
+     </body>
+  </html>
+  
+  
+};
 
 declare function tmpl:filterbuilder($workspace as xs:string){
 	let $m := <data><filters>
     <all>
-      <all>
-        <filter property="art-nr" type="starts-with" value="84"/>
-        <filter property="price" type="gt" value="1000"/>
-      </all>
       <filter property="bezeichnung" type="contains" value="boot"/>
-      <filter property="bezeichnung" type="contains" value="motor"/>
-        <any>
 	      <all>
-	        <filter property="art-nr" type="starts-with" value="84"/>
 	        <filter property="price" type="gt" value="1000"/>
 	      </all>
-
-          <filter property="art-nr" type="starts-with" value="e"/>
-          <filter property="price" type="gt" value="f"/>
-        </any>
+	      <any>
+	        <filter property="price" type="gt" value="1000"/>
+	      </any>
     </all>
   </filters></data>
-	return tmpl:body($m, (), tmpl:generate-search($m/*, "" ))
+	let $filter := (<all><filter property="" type="" value=""/></all>,
+									<any><filter property="" type="" value=""/></any>,
+									<filter property="" type="" value=""/>
+									)
+	return tmpl:body($filter,$m, (), tmpl:generate-search($m/*, "", 0 ))
 };
 
 declare function tmpl:path-to-slot($child as node()){
@@ -240,41 +283,83 @@ declare function tmpl:dimensions-bind($uuid){
   
 };
 (: XForms Filter Builder! :)
-declare function tmpl:generate-search($node, $root as xs:string){
+declare function tmpl:generate-search($node, $root as xs:string, $index as xs:integer){
  
-	if(name($node) = "filters") then tmpl:generate-search($node/*, "filters/"||$root) else 
-	<xf:repeat class="{name($node)}" nodeset="{$root}{name($node)}">
-	{
-	for $item in $node/filter[1]
+	if(name($node) = "filters") then tmpl:generate-search($node/*, "filters/"||$root, $index + 1) else 
+	let $name := name($node)||"_"|| $index
 	return
-		<xf:repeat nodeset="filter">
-			<xf:group>
-			<table><tr><td>
-				<xf:select1 ref="@property">{tmpl:properties("ws_produkte")}</xf:select1>
-				</td>
-				<td>
-				<xf:select1 ref="@type">{tmpl:items()}</xf:select1> 
-				</td>
-				<td>
-				<xf:input ref="@value" />
-				</td>
-				</tr></table>
-			</xf:group>
-	  </xf:repeat>
+	<div><xf:repeat class="{name($node)}" id="{$name}" nodeset="{$root}{name($node)}">
+	{
+	for $item in ($node/filter)[1]
+	let $iid := trace(name($item)||"_"|| $index||"_"||util:uuid(), "name")
+	return
+	<div>	
+  <xf:repeat nodeset="filter" test="hello" id="{$iid}">
+    <table style="width:480px">
+      <tr>
+        <td>
+          <xf:select1 ref="@property">{tmpl:properties("ws_produkte")}</xf:select1>
+        </td>
+        <td>
+          <xf:select1 ref="@type">{tmpl:items()}</xf:select1>
+        </td>
+        <td>
+          <xf:input ref="@value"/>
+        </td>
+        <td>						
+					</td>
+      </tr>
+    </table>
+  </xf:repeat>
+  <table>
+    <tr>
+      <td>
+        <xf:trigger>
+          <xf:label>Add Filter</xf:label>
+          <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
+        </xf:trigger>
+      </td>
+      <td>
+        <xf:trigger>
+          <xf:label style="color:red">&#x2718;</xf:label>
+          <xf:delete nodeset="filter" at="index('{$iid}')"/>
+        </xf:trigger>
+      </td>
+    </tr>
+  </table>
+		</div>
+
 	}
 	{
 		for $item in $node/(all | any)
-		return tmpl:generate-search($item, "")
-	}
+		return tmpl:generate-search($item, "", $index + 1)
+	}	
 	</xf:repeat>
+  <table>
+    <tr>
+      <td>
+        <xf:trigger>
+          <xf:label>Add <strong>OR</strong> Group</xf:label>
+          <xf:insert nodeset="{$root}{name($node)}" origin="instance('tmpl')/*:any" position="after" at="last()"/>
+        </xf:trigger>
+      </td>
+      <td>
+        <xf:trigger>
+          <xf:label>Add <strong>AND</strong> Group</xf:label>
+          <xf:insert nodeset="{$root}{name($node)}" origin="instance('tmpl')/*:and" position="after" at="last()"/>
+        </xf:trigger>
+      </td>
+    </tr>
+  </table>
+</div>
 };
 
 declare function tmpl:properties($name){
-	for $prop in distinct-values(db:open($name)//property/@name)
+	(for $prop in distinct-values(db:open($name)//property/@name)
 	return <xf:item>
                     <xf:label>{string($prop)}</xf:label>
                     <xf:value>{string($prop)}</xf:value> 
-                </xf:item>
+                </xf:item>)
 };
 declare function tmpl:items(){
                 <data><xf:item>
