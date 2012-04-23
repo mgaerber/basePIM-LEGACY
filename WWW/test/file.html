@@ -63,33 +63,44 @@
                 var dropbox;  
       
                 dropbox = document.getElementById("dropbox");  
-                dropbox.addEventListener("dragenter", dragenter, false);  
-                dropbox.addEventListener("dragleave", dragleave, false);
-                dropbox.addEventListener("drop", drop, false);
+                dropbox.addEventListener("dragenter", _dragenter, false);  
+                dropbox.addEventListener("dragleave", _dragleave, false);
+                dropbox.addEventListener("dragover", _dragover, false);
+                dropbox.addEventListener("drop", _drop, false);
+                
             }
             
-            function dragenter(e) {
+            function _dragenter(e) {
                e.stopPropagation();
                e.preventDefault();
                var status = document.getElementById("upload-status-text");
                status.innerHTML = "<h3>Uhh, my god, here they come.</h3>";
             }
             
-            function dragleave(e) {
+            function _dragover(e) {
+               e.stopPropagation();
+               e.preventDefault();
+               var status = document.getElementById("upload-status-text");
+               status.innerHTML = "<h3>Now, its there.</h3>";
+            }
+            
+            function _dragleave(e) {
                e.stopPropagation();
                e.preventDefault();
                var status = document.getElementById("upload-status-text");
                status.innerHTML = "<h3>Oh noes, they are leaving.</h3>";
             }
             
-            function drop(e) {
+            function _drop(e) {
+                //alert("dropped");
                 e.stopPropagation();
                 e.preventDefault();
-              
+                
                 var dt = e.dataTransfer;
                 var files = dt.files;
               
                 select_files(files);
+                
             }
             /* Tests XHR via GET. */
             function test_GET() {
@@ -129,10 +140,11 @@
                 fileList += '</ul>';
                 oSelectedFiles.innerHTML = fileList;
                 // Preceed with loading files into memory.
-                load_files(files)
+                load_files(files);
             }
             /* Load selected files into memory and PUT them to DB server. */
             function load_files(files) {
+             //alert("loop image");
                 var holder = document.getElementById('list');
                 while(holder.hasChildNodes()){
                 	holder.removeChild(holder.lastChild);
@@ -141,15 +153,16 @@
                 // Loop through FileList Object.
                 for (var i = 0, f; f = files[i]; i++) {
                     // Only process image files.
-                    if (!f.type.match('image.*')) {
+                  /*  if (!f.type.match('image.*')) {
                       continue;
-                    }
-                    
+                    }*/
+                   
                     var reader = new FileReader();
-                    
+                    //alert("in the loop");
                     // Closure to capture the file information.
                     reader.onload = (function(theFile) {
                         return function(e) {
+                            //alert("reader load");
                             // Render thumbnail.
                             var span = document.createElement('span');
                             var fdataURL = e.target.result
@@ -160,6 +173,7 @@
                             // Send to server (as DataURL, data:image/jpeg;base64,/9j/4Sd+RXhpZgAAS...)
                             var fblob = dataURL_to_blob(fdataURL);
                             put_file(fblob, fname);
+                            alert("putted file");
                         };
                     })(f);
                     // Read in the image file as a dataURL.
@@ -168,12 +182,13 @@
             }
             /* Uploads file data via XHR and PUT. */
             function put_file(data, name) {
+               alert("put" + data.toString());
                var xhReq = new XMLHttpRequest();
                 xhReq.open("PUT", "/restxq/upload/image/put/" + name, true);
                 xhReq.setRequestHeader('Content-Type', 'application/octet-stream');
                 xhReq.onreadystatechange = function() {
                     if (xhReq.readyState != 4)  {
-                        //alert("Not ready yet.");
+                        alert("Not ready yet.");
                         return;
                     }
                     /* Server is ready, files have been uploaded.
@@ -207,6 +222,10 @@
                   bb = new BlobBuilder();
                 } else if (window.WebKitBlobBuilder) {
                   bb = new WebKitBlobBuilder();
+                } else if (window.MozBlobBuilder) {
+                  bb = new MozBlobBuilder();
+                } else if (window.MSBlobBuilder) {
+                  bb = new MSBlobBuilder();
                 }
                 bb.append(ab);
                 return bb.getBlob(mimeString);
@@ -228,6 +247,7 @@
         </script>
     </head>
     <body>
+        
         <h4>Use basic XmlHttpRequest and Javascript to GET an answer from RESTXQ:</h4>
         <button id="GETButton" onclick="test_GET()">XHR GETs _the_ answer!</button><br />        
         <hr/>
@@ -242,12 +262,14 @@
             <li>Use HTML5 to allow multiple file selection via input button or drag and drop</li>
             <li>Upload files to server using XmlHttpRequest and PUT (watch directory <code>DATA/ws_bilder/raw</code>)</li>
         </ul>
+        
         <div id="multiple_file_upload">
             <p>
                 Select (multiple) files:
             </p>
             <input id="filebutton" type="file" multiple onchange="select_files(this.files)"/>
             <hr/>
+            
             <p>
                 Drop (multiple) files:
             </p>
