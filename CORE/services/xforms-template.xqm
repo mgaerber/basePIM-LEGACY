@@ -13,7 +13,7 @@ declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, 
 	return
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
      <head>
-        <title>Hello World in XForms</title>
+        <title>Edit</title>
         <xf:model>
            <xf:instance  xmlns="">
 							{ $id }

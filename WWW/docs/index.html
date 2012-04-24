@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+	<!--<![endif]-->
+	<head>
+		<meta charset="utf-8" />
+
+		<!-- Set the viewport width to device width for mobile -->
+		<meta name="viewport" content="width=device-width" />
+
+		<title>cmp box</title>
+
+		<!-- Included CSS Files -->
+		<link rel="stylesheet" href="stylesheets/foundation.css" />
+		<link rel="stylesheet" href="stylesheets/app.css" />
+
+
+		<!-- 
+		alert (orange) #F68B01;
+		-->
+
+		<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+
+		<script src="javascripts/modernizr.foundation.js"></script>
+
+		<!-- IE Fix for HTML5 Tags -->
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		
+		<!-- Included JS Files -->
+		<script src="javascripts/jquery.min.js"></script>
+		<script src="javascripts/foundation.js"></script>
+		<script src="javascripts/app.js"></script>
+		
+		<script type="text/javascript">
+     $(window).load(function() {
+     
+      $('#featured').orbit();
+      
+       /*$('#featured').orbit({
+		     animation: 'fade',                  // fade, horizontal-slide, vertical-slide, horizontal-push
+		     animationSpeed: 800,                // how fast animtions are
+		     timer: true, 			 // true or false to have the timer
+		     resetTimerOnClick: false,           // true resets the timer instead of pausing slideshow progress
+		     advanceSpeed: 4000, 		 // if timer is enabled, time between transitions 
+		     pauseOnHover: false, 		 // if you hover pauses the slider
+		     startClockOnMouseOut: false, 	 // if clock should start on MouseOut
+		     startClockOnMouseOutAfter: 1000, 	 // how long after MouseOut should the timer start again
+		     directionalNav: true, 		 // manual advancing directional navs
+		     captions: true, 			 // do you want captions?
+		     captionAnimation: 'fade', 		 // fade, slideOpen, none
+		     captionAnimationSpeed: 800, 	 // if so how quickly should they animate in
+		     bullets: false,			 // true or false to activate the bullet navigation
+		     bulletThumbs: false,		 // thumbnails for the bullets
+		     bulletThumbLocation: '',		 // location from this file where thumbs will be
+		     afterSlideChange: function(){}, 	 // empty function 
+		     fluid: true                         // or set a aspect ratio for content slides (ex: '4x3') 
+		});*/
+     });
+</script>
+
+	</head>
+	<body>
+
+		<!-- container -->
+		<div class="container">
+
+			<div class="row">
+				<div class="twelve columns">
+					<h2>
+						<span style="font-size:125%;">cmp</span><span>BOX</span>
+					</h2>
+					<h4 class="subheader">Cross Media Publishing Toolbox</h4>
+					<hr />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="two columns">
+
+					<dl class="nice vertical tabs">
+						<dd>
+							<a href="#start" class="notactive">Start</a>
+						</dd>
+						<dd>
+							<a href="#cmp1x1" class="notactive">CMP 1x1</a>
+						</dd>
+						<dd>
+							<a href="#pim1x1" class="active">PIM 1x1</a>
+						</dd>
+						<dd>
+							<a href="#arch">Architektur</a>
+						</dd>
+						<dd>
+							<a href="#screens">Screens</a>
+						</dd>
+						<dd>
+							<a href="#links">Links</a>
+						</dd>
+					</dl>
+				</div>
+
+				<div class="ten columns">
+
+					<ul class="nice vertical tabs-content">
+
+						<li class="notactive" id="startTab">
+							<div class="row">
+								<div class="six columns centered">
+									<!--<p style="font-size:120%;">
+									oder: was macht der Gärber eigentlich immer in Konstanz?
+								</p>-->
+								</div>
+							</div>
+						</li>
+
+						<li class="notactive" id="cmp1x1Tab">
+
+
+							<div class="row">
+								<div class="six columns">
+									<h4>Inhalte gruppieren</h4>
+									<hr />
+									<div class="panel fix-2">
+										<img src="images/cmp-intro/group_content.png" />
+									</div>
+
+								</div>
+								<div class="six columns">
+									<h4>Merkmale definieren</h4>
+									<hr />
+									<div class="panel fix-2">
+										<img src="images/cmp-intro/define_properties.png"
+											class="middle" />
+									</div>
+
+								</div>
+							</div>
+							<div class="row">
+								<div class="six columns">
+									<h4>Hierarchien bilden</h4>
+									<hr />
+									<div class="panel fix-2">
+										<img src="images/cmp-intro/create_hierarchies.png"
+											class="middle" />
+									</div>
+
+								</div>
+								<div class="six columns">
+									<h4>Merkmalswerte füllen</h4>
+									<hr />
+									<div class="panel fix-2">
+										<img src="images/cmp-intro/fill_properties.png" />
+									</div>
+
+								</div>
+							</div>
+							<div class="row">
+								<div class="six columns">
+									<h4>Relationen hinzufügen</h4>
+									<hr />
+									<div class="panel fix-2">
+										<img src="images/cmp-intro/add_relations.png" />
+									</div>
+
+								</div>
+								<div class="six columns">
+									<h4>Publikationen erstellen</h4>
+									<hr />
+									<div class="panel fix-2">
+										<img src="images/cmp-intro/create_publications.png" />
+									</div>
+
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="six columns">
+									<h4>Layout Elemente erstellen</h4>
+									<hr />
+									<div class="panel fix-3">
+										<img src="images/cmp-intro/define_subtemplates.png" />
+									</div>
+
+								</div>
+								<div class="six columns">
+									<h4>Templates definieren</h4>
+									<hr />
+									<div class="panel fix-3">
+										<img src="images/cmp-intro/organize_templates.png" />
+									</div>
+
+								</div>
+							</div>
+						</li>
+
+						<li class="notactive" id="pim1x1Tab">
+
+							<!--<dl class="sub-nav">
+							<dt>Filter:</dt>
+							<dd class="active"><a href="#">All</a></dd>
+							<dd><a href="#ws_div">Arbeitsbereiche</a></dd>
+							<dd><a href="#prop_div">Merkmale</a></dd>
+							<dd><a href="#inherit_div">Vererbung</a></dd>
+						</dl>-->
+
+							<div class="row">
+								<div class="twelve columns">
+									<h4 id="ws_div">Arbeitsbereiche</h4>
+									<hr />
+									<img src="images/pim-1x1/workspacesnodes.png" />
+								</div>
+							</div>
+
+							<div class="row">
+								<div id="prop_div" class="six columns">
+									<h4>Werte</h4>
+									<hr />
+									<img src="images/pim-1x1/nodespropertiesslots.png" />
+								</div>
+
+								<div class="six columns">
+									<h4 id="inherit_div">Vererbung</h4>
+									<hr />
+									<img src="images/pim-1x1/propertyinheritance.png" />
+								</div>
+
+							</div>
+
+						</li>
+
+						<li id="archTab">
+
+							<div class="row">
+								<div class="twelve columns">
+									<h4 id="ws_div">Architektur</h4>
+									<hr />
+									<img src="images/architecture/architecture.png" />
+								</div>
+							</div>
+
+						</li>
+
+						<li id="screensTab" class="active">
+
+							<div class="row">
+								<div class="twelve columns">
+									<h4 id="ws_div">Manage UI</h4>
+									<hr />
+									
+									
+									<div id="featured"> 
+										<img alt="Hauptfenster"
+											src="images/screens/162-axxepta-GUI_Grid-Template-Edit_Short.png"
+										/>
+										<img src="images/screens/3_162-axxepta-GUI_Tree-Edit_Small.jpg"
+										/>
+										<img
+											src="images/screens/5_162-axxepta-GUI_View-Template_Small.jpg"
+										/>
+									</div>
+								</div>
+							</div>
+
+						</li>
+
+						<li id="linksTab">
+
+							<div class="row">
+								<div class="twelve columns">
+									<h4>Allgemein</h4>
+									<hr />
+									<p> 
+									<ul>
+										<li>
+											<a target="_blank" href="http://localhost:8984/restxq/ws.xml"
+												>Workspaces listen (xml)</a>
+										</li>
+										<li>
+											<a target="_blank" href="http://localhost:8984/restxq/ws.json"
+												>Workspaces listen (json)</a>
+										</li>
+									</ul>
+									</p>
+
+									<h4>ws_produkte</h4>
+									<hr />
+									<p>
+										<ul>
+									<!--		<li>
+												<a target="_blank"
+													href="http://localhost:8984/restxq/xforms/edit-slot/ws_produkte/cee6bef9-7f78-4dc3-a7aa-a156161fbe59"
+												>Werte bearbeiten (XForm)</a>
+											</li>-->
+											<li>
+												<a target="_blank"
+													href="http://localhost:8984/restxq/xforms/edit-slot/ws_produkte/2ee57faa-bde5-49a4-81ef-aa1b30a9e637"
+													>Werte bearbeiten (XForm)</a>
+											</li>
+											<li>
+												<a target="_blank"
+												href="http://localhost:8984/restxq/ws/flat/870ab68b-afc5-44d1-8e5f-8ba367b3c7fc-luxus"
+												>Knoten (Vererbung auflösen: Lux)</a>
+											</li>
+											<li>
+												<a target="_blank"
+													href="http://localhost:8984/restxq/ws/flat/870ab68b-afc5-44d1-8e5f-8ba367b3c7fc"
+													>Knoten (Vererbung auflösen: Std)</a>
+												
+												
+											</li>
+										</ul>
+									</p>
+
+									<h4>ws_bootsmotoren</h4>
+									<hr />
+									<p>
+										<ul>
+											<li>
+												<a target="_blank" href="http://localhost:8984/restxq/ws/ws_bootsmotoren/nodej-meta/n/ElektromotorenWatersnake"
+													>Konten-Hierarchie listen (json)</a>
+											</li>
+											<li>
+												<a target="_blank" href="http://localhost:8984/restxq/ws/ws_bootsmotoren/node-meta/n/ElektromotorenWatersnake"
+													>Konten-Hierarchie listen (xml)</a>
+											</li>
+											<li>
+												<a target="_blank" href="http://localhost:8984/restxq/ws/ws_bootsmotoren/n/36088-d1e365206-346297/slots.json"
+													>Knoten-Werte tabellarisch listen (json)</a>
+											</li>
+											
+											
+											<li>
+											<a target="_blank" href="http://localhost:8984/Management/"
+											>Hauptfenster</a>
+											</li>
+										</ul>
+									</p>
+								</div>
+
+								<h4>ws_bilder</h4>
+								<hr />
+								<p>
+									<ul>
+										<li>
+									<a target="_blank" href="http://localhost:8984/test/file.html"
+										>Drag/Drop Dateien </a>
+										</li>
+									</ul>
+								</p>
+
+								<!--<div class="six columns">
+								<h4></h4>
+								<hr/>
+							</div>-->
+
+							</div>
+
+
+						</li>
+
+					</ul>
+
+
+				</div>
+
+			</div>
+
+
+			<!--	<div class="row">
+			<div class="eight columns">
+				<h3>The Grid</h3>
+
+				<!-\- Grid Example -\->
+				<div class="row">
+					<div class="twelve columns">
+						<div class="panel">
+							<p>This is a twelve column section in a row. Each of these includes a div.panel element so you can see where the columns are - it's not required at all for the grid.</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="six columns">
+						<div class="panel">
+							<p>Six columns</p>
+						</div>
+					</div>
+					<div class="six columns">
+						<div class="panel">
+							<p>Six columns</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="four columns">
+						<div class="panel">
+							<p>Four columns</p>
+						</div>
+					</div>
+					<div class="four columns">
+						<div class="panel">
+							<p>Four columns</p>
+						</div>
+					</div>
+					<div class="four columns">
+						<div class="panel">
+							<p>Four columns</p>
+						</div>
+					</div>
+				</div>
+
+				<h3>Tabs</h3>
+				<dl class="tabs">
+					<dd><a href="#simple1" class="active">Simple Tab 1</a></dd>
+					<dd><a href="#simple2">Simple Tab 2</a></dd>
+					<dd><a href="#simple3">Simple Tab 3</a></dd>
+				</dl>
+
+				<ul class="tabs-content">
+					<li class="active" id="simple1Tab">This is simple tab 1's content. Pretty neat, huh?</li>
+					<li id="simple2Tab">This is simple tab 2's content. Now you see it!</li>
+					<li id="simple3Tab">This is simple tab 3's content. It's, you know...okay.</li>
+				</ul>
+
+				<h3>Buttons</h3>
+				
+				<div class="row">
+					<div class="six columns">
+						<p><a href="#" class="small blue button">Small Blue Button</a></p>
+						<p><a href="#" class="blue button">Medium Blue Button</a></p>
+						<p><a href="#" class="large blue button">Large Blue Button</a></p>
+		
+						<p><a href="#" class="nice radius small blue button">Nice Blue Button</a></p>
+						<p><a href="#" class="nice radius blue button">Nice Blue Button</a></p>
+						<p><a href="#" class="nice radius large blue button">Nice Blue Button</a></p>
+					</div>
+					<div class="six columns">
+						<p><a href="#" class="small red button">Small Red Button</a></p>
+						<p><a href="#" class="green button">Medium Green Button</a></p>
+						<p><a href="#" class="large white button">Large White Button</a></p>
+		
+						<p><a href="#" class="nice radius small red button">Nice Red Button</a></p>
+						<p><a href="#" class="nice radius green button">Nice Green Button</a></p>
+						<p><a href="#" class="nice radius large white button">Nice White Button</a></p>
+					</div>
+				</div>
+			</div>
+
+			<div class="four columns">			
+				<h4>Getting Started</h4>
+				<p>We're stoked you want to try Foundation! To get going, this file (index.html) includes some basic styles you can modify, play around with, or totally destroy to get going.</p>
+
+				<h4>Other Resources</h4>
+				<p>Once you've exhausted the fun in this document, you should check out:</p>
+				<ul class="disc">
+					<li><a href="http://foundation.zurb.com/docs">Foundation Documentation</a><br />Everything you need to know about using the framework.</li>
+					<li><a href="http://github.com/zurb/foundation">Foundation on Github</a><br />Latest code, issue reports, feature requests and more.</li>
+					<li><a href="http://twitter.com/foundationzurb">@foundationzurb</a><br />Ping us on Twitter if you have questions. If you build something with this we'd love to see it (and send you a totally boss sticker).</li>
+				</ul>
+			</div>
+		</div>
+-->
+		</div>
+		<!-- container -->
+
+
+
+
+
+
+	</body>
+</html>

@@ -173,7 +173,7 @@
                             // Send to server (as DataURL, data:image/jpeg;base64,/9j/4Sd+RXhpZgAAS...)
                             var fblob = dataURL_to_blob(fdataURL);
                             put_file(fblob, fname);
-                            alert("putted file");
+                           // alert("putted file");
                         };
                     })(f);
                     // Read in the image file as a dataURL.
@@ -182,13 +182,13 @@
             }
             /* Uploads file data via XHR and PUT. */
             function put_file(data, name) {
-               alert("put" + data.toString());
+              // alert("put" + data.toString());
                var xhReq = new XMLHttpRequest();
                 xhReq.open("PUT", "/restxq/upload/image/put/" + name, true);
                 xhReq.setRequestHeader('Content-Type', 'application/octet-stream');
                 xhReq.onreadystatechange = function() {
                     if (xhReq.readyState != 4)  {
-                        alert("Not ready yet.");
+                        //alert("Not ready yet.");
                         return;
                     }
                     /* Server is ready, files have been uploaded.
@@ -247,7 +247,7 @@
         </script>
     </head>
     <body>
-        
+        <!--
         <h4>Use basic XmlHttpRequest and Javascript to GET an answer from RESTXQ:</h4>
         <button id="GETButton" onclick="test_GET()">XHR GETs _the_ answer!</button><br />        
         <hr/>
@@ -262,14 +262,14 @@
             <li>Use HTML5 to allow multiple file selection via input button or drag and drop</li>
             <li>Upload files to server using XmlHttpRequest and PUT (watch directory <code>DATA/ws_bilder/raw</code>)</li>
         </ul>
-        
+        -->
         <div id="multiple_file_upload">
-            <p>
+           <!-- <p>
                 Select (multiple) files:
             </p>
             <input id="filebutton" type="file" multiple onchange="select_files(this.files)"/>
             <hr/>
-            
+            -->
             <p>
                 Drop (multiple) files:
             </p>
@@ -291,9 +291,11 @@
                 <button onclick="list_files()">List files stored on server</button> 
             </div>
         </div>
+       <!--
         <hr/>
         <h4>Use POST and a Dojo widget.</h4>
         <a href="dojo_file_upload.html">Dojo multiple file widget</a>
+        -->
         <!-- <a href="http://www.script-tutorials.com/pure-html5-file-upload/">Pure HTML5 upload with progress</a> -->
         <!-- <a href="http://www.w3.org/TR/FileAPI/">File API</a> -->
         <!-- <a href="https://developer.mozilla.org/en/Using_files_from_web_applications">Dropbox et al.</a> -->

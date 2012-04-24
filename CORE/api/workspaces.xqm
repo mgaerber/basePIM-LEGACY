@@ -5,7 +5,7 @@ import module namespace util = "http://basepim.org/util" at "../util/util.xqm";
 
 declare
 %rest:GET
-%rest:path("/ws-x")
+%rest:path("/ws.xml")
 %rest:produces("application/xml")
 function api:list-workspaces-x(){
        ws:list() 
@@ -13,7 +13,7 @@ function api:list-workspaces-x(){
 
 declare
 	%rest:GET
-	%rest:path("/ws")
+	%rest:path("/ws.json")
 	%rest:produces("application/json")
 	%output:method("json")
 function api:list-workspaces(){
