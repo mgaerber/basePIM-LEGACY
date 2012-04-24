@@ -8,7 +8,8 @@ declare namespace ev = "http://www.w3.org/2001/xml-events";
 
 declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, $content as element()){
 	
-	let $id := if($model/@id) then attribute {"id"} {"ii_{$model/@id}"} else ()
+	let $id := if($model/@id) then attribute {"id"} {"ii_"||$model/@id/string()} else (),
+	$_ := trace($id, "simple")
 	return
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
      <head>
@@ -95,24 +96,6 @@ declare function tmpl:body($tmpls,
   
 };
 
-declare function tmpl:filterbuilder($workspace as xs:string){
-	let $m := <data><filters>
-    <all>
-      <filter property="bezeichnung" type="contains" value="boot"/>
-	      <all>
-	        <filter property="price" type="gt" value="1000"/>
-	      </all>
-	      <any>
-	        <filter property="price" type="gt" value="1000"/>
-	      </any>
-    </all>
-  </filters></data>
-	let $filter := (<all><filter property="" type="" value=""/></all>,
-									<any><filter property="" type="" value=""/></any>,
-									<filter property="" type="" value=""/>
-									)
-	return tmpl:body($filter,$m, (), tmpl:generate-search($m/*, "", 0 ))
-};
 
 declare function tmpl:path-to-slot($child as node()){
 	string-join($child/ancestor-or-self::*/name(.)[not(. = ("value", "node", "property", "workspace", "slot"))], "/")
@@ -282,76 +265,337 @@ declare function tmpl:dimensions-bind($uuid){
   <xf:bind nodeset="instance('ii_{$uuid}')/length/num" type="xs:decimal" required="true()" constraint=". &gt; 0"/>
   
 };
-(: XForms Filter Builder! :)
-declare function tmpl:generate-search($node, $root as xs:string, $index as xs:integer){
- 
-	if(name($node) = "filters") then tmpl:generate-search($node/*, "filters/"||$root, $index + 1) else 
-	let $name := name($node)||"_"|| $index
-	return
-	<div><xf:repeat class="{name($node)}" id="{$name}" nodeset="{$root}{name($node)}">
-	{
-	for $item in ($node/filter)[1]
-	let $iid := trace(name($item)||"_"|| $index||"_"||util:uuid(), "name")
-	return
-	<div>	
-  <xf:repeat nodeset="filter" test="hello" id="{$iid}">
-    <table style="width:480px">
-      <tr>
-        <td>
-          <xf:select1 ref="@property">{tmpl:properties("ws_produkte")}</xf:select1>
-        </td>
-        <td>
-          <xf:select1 ref="@type">{tmpl:items()}</xf:select1>
-        </td>
-        <td>
-          <xf:input ref="@value"/>
-        </td>
-        <td>						
-					</td>
-      </tr>
-    </table>
-  </xf:repeat>
-  <table>
-    <tr>
-      <td>
-        <xf:trigger>
-          <xf:label>Add Filter</xf:label>
-          <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
-        </xf:trigger>
-      </td>
-      <td>
-        <xf:trigger>
-          <xf:label style="color:red">&#x2718;</xf:label>
-          <xf:delete nodeset="filter" at="index('{$iid}')"/>
-        </xf:trigger>
-      </td>
-    </tr>
-  </table>
-		</div>
 
-	}
-	{
-		for $item in $node/(all | any)
-		return tmpl:generate-search($item, "", $index + 1)
-	}	
-	</xf:repeat>
-  <table>
-    <tr>
-      <td>
-        <xf:trigger>
-          <xf:label>Add <strong>OR</strong> Group</xf:label>
-          <xf:insert nodeset="{$root}{name($node)}" origin="instance('tmpl')/*:any" position="after" at="last()"/>
-        </xf:trigger>
-      </td>
-      <td>
-        <xf:trigger>
-          <xf:label>Add <strong>AND</strong> Group</xf:label>
-          <xf:insert nodeset="{$root}{name($node)}" origin="instance('tmpl')/*:and" position="after" at="last()"/>
-        </xf:trigger>
-      </td>
-    </tr>
-  </table>
-</div>
+declare function tmpl:filterbuilder($workspace as xs:string){
+	let $m := <data><filters>
+    <any>
+      <filter property="bezeichnung" type="contains" value="boot"/>
+	      <all>
+	        <filter property="price" type="gt" value="1000"/>
+	      </all>
+	      <any>
+	        <filter property="price" type="gt" value="1000"/>
+	      </any>
+    </any>
+  </filters></data>
+	let $filter := (<all><filter property="" type="" value=""/></all>,
+									<any><filter property="" type="" value=""/></any>,
+									<filter property="" type="" value=""/>
+									),
+   		 $binds := (
+				 <xf:bind id="all" nodeset="filters/all" relevant="."/>,
+				 <xf:bind id="allall" nodeset="filters/all/all"/>,
+				 <xf:bind id="allany" nodeset="filters/all/any"/>,
+				 <xf:bind id="any" nodeset="filters/any" relevant="."/>,
+				 <xf:bind id="anyall" nodeset="filters/any/all"/>,
+				 <xf:bind id="anyany" nodeset="filters/any/any"/>
+			)
+	return tmpl:body($filter,$m, $binds, tmpl:generate-search())
+};
+
+(: XForms Filter Builder! :)
+declare function tmpl:generate-search(){
+ 
+  <div>
+	  <xf:repeat class="all" id="all_1" nodeset="filters/all">
+	    <div>
+	      <xf:repeat nodeset="filter" test="hello" id="filter_1_977e8730-d98c-4748-8f71-c04ebb21af6c">
+	      <table style="width:480px">
+	        <tr>
+	          <td>
+	            <xf:select1 ref="@property">
+							{tmpl:properties("ws_produkte")}
+	            </xf:select1>
+	          </td>
+	          <td>
+	            <xf:select1 ref="@type">
+							{tmpl:items()}
+	            </xf:select1>
+	          </td>
+	          <td>
+	            <xf:input ref="@value"/>
+	          </td>
+	          <td/>
+	        </tr>
+	      </table>
+	      </xf:repeat>
+	      <table>
+	        <tr>
+	          <td>
+	            <xf:trigger>
+	              <xf:label>Add Filter</xf:label>
+	              <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
+	            </xf:trigger>
+	          </td>
+	          <td>
+	            <xf:trigger>
+	              <xf:label style="color:red">✘</xf:label>
+	              <xf:delete nodeset="filter" at="index('filter_1_977e8730-d98c-4748-8f71-c04ebb21af6c')"/>
+	            </xf:trigger>
+	          </td>
+	        </tr>
+	      </table>
+	    </div>
+	    <div>
+	      <xf:repeat class="all" id="all_2" nodeset="all">
+	        <div>
+	          <xf:repeat nodeset="filter" test="hello" id="filter_2_8e3df719-72c8-450e-b6db-25e565400bed">
+	          <table style="width:480px">
+	            <tr>
+	              <td>
+	                <xf:select1 ref="@property">
+									{tmpl:properties("ws_produkte")}
+	                </xf:select1>
+	              </td>
+	              <td>
+	                <xf:select1 ref="@type">
+									{tmpl:items()}
+	                </xf:select1>
+	              </td>
+	              <td>
+	                <xf:input ref="@value"/>
+	              </td>
+	              <td/>
+	            </tr>
+	          </table>
+	          </xf:repeat>
+	          <table>
+	            <tr>
+	              <td>
+	                <xf:trigger>
+	                  <xf:label>Add Filter</xf:label>
+	                  <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
+	                </xf:trigger>
+	              </td>
+	              <td>
+	                <xf:trigger>
+	                  <xf:label style="color:red">✘</xf:label>
+	                  <xf:delete nodeset="filter" at="index('filter_2_8e3df719-72c8-450e-b6db-25e565400bed')"/>
+	                </xf:trigger>
+	              </td>
+	            </tr>
+	          </table>
+	        </div>
+	      </xf:repeat>
+			  <!--    <table>
+	        <tr>
+	          <td>
+	            <xf:trigger>
+	              <xf:label>Add <strong>OR</strong> Group</xf:label>
+	              <xf:insert nodeset="all" origin="instance('tmpl')/*:any" position="after" at="last()"/>
+	            </xf:trigger>
+	          </td>
+	          <td>
+	            <xf:trigger>
+	              <xf:label>Add <strong>AND</strong> Group</xf:label>
+	              <xf:insert nodeset="all" origin="instance('tmpl')/*:and" position="after" at="last()"/>
+	            </xf:trigger>
+	          </td>
+	        </tr>
+	      </table> -->
+	    </div>
+	    <div>
+	      <xf:repeat class="any" id="any_2" nodeset="any">
+	        <div>
+	          <xf:repeat nodeset="filter" test="hello" id="filter_2_cb23138f-f39b-4b18-9bd2-40d137210021">
+	            <table style="width:480px">
+	              <tr>
+	                <td>
+	                  <xf:select1 ref="@property">
+										{tmpl:properties("ws_produkte")}
+	                  </xf:select1>
+	                </td>
+	                <td>
+	                  <xf:select1 ref="@type">
+										{tmpl:items()}
+	                  </xf:select1>
+	                </td>
+	                <td>
+	                  <xf:input ref="@value"/>
+	                </td>
+	                <td/>
+	              </tr>
+	            </table>
+	          </xf:repeat>
+	          <table>
+	            <tr>
+	              <td>
+	                <xf:trigger>
+	                  <xf:label>Add Filter</xf:label>
+	                  <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
+	                </xf:trigger>
+	              </td>
+	              <td>
+	                <xf:trigger>
+	                  <xf:label style="color:red">✘</xf:label>
+	                  <xf:delete nodeset="filter" at="index('filter_2_cb23138f-f39b-4b18-9bd2-40d137210021')"/>
+	                </xf:trigger>
+	              </td>
+	            </tr>
+	          </table>
+	        </div>
+	      </xf:repeat>
+
+	  <!--    <table>
+	        <tr>
+	          <td>
+	            <xf:trigger>
+	              <xf:label>Add <strong>OR</strong> Group</xf:label>
+	              <xf:insert nodeset="any" origin="instance('tmpl')/*:any" position="after" at="last()"/>
+	            </xf:trigger>
+	          </td>
+	          <td>
+	            <xf:trigger>
+	              <xf:label>Add <strong>AND</strong> Group</xf:label>
+	              <xf:insert nodeset="any" origin="instance('tmpl')/*:and" position="after" at="last()"/>
+	            </xf:trigger>
+	          </td>
+	        </tr>
+	      </table> -->
+	    </div>
+	  </xf:repeat>
+	<!-- Top LEVEL ANY -->
+		<xf:repeat class="any" id="any1" nodeset="filters/any">
+		  <div>
+		    <xf:repeat nodeset="filter" test="hello" id="filterany_1_977e8730-d98c-4748-8f71-c04ebb21af6c">
+		    <table style="width:480px">
+		      <tr>
+		        <td>
+		          <xf:select1 ref="@property">
+							{tmpl:properties("ws_produkte")}
+		          </xf:select1>
+		        </td>
+		        <td>
+		          <xf:select1 ref="@type">
+							{tmpl:items()}
+		          </xf:select1>
+		        </td>
+		        <td>
+		          <xf:input ref="@value"/>
+		        </td>
+		        <td/>
+		      </tr>
+		    </table>
+		    </xf:repeat>
+		    <table>
+		      <tr>
+		        <td>
+		          <xf:trigger>
+		            <xf:label>Add Filter</xf:label>
+		            <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
+		          </xf:trigger>
+		        </td>
+		        <td>
+		          <xf:trigger>
+		            <xf:label style="color:red">✘</xf:label>
+		            <xf:delete nodeset="filter" at="index('filterany_1_977e8730-d98c-4748-8f71-c04ebb21af6c')"/>
+		          </xf:trigger>
+		        </td>
+		      </tr>
+		    </table>
+		  </div>
+		  <div>
+		    <xf:repeat class="all" id="all_2" nodeset="all">
+		      <div>
+		        <xf:repeat nodeset="filter" test="hello" id="filterany_2_8e3df719-72c8-450e-b6db-25e565400bed">
+		        <table style="width:480px">
+		          <tr>
+		            <td>
+		              <xf:select1 ref="@property">
+									{tmpl:properties("ws_produkte")}
+		              </xf:select1>
+		            </td>
+		            <td>
+		              <xf:select1 ref="@type">
+									{tmpl:items()}
+		              </xf:select1>
+		            </td>
+		            <td>
+		              <xf:input ref="@value"/>
+		            </td>
+		            <td/>
+		          </tr>
+		        </table>
+		        </xf:repeat>
+		        <table>
+		          <tr>
+		            <td>
+		              <xf:trigger>
+		                <xf:label>Add Filter</xf:label>
+		                <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
+		              </xf:trigger>
+		            </td>
+		            <td>
+		              <xf:trigger>
+		                <xf:label style="color:red">✘</xf:label>
+		                <xf:delete nodeset="filter" at="index('filterany_2_8e3df719-72c8-450e-b6db-25e565400bed')"/>
+		              </xf:trigger>
+		            </td>
+		          </tr>
+		        </table>
+		      </div>
+		    </xf:repeat>
+			  <!--    <table>
+		      <tr>
+		        <td>
+		          <xf:trigger>
+		            <xf:label>Add <strong>OR</strong> Group</xf:label>
+		            <xf:insert nodeset="all" origin="instance('tmpl')/*:any" position="after" at="last()"/>
+		          </xf:trigger>
+		        </td>
+		        <td>
+		          <xf:trigger>
+		            <xf:label>Add <strong>AND</strong> Group</xf:label>
+		            <xf:insert nodeset="all" origin="instance('tmpl')/*:and" position="after" at="last()"/>
+		          </xf:trigger>
+		        </td>
+		      </tr>
+		    </table> -->
+		  </div>
+		  <div>
+		    <xf:repeat class="any" id="any_2" nodeset="any">
+		      <div>
+		        <xf:repeat nodeset="filter" test="hello" id="filterany_2_cb23138f-f39b-4b18-9bd2-40d137210021">
+		          <table style="width:480px">
+		            <tr>
+		              <td>
+		                <xf:select1 ref="@property">
+										{tmpl:properties("ws_produkte")}
+		                </xf:select1>
+		              </td>
+		              <td>
+		                <xf:select1 ref="@type">
+										{tmpl:items()}
+		                </xf:select1>
+		              </td>
+		              <td>
+		                <xf:input ref="@value"/>
+		              </td>
+		              <td/>
+		            </tr>
+		          </table>
+		        </xf:repeat>
+		        <table>
+		          <tr>
+		            <td>
+		              <xf:trigger>
+		                <xf:label>Add Filter</xf:label>
+		                <xf:insert nodeset="filter" origin="instance('tmpl')/*:filter" position="after" at="last()"/>
+		              </xf:trigger>
+		            </td>
+		            <td>
+		              <xf:trigger>
+		                <xf:label style="color:red">✘</xf:label>
+		                <xf:delete nodeset="filter" at="index('filterany_2_cb23138f-f39b-4b18-9bd2-40d137210021')"/>
+		              </xf:trigger>
+		            </td>
+		          </tr>
+		        </table>
+		      </div>
+		    </xf:repeat>
+		  </div>
+		</xf:repeat>
+	</div>
 };
 
 declare function tmpl:properties($name){
