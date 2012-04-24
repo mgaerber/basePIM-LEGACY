@@ -4,6 +4,7 @@ module namespace  upload = "http://basex.org/basePIM/upload";
 declare namespace rest   = "http://exquery.org/ns/restxq";
 
 import module namespace file-service = "http://basex.org/basePIM/file-service" at "../services/file-service.xqm";
+import module namespace meta = 'http://basex.org/modules/meta';
 
 (:~
  : Test XMLHttpRequest GET functionality.
@@ -13,9 +14,9 @@ import module namespace file-service = "http://basex.org/basePIM/file-service" a
 declare
     %rest:GET
     %rest:path("/upload/file/get/answer/42")
-    %output:method("text")
+    %output:method("xml")
 function upload:xmlhttprequest-get() {
-    "We all know it. The answer is: 42"
+    "The answer is 42"
 };
 
 (:~
@@ -54,19 +55,48 @@ function upload:put-file($name, $img) {
 declare
     %rest:GET
     %rest:path("/file/list")
-    %output:method("text")
+    %output:method("html")
 function upload:list-files() {
-    db:list("ws_bilder")
+    <ul>
+      {
+      for $f in db:list("ws_bilder")
+      return 
+        if ($f)
+        then <li><a href="/rest/ws_bilder/{ $f }" target="_blank">{ $f }</a></li> 
+        else ()
+      }
+    </ul>
 };
 
 (:~
  : Receives file data.
+ :
+ : Files uploaded are sent with 'Content-Type: application/octet-stream'.
+ : BaseX Database Module (http://docs.basex.org/wiki/Database_Module)
+ : is used to store the received data. Files are saved inside the database
+ : directory in a subfolder entitled 'raw'.
+ : 
+ : Using ...
  :)
 declare
     %rest:PUT("{$img}")
 	%rest:path("/upload/image/put/{$name}")
+	%output:method("text")
 updating function upload:put-image($name, $img) {
-     db:store("ws_bilder", $name, $img)
+    db:output("File is uploaded"),
+    db:store("ws_bilder", $name, $img)
+};
+
+declare
+    %rest:GET
+	%rest:path("/upload/metadata/")
+	%output:method("xml")
+function upload:get-metadata() {
+    let $root := "DATA/ws_bilder/raw/"
+    return
+        for $f in file:list($root)
+        let $md := meta:extract($root || $f)
+        return <file name="{ $f }">{$md}</file>
 };
 
 (:~

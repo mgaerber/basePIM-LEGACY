@@ -24,13 +24,28 @@
             	border-top-left-radius: 4px 4px;
             	border-top-right-radius: 4px 4px;
             }
-            #selected_files, #server_file_list {
+            #selected_files {
             	width: 670px;
             	height: 150px;
             	margin: 0 auto 1em;
             	color: #514721;
             	border: 0.2em solid #DDDDDD;
             	background-color: #EEEEEE;
+            	text-align: left;
+            	-moz-border-radius: 4px 4px;
+            	-webkit-border-radius: 4px 4px;
+            	border-bottom-left-radius: 4px 4px;
+            	border-bottom-right-radius: 4px 4px;
+            	border-top-left-radius: 4px 4px;
+            	border-top-right-radius: 4px 4px;
+            }
+            #server_file_list {
+            	width: 670px;
+            	height: auto;
+            	margin: 0 auto 1em;
+            	color: #514721;
+            	border: 0.2em solid #DDDDDD;
+            	background-color: #FFFFCC;
             	text-align: left;
             	-moz-border-radius: 4px 4px;
             	-webkit-border-radius: 4px 4px;
@@ -105,7 +120,7 @@
             /* Tests XHR via GET. */
             function test_GET() {
                 var xhReq = new XMLHttpRequest();
-                xhReq.open("GET", "/restxq/upload/file/get/answer/42", true);
+                xhReq.open("GET", "/restxq/upload/file/get/answer/42", false);
                  xhReq.onreadystatechange = function() {
                     if (xhReq.readyState != 4)  {
                         alert("Not ready yet.");
@@ -173,7 +188,7 @@
                             // Send to server (as DataURL, data:image/jpeg;base64,/9j/4Sd+RXhpZgAAS...)
                             var fblob = dataURL_to_blob(fdataURL);
                             put_file(fblob, fname);
-                            alert("putted file");
+                            //alert("putted file");
                         };
                     })(f);
                     // Read in the image file as a dataURL.
@@ -182,13 +197,13 @@
             }
             /* Uploads file data via XHR and PUT. */
             function put_file(data, name) {
-               alert("put" + data.toString());
+               //alert("put" + data.toString());
                var xhReq = new XMLHttpRequest();
-                xhReq.open("PUT", "/restxq/upload/image/put/" + name, true);
+                xhReq.open("PUT", "/restxq/upload/image/put/" + name, false);
                 xhReq.setRequestHeader('Content-Type', 'application/octet-stream');
                 xhReq.onreadystatechange = function() {
                     if (xhReq.readyState != 4)  {
-                        alert("Not ready yet.");
+                        alert("Upload in progress.");
                         return;
                     }
                     /* Server is ready, files have been uploaded.
@@ -196,6 +211,8 @@
                      * response can be expected. Therefore, we explicitly request (GET)
                      * the information of what is stored in the server.
                      */
+                    var serverResponse = xhReq.responseText;
+                    alert(serverResponse);
                 };
                 xhReq.send(data);
             }
@@ -232,6 +249,8 @@
             }
             /* Lists files. */
             function list_files() {
+                var fileList = document.getElementById("")
+                
                 var xhReq = new XMLHttpRequest();
                 xhReq.open("GET", "/restxq/file/list", false);
                  xhReq.onreadystatechange = function() {
@@ -239,7 +258,24 @@
                         return;
                     }
                     var serverResponse = xhReq.responseText;
-                    alert(serverResponse); // Shows "PUTvalue sent back from server"
+                    //alert(serverResponse);
+                    
+                    var serverList = document.getElementById('server_file_list');
+                    serverList.innerHTML = serverResponse;
+                };
+                xhReq.send(null);
+            }
+             /* Show metadata. */
+            function show_meta() {
+                var xhReq = new XMLHttpRequest();
+                xhReq.open("GET", "/restxq/upload/metadata", false);
+                 xhReq.onreadystatechange = function() {
+                    if (xhReq.readyState != 4)  {
+                        alert("Not ready yet.");
+                        return;
+                    }
+                    var serverResponse = xhReq.responseText;
+                    alert(serverResponse);
                 };
                 xhReq.send(null);
             }
@@ -287,8 +323,12 @@
                 <p>Currently selected files (will be uploaded to server):</p>
                 <div id="selected_files"></div>
             </div>
+            <hr/>
             <div>
-                <button onclick="list_files()">List files stored on server</button> 
+                <p>Show data stored on server:</p>
+                <div id="server_file_list"></div>
+                <button onclick="list_files()">List files stored on server</button></div<br/>
+                <button onclick="show_meta()">Show metadata of files stored on server</button></div<br/>
             </div>
         </div>
         <hr/>
