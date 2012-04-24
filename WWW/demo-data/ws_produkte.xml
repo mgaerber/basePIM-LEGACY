@@ -53,7 +53,7 @@
         </value>
       </property>
       <property name="Bild" idref="171227e0-0f7d-11e1-be50-0800200c9a66" inheritable="true"/>
-      <node name="Variante Luxus" type="motor-ausfuehrung" id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc">
+      <node name="Variante Luxus" type="motor-ausfuehrung" id="870ab68b-afc5-44d1-8e5f-8ba367b3c7fc-luxus">
         <!-- key-features werden überschrieben -> muss ins Schema -->
         <property name="bezeichnung">
           <value>
