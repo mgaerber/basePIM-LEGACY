@@ -43,12 +43,12 @@
 		<script type="text/javascript">
      $(window).load(function() {
      
-      $('#featured').orbit();
+      //$('#featured').orbit();
       
-       /*$('#featured').orbit({
-		     animation: 'fade',                  // fade, horizontal-slide, vertical-slide, horizontal-push
+       $('#featured').orbit({
+		     animation: 'horizontal-push',                  // fade, horizontal-slide, vertical-slide, horizontal-push
 		     animationSpeed: 800,                // how fast animtions are
-		     timer: true, 			 // true or false to have the timer
+		     timer: false, 			 // true or false to have the timer
 		     resetTimerOnClick: false,           // true resets the timer instead of pausing slideshow progress
 		     advanceSpeed: 4000, 		 // if timer is enabled, time between transitions 
 		     pauseOnHover: false, 		 // if you hover pauses the slider
@@ -56,14 +56,14 @@
 		     startClockOnMouseOutAfter: 1000, 	 // how long after MouseOut should the timer start again
 		     directionalNav: true, 		 // manual advancing directional navs
 		     captions: true, 			 // do you want captions?
-		     captionAnimation: 'fade', 		 // fade, slideOpen, none
+		     captionAnimation: 'slideOpen', 		 // fade, slideOpen, none
 		     captionAnimationSpeed: 800, 	 // if so how quickly should they animate in
 		     bullets: false,			 // true or false to activate the bullet navigation
 		     bulletThumbs: false,		 // thumbnails for the bullets
 		     bulletThumbLocation: '',		 // location from this file where thumbs will be
 		     afterSlideChange: function(){}, 	 // empty function 
 		     fluid: true                         // or set a aspect ratio for content slides (ex: '4x3') 
-		});*/
+		});
      });
 </script>
 
@@ -80,6 +80,7 @@
 					</h2>
 					<h4 class="subheader">Cross Media Publishing Toolbox</h4>
 					<hr />
+				
 				</div>
 			</div>
 
@@ -88,13 +89,13 @@
 
 					<dl class="nice vertical tabs">
 						<dd>
-							<a href="#start" class="notactive">Start</a>
+							<a href="#start" class="active">Start</a>
 						</dd>
 						<dd>
-							<a href="#cmp1x1" class="notactive">CMP 1x1</a>
+							<a href="#cmp1x1" class="">CMP 1x1</a>
 						</dd>
 						<dd>
-							<a href="#pim1x1" class="active">PIM 1x1</a>
+							<a href="#pim1x1" class="">PIM 1x1</a>
 						</dd>
 						<dd>
 							<a href="#arch">Architektur</a>
@@ -112,9 +113,10 @@
 
 					<ul class="nice vertical tabs-content">
 
-						<li class="notactive" id="startTab">
+						<li class="active" id="startTab">
 							<div class="row">
-								<div class="six columns centered">
+								<div class="twelve columns centered">
+									<img src="images/toolbox.jpg"/>
 									<!--<p style="font-size:120%;">
 									oder: was macht der Gärber eigentlich immer in Konstanz?
 								</p>-->
@@ -122,7 +124,7 @@
 							</div>
 						</li>
 
-						<li class="notactive" id="cmp1x1Tab">
+						<li class="" id="cmp1x1Tab">
 
 
 							<div class="row">
@@ -202,7 +204,7 @@
 							</div>
 						</li>
 
-						<li class="notactive" id="pim1x1Tab">
+						<li class="" id="pim1x1Tab">
 
 							<!--<dl class="sub-nav">
 							<dt>Filter:</dt>
@@ -212,13 +214,7 @@
 							<dd><a href="#inherit_div">Vererbung</a></dd>
 						</dl>-->
 
-							<div class="row">
-								<div class="twelve columns">
-									<h4 id="ws_div">Arbeitsbereiche</h4>
-									<hr />
-									<img src="images/pim-1x1/workspacesnodes.png" />
-								</div>
-							</div>
+							
 
 							<div class="row">
 								<div id="prop_div" class="six columns">
@@ -232,6 +228,31 @@
 									<hr />
 									<img src="images/pim-1x1/propertyinheritance.png" />
 								</div>
+								
+								<div class="row">
+									<div class="twelve columns">
+										<h4 id="ws_div">Arbeitsbereiche</h4>
+										<hr />
+										<img src="images/pim-1x1/workspacesnodes.png" />
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="twelve columns">
+										<h4 id="tpl_div">Template Based Editing</h4>
+										<hr />
+										<img src="images/pim-1x1/genericvscustomtemplate.png" />
+									</div>
+								</div>
+								
+								<div class="row">
+								<div class="six columns">
+									<h4 id="tpl_edit_div">Edit</h4>
+									<hr />
+									<img src="images/pim-1x1/customtemplateedit.png" />
+								</div>
+								</div>
+								
 
 							</div>
 
@@ -249,7 +270,7 @@
 
 						</li>
 
-						<li id="screensTab" class="active">
+						<li id="screensTab">
 
 							<div class="row">
 								<div class="twelve columns">
@@ -261,9 +282,9 @@
 										<img alt="Hauptfenster"
 											src="images/screens/162-axxepta-GUI_Grid-Template-Edit_Short.png"
 										/>
-										<img src="images/screens/3_162-axxepta-GUI_Tree-Edit_Small.jpg"
+										<img alt="Tree Edit" src="images/screens/3_162-axxepta-GUI_Tree-Edit_Small.jpg"
 										/>
-										<img
+										<img alt="View Template"
 											src="images/screens/5_162-axxepta-GUI_View-Template_Small.jpg"
 										/>
 									</div>
@@ -326,11 +347,11 @@
 										<ul>
 											<li>
 												<a target="_blank" href="http://localhost:8984/restxq/ws/ws_bootsmotoren/nodej-meta/n/ElektromotorenWatersnake"
-													>Konten-Hierarchie listen (json)</a>
+													>Knoten-Hierarchie listen (json)</a>
 											</li>
 											<li>
 												<a target="_blank" href="http://localhost:8984/restxq/ws/ws_bootsmotoren/node-meta/n/ElektromotorenWatersnake"
-													>Konten-Hierarchie listen (xml)</a>
+													>Knoten-Hierarchie listen (xml)</a>
 											</li>
 											<li>
 												<a target="_blank" href="http://localhost:8984/restxq/ws/ws_bootsmotoren/n/36088-d1e365206-346297/slots.json"
