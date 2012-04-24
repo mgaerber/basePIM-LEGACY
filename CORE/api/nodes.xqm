@@ -23,6 +23,19 @@ function api:get-node($type as xs:string, $uuid as xs:string){
    nodes:get-product($type, $uuid)
 };
 
+declare 
+%rest:GET
+%rest:path("/ws/flat/{$uuid}")
+%rest:produces("application/xml")
+function api:flat($uuid as xs:string){
+	let $prod := nodes:get-product("ws_produkte", $uuid),
+		$map := nodes:flatten-product($prod)
+	return
+	(
+	nodes:from-map($map)
+	)
+};
+
 declare
 %rest:GET
 %rest:path("/ws/{$type}/node/n/{$name}")
