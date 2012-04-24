@@ -1,7 +1,7 @@
 module namespace nodes = "http://basepim.org/nodes";
 
 (:~ the database instance, this should be refactored :)
-declare variable $nodes:db := <test></test>; (:db:open('ws_produkte'); :)
+declare variable $nodes:db := db:open('ws_produkte'); 
 (:~
     Gets a single product identified by its uuid
     @param $uuid
@@ -99,13 +99,14 @@ declare function nodes:get-product-meta-by-name($type as xs:string, $name as xs:
     @param $ws the workspace to flatten
     @return a map() containing all products with their properties
 :)
-declare function nodes:flatten-product($prod as element(node)) as map(*){
+declare function nodes:flatten-product($prod as element(node)) as map(*)?{
     let $ids := 
      (for $id in 
-         $nodes:db//node[@guid = $prod/@guid]/ancestor::*/@guid
-        return string($id), $prod/@guid)
+         $nodes:db//node[@id = $prod/@id]/ancestor::*/@id
+        return string($id), $prod/@id
+		)
     let $ws := $prod/ancestor::workspace
-    return nodes:flatten($ws, $ids)($prod/@guid)
+    return nodes:flatten($ws, $ids)($prod/@id)
 };
 
 (:~
@@ -129,7 +130,7 @@ declare function nodes:flatten(
   fold-left(
     nodes:flatten(?, ?, map:new(), tail($filter)),
     map:new(),
-    if(head($filter)) then $ws/node[@guid eq head($filter)]
+    if(head($filter)) then $ws/node[@id eq head($filter)]
     else $ws/node  )
 };
 
@@ -139,15 +140,15 @@ declare function nodes:flatten(
   $props as map(*),
   $filter as xs:string*
 ) as map(*) {
-    (: let $trace := trace(( $pr/@guid),"Products") :)
-    
     let $props := map:new(($props, nodes:get-props($pr))),
+				
        $prods2 := map:new((
          $prods,
-         map:entry($pr/@guid,
+         map:entry($pr/@id,
            map{
              'name':=$pr/@name,
              'type':=$pr/@type,
+             'id':=$pr/@id,
              'properties':=$props
            }
          )
@@ -155,12 +156,12 @@ declare function nodes:flatten(
     return fold-left(
         nodes:flatten(?, ?, $props, tail($filter) (: - 1 :)),
         $prods2,
-        if(head($filter)) then $pr/node[@guid eq head($filter)]
+        if(head($filter)) then $pr/node[@id eq head($filter)]
         else $pr/node
       )
 };
 (:~
-    Constructs the properties Map including a nodes referenced properties.
+    Constructs the properties Map including a node’s referenced properties.
     @param $pr the current node
     @return a map consisting of the properties
 :)
@@ -169,9 +170,10 @@ declare function nodes:get-props(
 ) as map(*)* {
   let $refs := map:new( 
     (: get referenced properties :)
-    for $_prop in $pr/property[@guidref]
-    let $prop := $nodes:db//property[@guid eq $_prop/@guidref]
-    return map:entry($prop/@name,
+    for $_prop in $pr/property[@idref]
+    let $prop := $nodes:db//property[@id eq $_prop/@idref]
+				(: $_ := trace($prop/@name/string(), "PROP") :)
+    return if($prop/@name) then map:entry($prop/@name,
         map:new(
           for $lang in distinct-values($prop/value/slot/@lang)
           let $vals := $prop/value/slot[@lang = $lang]
@@ -179,16 +181,17 @@ declare function nodes:get-props(
           let $map :=  nodes:vals($vals)
           return map:entry(($lang, 'any')[1], $map)
       ) 
-    ))
+    ) else ()
+	)
   let $direct := 
   map:new(
-    for $prop in $pr/property[not(@guidref)]
+    for $prop in $pr/property[not(@idref)]
     return map:entry($prop/@name,
       map:new(
+				(: keep the language to allow per language overwrites of slots :)
         for $lang in distinct-values($prop/value/slot/@lang)
         let $vals := $prop/value/slot[@lang = $lang]
-        let $sl := trace(string-join($vals), "VAL") 
-        let $map :=  nodes:vals($vals)
+        let $map :=  $vals
         return map:entry(($lang, 'any')[1], $map)
       )
     )
@@ -201,4 +204,24 @@ declare function nodes:get-props(
 declare function nodes:vals($node){
   string-join($node, ", ")
 };
-
+(:~ 
+: Serializes a map to a Node with Property->Slot hierarchies
+:
+~:)
+declare function nodes:from-map($map as map(*)) as element(node){
+	<node>{
+	for $k in map:keys($map)
+		where $k = ("name", "id", "type")
+	return attribute {$k} {$map($k)}
+	}
+	{
+		for $it in map:keys($map("properties"))
+		let $item := $map("properties")($it)
+		return <property>{
+			attribute {"name"} {$it},
+			for $kk in map:keys($item)
+			return $item($kk)
+		}</property>
+	}
+	</node>
+};
