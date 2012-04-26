@@ -6,20 +6,19 @@ declare namespace xf = "http://www.w3.org/2002/xforms";
 declare namespace ev = "http://www.w3.org/2001/xml-events";
 (: import module namespace xmldb = "http://basex.org/basePIM/xmldb" at "../services/db-service.xqm"; :)
 
-declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, $content as element()){
+declare function tmpl:body($workspace as xs:string, $model as element(), $bindings as element(xf:bind)*, $content as element()){
 	
-	let $id := if($model/@id) then attribute {"id"} {"ii_"||$model/@id/string()} else (),
-	$_ := trace($id, "simple")
+	let $id := if($model/@id) then attribute {"id"} {"ii_"||$model/@id/string()} else ()
 	return
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
      <head>
         <title>Edit</title>
-        <xf:model>
+        <xf:model xmlns="">
            <xf:instance  xmlns="">
 							{ $id }
               { $model }
            	</xf:instance>
-          <xf:submission action="/restxq/xforms/dump" id="dump" method="post" />
+          <xf:submission action="/restxq/xforms/dump/{$workspace}" id="dump" method="post" />
           {$bindings}
         </xf:model>
 			  <style>
@@ -49,7 +48,7 @@ declare function tmpl:body($model as element(), $bindings as element(xf:bind)*, 
   
   
 };
-declare function tmpl:body($tmpls, 
+declare function tmpl:body-with-filter($tmpls, 
 	$model as element(), $bindings as element(xf:bind)*, $content as element()){
 	
 	let $id := if($model/@id) then attribute {"id"} {"ii_{$model/@id}"} else ()
@@ -295,7 +294,7 @@ declare function tmpl:filterbuilder($workspace as xs:string){
 				 <xf:bind id="anyall" nodeset="filters/any/all"/>,
 				 <xf:bind id="anyany" nodeset="filters/any/any"/>
 			)
-	return tmpl:body($filter,$m, $binds, tmpl:generate-search())
+	return tmpl:body-with-filter($filter,$m, $binds, tmpl:generate-search())
 };
 
 (: XForms Filter Builder! :)
