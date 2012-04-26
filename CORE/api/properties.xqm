@@ -2,7 +2,7 @@ module namespace api = "http://basepim.org/ws";
 declare namespace rest = "http://exquery.org/ns/restxq";
 import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
 import module namespace properties = "http://basepim.org/properties" at "../services/property-service.xqm";
-import module namespace util = "http://basepim.org/util" at "../util/util.xqm";
+import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jsonutil.xqm";
 
 
 (:

@@ -1,4 +1,4 @@
-module namespace util = "http://basepim.org/util";
+module namespace jsonutil = "http://basepim.org/jsonutil";
 
 (:~
  : Convert attributes to corresponding elements
@@ -15,21 +15,21 @@ module namespace util = "http://basepim.org/util";
     </attributes>
  : </node>
  :)
-declare function util:attr-to-elem($elem as element(), $wrapper as xs:string ) as element() {
+declare function jsonutil:attr-to-elem($elem as element(), $wrapper as xs:string ) as element() {
 
     element {name($elem)} {
     
-    (if($wrapper ne '') then element {$wrapper}{util:atts-to-elems($elem/@*)}
-     else util:atts-to-elems($elem/@*)),
+    (if($wrapper ne '') then element {$wrapper}{ jsonutil:atts-to-elems($elem/@*) }
+     else jsonutil:atts-to-elems($elem/@*)),
        $elem/text(),
       (
            for $n in $elem/*
-            return util:attr-to-elem($n, $wrapper)
+            return jsonutil:attr-to-elem($n, $wrapper)
        )
        }
 };
 
-declare function util:atts-to-elems($atts as attribute()*) as element()* {
+declare function jsonutil:atts-to-elems($atts as attribute()*) as element()* {
 
         for $a in $atts
                     return 
