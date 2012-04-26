@@ -126,6 +126,11 @@ declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) a
 			</xf:input>
 		</div>
 		}
+		<div>
+			<xf:input ref="instance('ii_{$uuid}')/.">
+				<xf:label>Value</xf:label>
+			</xf:input>
+		</div>
   </div>
 };
 

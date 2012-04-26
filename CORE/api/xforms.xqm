@@ -25,10 +25,10 @@ function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()
         default return ()
      let $form  := 
       switch($prop/@name)
-        case "bezeichnung" return tmpl:edit-bezeichnung($uuid)
-        case "dimensions" return tmpl:edit-dimensions($uuid)
-        case "gewicht"    return tmpl:edit-gewicht($uuid)
-        default return tmpl:edit-generic($uuid, $slot)
+        case "bezeichnung"	return tmpl:edit-bezeichnung($uuid)
+        case "dimensions" 	return tmpl:edit-dimensions($uuid)
+        case "gewicht"    	return tmpl:edit-gewicht($uuid)
+        default 						return tmpl:edit-generic($uuid, $slot)
     return tmpl:body($slot, $binds, $form)
 };
 
