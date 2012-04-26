@@ -127,7 +127,7 @@
 	</context-param>
 	<context-param>
 		<param-name>org.basex.repopath</param-name>
-		<param-value>repo</param-value>
+		<param-value>../REPO</param-value>
 	</context-param>
 	<context-param>
 		<param-name>org.basex.lang</param-name>
