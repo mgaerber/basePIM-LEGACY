@@ -12,13 +12,20 @@ declare function tmpl:body($workspace as xs:string, $model as element(), $bindin
 	return
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
      <head>
+			<style type="text/css">
+			
+			</style>
         <title>Edit</title>
         <xf:model xmlns="">
            <xf:instance  xmlns="">
 							{ $id }
               { $model }
            	</xf:instance>
-          <xf:submission action="/restxq/xforms/dump/{$workspace}" id="dump" method="post" />
+          <xf:submission action="/restxq/xforms/dump/{$workspace}" replace="instance" id="dump" method="post">
+			    <xf:message ev:event="xforms-submit-error">A submission error (<output value="event('error-type')"/>) occurred.</xf:message>
+			    <xf:message level="ephemeral" ev:event="xforms-submit-done">Data has been successfully saved</xf:message>
+
+					</xf:submission>
           {$bindings}
         </xf:model>
 			  <style>

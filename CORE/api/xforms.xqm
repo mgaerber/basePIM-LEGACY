@@ -42,9 +42,12 @@ function xforms:dump($body){
 declare
   %rest:path("/xforms/dump/{$workspace}")
   %rest:POST("{$body}")
-  %output:method("text")
-updating function xforms:dump($body, $workspace as xs:string){
-	db:output(serialize($body) || " has been saved!"), replace node db:open($workspace)//slot[@id = $body/@id] with $body
+  %output:method("xml")
+ updating  function xforms:dump($body, $workspace as xs:string){
+
+	db:output($body/slot),
+		replace node  db:open($workspace)//slot[@id = $body/slot/@id]
+	 with $body/slot
 };
 
 (:~
