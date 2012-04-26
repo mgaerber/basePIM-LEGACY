@@ -16,7 +16,7 @@ declare
   %rest:produces("application/xml")
 function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()+ {
      let $slot  := nodes:get-slot-by-id($workspace, $uuid)
-     let $prop  := $slot/ancestor::property
+     let $prop  := trace($slot/ancestor::property, "Ancestor")
      let $binds :=
       switch(string($prop/@name))
         case "bezeichnung" return tmpl:bezeichnung-bind($uuid)
@@ -25,11 +25,11 @@ function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()
         default return ()
      let $form  := 
       switch($prop/@name)
-        case "bezeichnung" return tmpl:edit-bezeichnung($uuid)
-        case "dimensions" return tmpl:edit-dimensions($uuid)
-        case "gewicht"    return tmpl:edit-gewicht($uuid)
-        default return tmpl:edit-generic($uuid, $slot)
-    return tmpl:body($slot, $binds, $form)
+        case "bezeichnung"	return tmpl:edit-bezeichnung($uuid)
+        case "dimensions" 	return tmpl:edit-dimensions($uuid)
+        case "gewicht"    	return tmpl:edit-gewicht($uuid)
+        default 						return tmpl:edit-generic($uuid, $slot)
+    return tmpl:body($workspace, $slot, $binds, $form)
 };
 
 declare
@@ -38,6 +38,13 @@ declare
   %output:method("text")
 function xforms:dump($body){
   <pre>{serialize($body)}</pre>
+};
+declare
+  %rest:path("/xforms/dump/{$workspace}")
+  %rest:POST("{$body}")
+  %output:method("text")
+updating function xforms:dump($body, $workspace as xs:string){
+	db:output(serialize($body) || " has been saved!"), replace node db:open($workspace)//slot[@id = $body/@id] with $body
 };
 
 (:~
