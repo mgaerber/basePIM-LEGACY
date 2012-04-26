@@ -196,10 +196,10 @@
 					grid.startup();
 					
 					*/
-					
+					var _ws = "ws_bootsmotoren";
 					//url: "http://localhost:8984/restxq/ws/ws_bootsmotoren/n/36088-d1e365206-346297/slots.json",
 					xhr.get({
-						url: "http://localhost:8984/restxq/ws/ws_bootsmotoren/n/"+id+"/slots.json",
+						url: "http://localhost:8984/restxq/ws/"+ _ws +"/n/"+id+"/slots.json",
 						handleAs: "json"
 					}).then(function(data){
 						store = new Memory({ data: data.node });
@@ -215,7 +215,19 @@
 								{ name: "Slot DE ID", field: "slot-de-id"}
 							]
 						}, "grid");
-					
+					  console.dir(grid);
+					  require(["dojo/_base/connect"], function(connect){
+              connect.connect(grid, "onRowDblClick", null, function(e){
+                  _id = e.grid.store.getValue(e.grid.getItem(e.rowIndex), "slot-de-id" );
+                  _url = '/restxq/xforms/edit-slot/'+ _ws +'/'+ _id;
+                  editDialog = new dijit.Dialog({
+                      title: "Editing Slot #"+ _id,
+                      content: '<iframe src="'+ _url +'" width="100%" height="100%"" />',
+                      style: "width: 85%;height:85%;"
+                  });
+                  editDialog.show();
+                }, true);
+            });
 						// since we created this grid programmatically, call startup to render it
 						grid.startup();
 						}else{
@@ -286,48 +298,7 @@
     			
     		<div data-dojo-type="dijit.layout.ContentPane" id="pane_pub" title="Publikationen">
     				
-    		</div>
- 
- 
- 
-    			<!--<div data-dojo-type="dijit.layout.ContentPane" title="Test Panel">
-    				<h4>Dialog Test</h4>
-    				
-    				<div class="dijitHidden">
-    					<!-\- dialog that gets its content via ajax, uses loading message -\->
-    					<div data-dojo-type="dijit.Dialog" style="width:600px;" id="propDialog">
-    						<!-\-<p>some content</p>-\->
-    					<!-\-	<iframe src="http://localhost:8984/restxq/xforms/edit/ws_produkte/Powermotor/dimensions" width="100%" height="100%"></iframe>-\->
-    						<!-\-
-    						<iframe src="/restxq/xforms/edit-slot/ws_produkte/2ee57faa-bde5-49a4-81ef-aa1b30a9e637" width="100%" height="100%"></iframe>
-    						-\->
-    					</div>
-    				</div>
-    				
-    				<table style="border: solid 1px grey;">
-    					<thead>
-    						<th>
-    							Merkmal
-    						</th>
-    						<th>
-    							Wert
-    						</th>
-    					</thead>
-    					<tbody>
-    						<tr>
-    							<td>Bezeichnung</td>
-    							<td onclick="showDialog();">XYZ Lorem Ipsum</td>
-    						</tr>
-    						<tr>
-    							<td>Farbe</td>
-    							<td onclick="showDialog();">blau</td>
-    						</tr>
-    					</tbody>
-    					
-    				</table>
-    	</div> <!-\- end Test Panel -\->-->
-    	
-    			
+    		</div>    			
     		</div>
     		
     	
