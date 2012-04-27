@@ -1,7 +1,7 @@
 module namespace api = "http://basepim.org/ws";
 declare namespace rest = "http://exquery.org/ns/restxq";
 import module namespace ws = "http://basepim.org/ws" at "../services/workspace-service.xqm";
-import module namespace util = "http://basepim.org/util" at "../util/util.xqm";
+import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jsonutil.xqm";
 
 declare
 %rest:GET
@@ -22,7 +22,7 @@ function api:list-workspaces(){
      <json objects="json workspace attributes" arrays="workspaces"> 
      <workspaces>{
         for $w in $ws/workspace
-            return util:attr-to-elem($w, "attributes")
+            return jsonutil:attr-to-elem($w, "attributes")
      }</workspaces></json>
 
 };

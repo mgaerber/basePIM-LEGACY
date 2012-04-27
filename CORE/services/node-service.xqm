@@ -95,6 +95,7 @@ declare function nodes:get-product-meta-by-name($type as xs:string, $name as xs:
 }; 
 
 (:~
+	*TODO* für Michi: Vererbung -> eigenes Modul
     Flattens (i.e. dereferences all inherited properties) all nodes of a workspace.
     @param $ws the workspace to flatten
     @return a map() containing all products with their properties
