@@ -86,13 +86,14 @@
     	
     	<script src="js/file-upload.js"></script>
     	
+    	<script src="js/node-tree.js"></script>
+    	<script src="js/node-grid.js"></script>
+    	
     	 <script>
 			<!--//
-			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dijit/Dialog", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query", 
-			"dojox/grid/DataGrid",
-			"dojo/store/Memory",
-			"dojo/data/ObjectStore", "dojo/_base/xhr",
-			"dojox/data/XmlStore"], 
+			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane",
+			"dijit/Dialog", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query", 
+			"dojox/grid/DataGrid", "dojo/store/Memory", "dojo/data/ObjectStore", "dojo/_base/xhr", "dojox/data/XmlStore"], 
 			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, JsonRest, Observable, Tree, dndSource, query,
 			DataGrid, Memory, ObjectStore, xhr, XmlStore) {
 				
@@ -100,161 +101,30 @@
 				
 				ready(function(){
 				
-				   if (window.File && window.FileReader && window.FileList && window.Blob) {
+				if (window.File && window.FileReader && window.FileList && window.Blob) {
                     // Great success! All the File APIs are supported.
                     init_dropbox();
                 } else {
                     alert('The File APIs are not fully supported in this browser.');
                 }
 				
-				mediaStore = JsonRest({
-					target:"/restxq/ws/ws_bilder/nodej-meta/n/",
-					mayHaveChildren: function(object){
-						// see if it has a children property
-						return "children" in object
-						//return object.child-count > 0
-					},
-					getChildren: function(object, onComplete, onError){
-						// retrieve the full copy of the object
-						this.get(object.name).then(function(fullObject){
-							// copy to the original object so it has the children array as well.
-							object.children = fullObject.children;
-							// now that full object, we should have an array of children
-							onComplete(fullObject.children);
-						}, function(error){
-							// an error occurred, log it, and indicate no children
-							console.error(error);
-							onComplete([]);
-						});
-					},
-					getRoot: function(onItem, onError){
-						// get the root object, we will do a get() and callback the result
-						this.get("Alle").then(onItem, onError);
-						
-					},
-					getLabel: function(object){
-						// just get the name
-						return object.name;
-					},
-				});
-				
-				workspace = JsonRest({
-					//target:"data/",
-					//target:"/restxq/ws/ws_produkte/nodej-meta/n/",
-					target:"/restxq/ws/ws_bootsmotoren/nodej-meta/n/",
-					mayHaveChildren: function(object){
-						// see if it has a children property
-						return "children" in object
-						//return object.child-count > 0
-					},
-					getChildren: function(object, onComplete, onError){
-						// retrieve the full copy of the object
-						this.get(object.name).then(function(fullObject){
-							// copy to the original object so it has the children array as well.
-							object.children = fullObject.children;
-							// now that full object, we should have an array of children
-							onComplete(fullObject.children);
-						}, function(error){
-							// an error occurred, log it, and indicate no children
-							console.error(error);
-							onComplete([]);
-						});
-					},
-					getRoot: function(onItem, onError){
-						// get the root object, we will do a get() and callback the result
-						//this.get("Motoren").then(onItem, onError);
-						this.get("Bootsmotoren").then(onItem, onError);
-						
-					},
-					getLabel: function(object){
-						// just get the name
-						return object.name;
-					},
-					
-					pasteItem: function(child, oldParent, newParent, bCopy, insertIndex){
-						var store = this;
-						store.get(oldParent.id).then(function(oldParent){
-							store.get(newParent.id).then(function(newParent){
-								var oldChildren = oldParent.children;
-								dojo.some(oldChildren, function(oldChild, i){
-									if(oldChild.id == child.id){
-										oldChildren.splice(i, 1);
-										return true; // done
-									}
-								});
-								store.put(oldParent);
-								newParent.children.splice(insertIndex || 0, 0, child);
-								store.put(newParent);
-							}, function(error){
-								alert("Error occurred (this demo is not hooked up to a real database, so this is expected): " + error);
-							});
-						});
-					},
-					put: function(object, options){
-						this.onChildrenChange(object, object.children);
-						this.onChange(object);
-						return JsonRest.prototype.put.apply(this, arguments);
-					},
-					remove: function(id){
-						// We call onDelete to signal to the tree to remove the child. The 
-						// remove(id) gets and id, but onDelete expects an object, so we create 
-						// a fake object that has an identity matching the id of the object we 
-						// are removing.
-						this.onDelete({id: id});
-						// note that you could alternately wait for this inherited add function to 
-						// finish (using .then()) if you don't want the event to fire until it is 
-						// confirmed by the server
-						return JsonRest.prototype.remove.apply(this, arguments);
-					}
-				});
-				
-				tree = new Tree({
-					model: workspace,
-					dndController: dndSource
-				}, "tree"); // make sure you have a target HTML element with this id
+				//create tree (products)
+				tree = createTree("ws_bootsmotoren", "Bootsmotoren", "tree", JsonRest, Tree, dndSource);
 				tree.startup();
 				
-				treeMedia = new Tree({
-					model: mediaStore
-					//dndController: dndSource
-				}, "treeMedia"); // make sure you have a target HTML element with this id
+				//create tree (media)
+				treeMedia = createTree("ws_bilder", "Alle", "treeMedia", JsonRest, Tree, dndSource);
 				treeMedia.startup();
 				
-				/*
-				query("#add-new-child").on("click", function(){
-					var selectedObject = tree.get("selectedItems")[0];
-					if(!selectedObject){
-						return alert("No object selected");
-					}
-					workspace.get(selectedObject.id).then(function(selectedObject){
-						selectedObject.children.push({
-							name: "New child",
-							id: Math.random()
-						});
-						workspace.put(selectedObject);
-					});
-					
-				});
-				
-				query("#remove").on("click", function(){
-					var selectedObject = tree.get("selectedItems")[0];
-					if(!selectedObject){
-						return alert("No object selected");
-					}
-					workspace.remove(selectedObject.id);
-				});
-				
-				tree.on("dblclick", function(object){
-					object.name = prompt("Enter a new name for the object");
-					workspace.put(object);
-				}, true);
-				*/
-				
 				tree.on("click", function(object){	
-
-				createGrid(object.id);}, true);	
+					createGrid("ws_bootsmotoren", object.id, "grid", Memory, ObjectStore, DataGrid, registry, xhr, Dialog);
+				}, true);	
+				
+				treeMedia.on("click", function(object){	
+					createGrid("ws_bilder", object.id, "gridMedia", Memory, ObjectStore, DataGrid, registry, xhr, Dialog);
+				}, true);	
 					
-						/*scope ? */
+				/*scope ?
 				showDialog = function() {
 					registry.byId("propDialog").show();
 				}
@@ -262,71 +132,7 @@
 				hideDialog = function() {
 					registry.byId("PropDialog").hide();
 				}
-				
-				createGrid = function(id){
-				
-				var grid = registry.byId("grid");
-				/*
-					xmlStore = new XmlStore({
-    					url: 'http://localhost:8984/restxq/ws/ws_bootsmotoren/n/36088-d1e365206-346297/slots.xml',
-    					label: 'name',
-    					rootItem: 'node'
-					});
-					
-					grid = new DataGrid({
-						store: xmlStore,
-						query: {},
-						structure: [
-							{ name: "Name", field: "name" },
-							{ name: "Slot DE", field: "slot-de"},
-							{ name: "Slot DE ID", field: "slot-de-id"}
-						]
-					}, "grid");
-					grid.startup();
-					
-					*/
-					var _ws = "ws_bootsmotoren";
-					//url: "http://localhost:8984/restxq/ws/ws_bootsmotoren/n/36088-d1e365206-346297/slots.json",
-					xhr.get({
-						url: "http://localhost:8984/restxq/ws/"+ _ws +"/n/"+id+"/slots.json",
-						handleAs: "json"
-					}).then(function(data){
-						store = new Memory({ data: data.node });
-						dataStore = new ObjectStore({ objectStore: store });
-						
-						if(grid === undefined){
-						grid = new DataGrid({
-							store: dataStore,
-							query: { name: "*" },
-							structure: [
-								{ name: "Name", field: "name", width: "20%" },
-								{ name: "Slot DE", field: "slot-de", width: "70%"},
-								{ name: "Slot DE ID", field: "slot-de-id"}
-							]
-						}, "grid");
-					  console.dir(grid);
-					  require(["dojo/_base/connect"], function(connect){
-              connect.connect(grid, "onRowDblClick", null, function(e){
-                  _id = e.grid.store.getValue(e.grid.getItem(e.rowIndex), "slot-de-id" );
-                  _url = '/restxq/xforms/edit-slot/'+ _ws +'/'+ _id;
-                  editDialog = new dijit.Dialog({
-                      title: "Editing Slot #"+ _id,
-                      content: '<iframe src="'+ _url +'" width="100%" height="100%" />',
-                      style: "width: 85%;height:85%;"
-                  });
-                  editDialog.show();
-                }, true);
-            });
-						// since we created this grid programmatically, call startup to render it
-						grid.startup();
-						}else{
-							grid.setStore(dataStore);
-						}
-				});// end then()
-				
-				
-				}
-			
+				*/
 				
 			}); /* end ready() */
 		}); 
@@ -389,12 +195,12 @@
     			
     			<div id="paneColMedia" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center', splitter: false">
     				<div id="multiple_file_upload">
-    					<!-- <p>
+    					 <p>
     						Select (multiple) files:
     						</p>
-    						<input id="filebutton" type="file" multiple onchange="select_files(this.files)"/>
+    						<input id="filebutton" type="file" multiple="multiple" onchange="select_files(this.files)"/>
     						<hr/>
-    					-->
+    					
     					<p>
     						Drop (multiple) files:
     					</p>
