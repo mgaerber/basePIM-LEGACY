@@ -14,8 +14,9 @@ xquery version "3.0";
 module namespace file-service = "http://basex.org/basePIM/file-service";
 
 (:~
- : Store file in database.
- :)
+: This function is supposed to store files inside the file system.
+: <strong>*TODO*</strong> at the moment it only dumps some information out to the browser.
+:)
 declare function file-service:store($data as item()) as element(data) {
     (: Stores a binary resource specified by $data at the location specified by $path. 
      : db:store($db as item(), $path as xs:string, $data as item()) as empty-sequence()

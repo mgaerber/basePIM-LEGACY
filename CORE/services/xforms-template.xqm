@@ -6,6 +6,13 @@ declare namespace xf = "http://www.w3.org/2002/xforms";
 declare namespace ev = "http://www.w3.org/2001/xml-events";
 (: import module namespace xmldb = "http://basex.org/basePIM/xmldb" at "../services/db-service.xqm"; :)
 
+(:~
+: Wraps any given Content in an XForms compliant container.
+: @param $workspace need for determining the save to location
+: @param $model the model to edit
+: @param $bindings optional bindings, a sequence of xf:bind nodes
+: @param $content is placed inside the body of the template
+:)
 declare function tmpl:body($workspace as xs:string, $model as element(), $bindings as element(xf:bind)*, $content as element()){
 	
 	let $id := if($model/@id) then attribute {"id"} {"ii_"||$model/@id/string()} else ()
@@ -55,6 +62,16 @@ declare function tmpl:body($workspace as xs:string, $model as element(), $bindin
   
   
 };
+(:~
+: Wraps any given Content in an XForms compliant container and allows the implementor to 
+: specify XML fragments as template instances.
+: @param $tmpls sequence of fragments that are to be used as template instances for the XForm
+: @param $workspace need for determining the save to location
+: @param $model the model to edit
+: @param $bindings optional bindings, a sequence of xf:bind nodes
+: @param $content is placed inside the body of the template
+:)
+
 declare function tmpl:body-with-filter($tmpls, 
 	$model as element(), $bindings as element(xf:bind)*, $content as element()){
 	
@@ -102,14 +119,21 @@ declare function tmpl:body-with-filter($tmpls,
   
 };
 
-
+(:~ 
+: Returns the XPath to a given slot, used to determine the references when generating the
+: generic edit form.
+: @param $child the slot
+: @return path to $child
+:)
 declare function tmpl:path-to-slot($child as node()){
 	string-join($child/ancestor-or-self::*/name(.)[not(. = ("value", "node", "property", "workspace", "slot"))], "/")
 };
+
 (:~
- : Creates a generic edit template
- :
- :
+: Creates a generic edit template for a given <code>slot</code>
+: @param $uuid unique id that has been given to the model instance
+: @param $slot the slot to edit, used as the model
+: @return XForm
 :)
 declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) as element(div){
   <div xmlns:xf="http://www.w3.org/2002/xforms">
@@ -144,6 +168,12 @@ declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) a
  : Template for property "gewicht".
  :)
 
+(:~
+: Template for editing <code>slot[@name = "gewicht"]</code>
+: @param $uuid unique id that has been given to the model instance
+: @return XForm
+:)
+
 declare function tmpl:edit-gewicht($uuid as xs:string) as element(div){
   <div xmlns:xf="http://www.w3.org/2002/xforms">
   <div>
@@ -164,15 +194,19 @@ declare function tmpl:edit-gewicht($uuid as xs:string) as element(div){
 };
 
 (:~
- : Template for property "gewicht".
- :)
-
+: Bindings for <code>slot[@name = "gewicht"]</code>
+: @param $uuid unique id that has been given to the model instance
+: @return XForm
+:)
 declare function tmpl:gewicht-bind($uuid as xs:string){
   <xf:bind nodeset="instance('ii_{$uuid}')/num" type="xs:integer" required="true()" constraint=". &gt; 0"/>
 };
+
 (:~
- : Template for property "bezeichnung".
- :)
+: Template for editing <code>slot[@name = "bezeichnung"]</code>
+: @param $uuid unique id that has been given to the model instance
+: @return XForm
+:)
 declare function tmpl:edit-bezeichnung($uuid as xs:string) as element(div) {
 
   <div xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events">
@@ -199,8 +233,10 @@ declare function tmpl:bezeichnung-bind($uuid as xs:string) as empty-sequence(){
 
 
 (:~
- : Template for property "dimension".
- :)
+: Template for editing <code>slot[@name = "dimensions"]</code>
+: @param $uuid unique id that has been given to the model instance
+: @return XForm
+:)
 declare function tmpl:edit-dimensions($uuid as xs:string) as element(div) {
 
   <div>
@@ -269,6 +305,11 @@ declare function tmpl:edit-dimensions($uuid as xs:string) as element(div) {
   </div>
   </div>
 };
+(:~
+: Bindings for <code>slot[@name = "dimensions"]</code>
+: @param $uuid unique id that has been given to the model instance
+: @return XForm
+:)
 
 declare function tmpl:dimensions-bind($uuid){
   <xf:bind nodeset="instance('ii_{$uuid}')/width/num" type="xs:integer" required="true()" constraint=". &gt; 0"/>,
