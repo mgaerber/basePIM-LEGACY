@@ -5,8 +5,12 @@ import module namespace properties = "http://basepim.org/properties" at "../serv
 import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jsonutil.xqm";
 
 
-(:
-: Get 
+(:~ 
+: This resource returns a list of all available properties.
+: A property is a compound of schema defined XML Types, 
+: such as dimensions, weights or prices.
+: A property has per language slots.
+: @return a list of available workspaces in XML.
 :)
 declare
 %rest:GET
@@ -18,8 +22,12 @@ function api:get-slots($type as xs:string, $id as xs:string){
 };
 
 
-(:
-
+(:~ 
+: This resource returns a list of all available properties.
+: A property is a compound of schema defined XML Types, 
+: such as dimensions, weights or prices.
+: A property has per language slots.
+: @return a list of available workspaces in XML.
 :)
 declare
 %rest:GET

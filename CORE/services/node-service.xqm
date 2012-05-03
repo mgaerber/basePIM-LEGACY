@@ -2,21 +2,28 @@ module namespace nodes = "http://basepim.org/nodes";
 
 (:~ the database instance, this should be refactored :)
 declare variable $nodes:db := db:open('ws_produkte'); 
+
 (:~
-    Gets a single product identified by its uuid
-    @param $uuid
-    @return the product <node />
+: Gets a single product identified by its uuid
+: @param $type the workspace to fetch data from
+: @param $uuid the unique identifier of the node
+: @return the product <node />
 :)
 declare function nodes:get-product($type as xs:string, $uuid as xs:string) as element(node){
-    let $db := db:open($type)
-    return $db//node[@id eq $uuid]
-    
-    (:<node>{
-            element {"type"} {$type},
-            element {"uuid"} {$uuid}
-           }</node>
-           :)
+    try {
+			let $db := db:open($type)
+    	return $db//node[@id eq $uuid]
+		}catch * {
+			 <node>Error!</node>
+		}
 };
+
+(:~
+: Gets a slot identified by its uuid
+: @param $workspace the workspace to fetch the &lt;slot /&gt; from
+: @param $uuid the unique identifier of the slot
+: @return a slot
+:)
 declare function nodes:get-slot-by-id($workspace as xs:string,
     $uuid as xs:string) as element(slot){
   db:open($workspace)//slot[@id = $uuid]
@@ -25,9 +32,9 @@ declare function nodes:get-slot-by-id($workspace as xs:string,
  : Returns a map containing all available languages for any given node’s properties.
  : The map contains the language as its key and the number of properties with a given language
  : as its value.
- : 
+ : @param $node the node to fetch
 :)
-declare function nodes:get-languages-for($node) as element(lang)+{
+declare function nodes:get-languages-for($node as element(node)) as element(lang)+{
  let $langs :=
     for $val in $node/descendant-or-self::*/@lang 
     let $langs := fn:tokenize($val, " ")
@@ -39,30 +46,48 @@ declare function nodes:get-languages-for($node) as element(lang)+{
    return element { "lang" }
     { (attribute { "count" } { fn:count($lang) }, $l) }
 };
+
+(:~
+: Gets a <code>property</code> identified by its uuid
+: @param $workspace the workspace to fetch the &lt;property /&gt; from
+: @param $nodename the nodes name <strong>should be changed to UUID</strong> *TODO*
+: @param $property the property name
+: @return a property
+:)
+
 declare function nodes:get-property-for($workspace as xs:string,
-  $produkt as xs:string,
+  $nodename as xs:string,
   $property as xs:string) as element(property){
-    db:open($workspace)//node[@name = $produkt]/property[@name = $property]
+    db:open($workspace)//node[@name = $nodename]/property[@name = $property]
 };
 (:~
- :  Returns all Property children for a node with a given name.
- :
+:  Returns all properties for a <code>node</code> with a given name in a given <code>workspace</code>
+: Gets a property identified by its uuid
+: @param $workspace the workspace to fetch the <code>property</code> from
+: @param $nodename the nodes name <strong>should be changed to UUID</strong> *TODO*
 :)
 declare function nodes:get-properties-for($workspace as xs:string,
   $nodename as xs:string) as element(property)*{
     db:open($workspace)//node[@name = $nodename]/property
 };
+
+(:~
+: Returns all <code>nodes</code> in a given <code>workspace</code>
+: @param $workspace the workspace to fetch the property from
+:)
 declare function nodes:get-nodes-for($workspace as xs:string) as element(node)+{
     db:open($workspace)//node
 };
 
 (:
-: returns a single node (no children)
-: TODO: check no sequence is returned
+: Returns a single, i.e. without children, <code>node</code> by name.
+: <strong>TODO: check no sequence is returned</strong>
+: @param $type the workspace name
+: @param $nodename the name of the node
 :)
-declare function nodes:get-product-by-name($type as xs:string, $name as xs:string) as element(node){
+declare function nodes:get-product-by-name($type as xs:string, $nodename as xs:string) as element(node){
     let $db := db:open($type)
-    let $node := $db//node[@name eq $name]
+    let $node := $db//node[@name eq $nodename]
     let $child-count := count($node/node)
     return
         <node>
@@ -70,16 +95,17 @@ declare function nodes:get-product-by-name($type as xs:string, $name as xs:strin
         $node/* except $node/node
         }
         </node>
-    (: return $node except $node/node :)
 }; 
 
 (:
-: returns a single node with list of direct children (no properties)
-: TODO: check no sequence is returned
+: Returns a condensed, i.e. only a list of children, <code>node</code> by name.
+
+: @param $type the workspace name
+: @param $nodename the name of the node
 :)
-declare function nodes:get-product-meta-by-name($type as xs:string, $name as xs:string) as element(node){
+declare function nodes:get-product-meta-by-name($type as xs:string, $nodename as xs:string) as element(node){
     let $db := db:open($type)
-    let $node := $db//node[@name eq $name]
+    let $node := $db//node[@name eq $nodename]
     let $child-count := count($node/node)
     return
         <node>
@@ -91,14 +117,14 @@ declare function nodes:get-product-meta-by-name($type as xs:string, $name as xs:
         </children>
         }
         </node>
-    (: return $node except $node/node :)
 }; 
 
 (:~
-	*TODO* für Michi: Vererbung -> eigenes Modul
-    Flattens (i.e. dereferences all inherited properties) all nodes of a workspace.
-    @param $ws the workspace to flatten
-    @return a map() containing all products with their properties
+:	*TODO* für Michi: Vererbung -> eigenes Modul
+:	=> WIP!	
+:    Flattens (i.e. dereferences all inherited properties) all nodes of a workspace.
+:    @param $ws the workspace to flatten
+:    @return a map() containing all products with their properties
 :)
 declare function nodes:flatten-product($prod as element(node)) as map(*)?{
     let $ids := 

@@ -1,9 +1,8 @@
 module namespace ws = "http://basepim.org/ws";
 
 (:~
- : Lists all available workspaces.
- :
- : Per convention workspace databases follow the naming scheme "ws_xxx".
+ : Lists all <em>available</em> workspaces.
+ : Per convention workspace databases follow the naming scheme <code>ws_xxx</code>
  :
  : @return Nodes
  :)
@@ -14,10 +13,12 @@ declare function ws:list() {
        }</workspaces>
 };
 
-declare function ws:get($uuid){
+(:
+*TODO* are these needed?
+ declare function ws:get($uuid){
 	1
 };
 
 declare function ws:get-n($name){
 	1
-};
+}; :)
