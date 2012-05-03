@@ -1,10 +1,25 @@
+(:~ 
+: This module provides the functions that control the Web presentation
+: of 
+:
+: @author Maximilian Gärber
+: @author Christian Grün
+: @author Alexander Holupirek
+: @author Michael Seiferle
+: @version 0.8
+:)
 module namespace api = "http://basepim.org/ws";
 import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
 import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jsonutil.xqm";
 
 declare namespace rest = "http://exquery.org/ns/restxq";
 
-
+(:~ 
+: This resource returns a single node.
+: @param $type the name of the workspace
+: @param $uuid the UUID of the node to return
+: @return a node
+:)
 declare
 %rest:GET
 %rest:path("/ws/{$type}/node/{$uuid}")
@@ -13,6 +28,11 @@ function api:get-node($type as xs:string, $uuid as xs:string){
    nodes:get-product($type, $uuid)
 };
 
+(:~ 
+: This resource returns a single node with all inherited attributes inlined
+: @param $uuid the UUID of the node to return
+: @return a flat node
+:)
 declare 
 %rest:GET
 %rest:path("/ws/flat/{$uuid}")
@@ -26,6 +46,13 @@ function api:flat($uuid as xs:string){
 	)
 };
 
+(:~ 
+: This resource returns a single node by name.
+: @param $type the name of the workspace
+: @param $name the name of the node to return
+: @return a node
+:)
+
 declare
 %rest:GET
 %rest:path("/ws/{$type}/node/n/{$name}")
@@ -36,6 +63,12 @@ function api:get-node-by-name($type as xs:string, $name as xs:string){
 
 (:
 : TODO: serialization doesn't work if elements (e.g. slot) can have both: text content or element children
+:)
+(:~ 
+: This resource returns a single node by name.
+: @param $type the name of the workspace
+: @param $name the name of the node to return
+: @return a node in JSON
 :)
 declare
 %rest:GET
@@ -50,6 +83,12 @@ function api:get-nodej-by-name($type as xs:string, $name as xs:string){
      </json>
 };
 
+(:~ 
+: This resource returns node metadata by name.
+: @param $type the name of the workspace
+: @param $name the name of the node to return
+: @return a node with metadata
+:)
 declare
 %rest:GET
 %rest:path("/ws/{$type}/node-meta/n/{$name}")
@@ -59,6 +98,12 @@ function api:get-node-by-name-meta($type as xs:string, $name as xs:string){
    return $node
 };
 
+(:~ 
+: This resource returns node metadata by name.
+: @param $type the name of the workspace
+: @param $name the name of the node to return
+: @return a node with metadata serialized as JSON
+:)
 declare
 %rest:GET
 %rest:path("/ws/{$type}/nodej-meta/n/{$name}")
