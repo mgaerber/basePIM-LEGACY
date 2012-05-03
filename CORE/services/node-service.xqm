@@ -8,8 +8,12 @@ declare variable $nodes:db := db:open('ws_produkte');
     @return the product <node />
 :)
 declare function nodes:get-product($type as xs:string, $uuid as xs:string) as element(node){
-    let $db := db:open($type)
-    return $db//node[@id eq $uuid]
+    try {
+			let $db := db:open($type)
+    	return $db//node[@id eq $uuid]
+		}catch * {
+			 <node>Error!</node>
+		}
     
     (:<node>{
             element {"type"} {$type},
