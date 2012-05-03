@@ -87,7 +87,7 @@ declare function nodes:get-nodes-for($workspace as xs:string) as element(node)+{
 :)
 declare function nodes:get-product-by-name($type as xs:string, $nodename as xs:string) as element(node){
     let $db := db:open($type)
-    let $node := $db//node[@name eq $name]
+    let $node := $db//node[@name eq $nodename]
     let $child-count := count($node/node)
     return
         <node>
