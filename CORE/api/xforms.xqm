@@ -8,8 +8,11 @@ import module namespace nodes = "http://basepim.org/nodes" at "../services/node-
 declare namespace xf = "http://www.w3.org/2002/xforms";
 
 (:~
- : Edit a given Slot referenced by its ID
- : 
+: Edit a given Slot referenced by its unique ID
+: The XForms templates are contained within the `../services/xforms-template.xqm` module, 
+: in case a property without predefined template is found, a generic form will be returned to the user.
+: @param $workspace the name of the workspace
+: @uuid ID of the slot the edit
 :)
 declare
   %rest:path("/xforms/edit-slot/{$workspace}/{$uuid}")
@@ -32,6 +35,12 @@ function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()
     return tmpl:body($workspace, $slot, $binds, $form)
 };
 
+(:~
+: Dump the edited Slot to the browser.
+: This function is used for debugging purposes only.
+: @param $body the model
+:)
+
 declare
   %rest:path("/xforms/dump")
   %rest:POST("{$body}")
@@ -39,6 +48,14 @@ declare
 function xforms:dump($body){
   <pre>{serialize($body)}</pre>
 };
+(:~
+: Save the edited Slot to the given workspace.
+: This function currently only allows replacing a <code> &lt;slot /&gt;</code> given by its uuid in a given workspace
+: <a href="/restxq/docs/CORE*api*workspaces.xqm">See <em>workspace.xqm</em></a>.
+: @param $body the model
+: @param $workspace the workspace to save
+:)
+
 declare
   %rest:path("/xforms/dump/{$workspace}")
   %rest:POST("{$body}")
@@ -52,7 +69,7 @@ declare
 
 (:~
  : Returns a FilterBuilder based on given data
- : 
+ : This is work in progress, and not finally working.
 :)
 declare
   %rest:path("/xforms/filterbuilder/{$workspace}")

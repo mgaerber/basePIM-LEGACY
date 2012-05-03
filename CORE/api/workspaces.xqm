@@ -4,6 +4,7 @@ import module namespace ws = "http://basepim.org/ws" at "../services/workspace-s
 import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jsonutil.xqm";
 (:~ 
 : This resource returns a list of all available workspaces.
+: Each workspace contains a hierarchy of nodes, with properties.
 : @return a list of available workspaces in XML.
 :)
 declare
@@ -16,7 +17,7 @@ function api:list-workspaces-x(){
 
 (:~ 
 : This resource returns a list of all available workspaces.
-:
+: Each workspace contains a hierarchy of nodes, with properties.
 : @return a list of available workspaces in JSON.
 :)
 declare

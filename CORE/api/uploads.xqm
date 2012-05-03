@@ -7,9 +7,9 @@ import module namespace file-service = "http://basex.org/basePIM/file-service" a
 import module namespace meta = 'http://basex.org/modules/meta';
 
 (:~
- : Test XMLHttpRequest GET functionality.
- :
- : Related website: WWW/test/put.html
+: Test XMLHttpRequest GET functionality.
+: **	This function should be removed? **
+: Related website: WWW/test/put.html
  :)
 declare
     %rest:GET
@@ -20,8 +20,9 @@ function upload:xmlhttprequest-get() {
 };
 
 (:~
- : Test XMLHttpRequest PUT functionality.
- :
+: This function saves binary data.
+: @param $data octet stream of data to save *TODO*
+: @param $value used for *TODO*
  : Related website: WWW/test/put.html
  :)
 declare
@@ -33,8 +34,11 @@ function upload:xmlhttprequest-get($data, $value) {
 };
 
 (:~
- : Test PUT (via curl) and return HTML.
- :
+: Test PUT (via curl) and return HTML.
+: This function saves binary data.
+: @param $data octet stream of data to save *TODO*
+: @param $value used for *TODO*
+ : Related website: WWW/test/put.html
  : $ curl -s -i -X PUT -H "Content-Type: application/octet-stream" -T "./powermotor.png" "admin:admin@localhost:8984/restxq//upload/file/test/put/pm.png"
  :)
 declare
@@ -55,6 +59,7 @@ function upload:put-file($name, $img) {
 declare
     %rest:GET
     %rest:path("/file/list")
+		%rest:produces("text/html")
     %output:method("html")
 function upload:list-files() {
     <ul>
@@ -75,8 +80,8 @@ function upload:list-files() {
  : BaseX Database Module (http://docs.basex.org/wiki/Database_Module)
  : is used to store the received data. Files are saved inside the database
  : directory in a subfolder entitled 'raw'.
- : 
- : Using ...
+ : @param $img the image to save
+ : @param $name name for the image to save
  :)
 declare
     %rest:PUT("{$img}")
@@ -86,6 +91,10 @@ updating function upload:put-image($name, $img) {
     db:output("File is uploaded"),
     db:store("ws_bilder", $name, $img)
 };
+
+(:~
+ : Returns metadata for all uploaded files.
+ :)
 
 declare
     %rest:GET
@@ -101,8 +110,10 @@ function upload:get-metadata() {
 
 (:~
  : Get POSTed images and other form data.
- :
  : Related website: WWW/test/dojo_file_upload.html
+ : @param $payload the payload
+ : @param $title the title *TODO*
+ : @param $year the year *TODO*
  :)
 declare
     %rest:POST("{$payload}")

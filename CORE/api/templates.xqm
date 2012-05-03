@@ -6,8 +6,10 @@ import module namespace tpl = "http://basepim.org/tpl" at "../services/template-
 import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
 
 (:~
- : Transforms a node with given template 
- :)
+: Transforms a node with given template 
+: @param $type defines *TODO*
+: @param $name defines *TODO*
+:)
 declare
 %rest:GET
 %rest:path("/tpl/{$type}/{$name}")
