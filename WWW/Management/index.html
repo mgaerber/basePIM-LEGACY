@@ -29,6 +29,7 @@
 				
 				#leftCol {
 				    width: 24em;
+				    padding: 10px;
 				   /* overflow: scroll; */
 				}
 				
@@ -109,19 +110,27 @@
                 }
 				
 				//create tree (products)
-				tree = createTree("ws_bootsmotoren", "Bootsmotoren", "tree", JsonRest, Tree, dndSource);
+				tree = createTree("ws_bootsmotoren", "Bootsmotoren und Zubehör", "tree", JsonRest, Tree, dndSource);
 				tree.startup();
 				
 				//create tree (media)
-				treeMedia = createTree("ws_bilder", "Alle", "treeMedia", JsonRest, Tree, dndSource);
+				treeMedia = createTree("ws_ascherlbilder", "Alle", "treeMedia", JsonRest, Tree, dndSource);
 				treeMedia.startup();
+				
+						//create tree (bekleidung)
+				treeClothes = createTree("ws_bekleidung", "Bekleidung und Accessoires", "treeClothes", JsonRest, Tree, dndSource);
+				treeClothes.startup();
 				
 				tree.on("click", function(object){	
 					createGrid("ws_bootsmotoren", object.id, "grid", Memory, ObjectStore, DataGrid, registry, xhr, Dialog);
 				}, true);	
 				
 				treeMedia.on("click", function(object){	
-					createGrid("ws_bilder", object.id, "gridMedia", Memory, ObjectStore, DataGrid, registry, xhr, Dialog);
+					createGrid("ws_ascherlbilder", object.id, "gridMedia", Memory, ObjectStore, DataGrid, registry, xhr, Dialog);
+				}, true);	
+				
+				treeClothes.on("click", function(object){	
+					createGrid("ws_bekleidung", object.id, "gridClothes", Memory, ObjectStore, DataGrid, registry, xhr, Dialog);
 				}, true);	
 					
 				/*scope ?
@@ -194,6 +203,8 @@
     			</div>
     			
     			<div id="paneColMedia" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center', splitter: false">
+    				<h4>GridMedia</h4>
+    				<div id="gridMedia"></div>
     				<div id="multiple_file_upload">
     					 <p>
     						Select (multiple) files:
@@ -223,14 +234,28 @@
     					</div>
     				</div>
     				
-    				<h4>GridMedia</h4>
-    				<div id="gridMedia"></div>
+    			
     			</div>
     			</div>
     		</div>
     			
-    		<div data-dojo-type="dijit.layout.ContentPane" id="pane_docs" title="Dokumente">
+    		<div data-dojo-type="dijit.layout.ContentPane" id="pane_clothes" title="Bekleidung">
+    			<div id="pane_layoutClothes" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
     				
+    				
+    				<div id="leftColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'left', splitter: true">
+    					
+    					<div id="treeClothes"></div>
+    				</div>
+    				
+    				<div id="paneColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center', splitter: false">
+    					<h4>GridClothes</h4>
+    					<div id="gridClothes"></div>
+    		
+    					
+    					
+    				</div>
+    			</div>
     		</div>
     			
     		<div data-dojo-type="dijit.layout.ContentPane" id="pane_pub" title="Publikationen">

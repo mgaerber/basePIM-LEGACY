@@ -20,7 +20,7 @@ createGrid = function(ws, id, divid, Memory, ObjectStore, DataGrid, registry, xh
 				{ name: "Slot DE", field: "slot-de", width: "70%"},
 				{ name: "Slot DE ID", field: "slot-de-id"}
 			]
-		}, "grid");
+		}, divid);
 	  console.dir(grid);
 	  require(["dojo/_base/connect"], function(connect){
          connect.connect(grid, "onRowDblClick", null, function(e){
