@@ -14,6 +14,7 @@ import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jso
 
 declare namespace rest = "http://exquery.org/ns/restxq";
 
+
 (:~ 
 : This resource returns a single node.
 : @param $type the name of the workspace
@@ -97,7 +98,7 @@ declare
 %rest:path("/ws/flat/{$uuid}")
 %rest:produces("application/xml")
 function api:flat($uuid as xs:string){
-	let $prod := nodes:get-product("ws_produkte", $uuid),
+	let $prod := nodes:get("ws_produkte", $uuid),
 		$map := nodes:flatten-product($prod)
 	return
 	(

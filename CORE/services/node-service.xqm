@@ -9,7 +9,7 @@ declare variable $nodes:db := db:open('ws_produkte');
 : @param $uuid the unique identifier of the node
 : @return the product <node />
 :)
-declare function nodes:get-product($type as xs:string, $uuid as xs:string) as element(node){
+declare function nodes:get($type as xs:string, $uuid as xs:string) as element(node){
     try {
 			let $db := db:open($type)
     	return $db//node[@id eq $uuid]
