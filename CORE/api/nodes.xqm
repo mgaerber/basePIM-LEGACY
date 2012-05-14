@@ -24,8 +24,30 @@ declare
 %rest:GET
 %rest:path("/ws/{$type}/node/{$uuid}")
 %rest:produces("application/xml")
-function api:get-node($type as xs:string, $uuid as xs:string){
-   nodes:get-product($type, $uuid)
+%rest:query-param("filter", "{$filter}", '')
+%rest:query-param("stringify", "{$str}", '')
+%rest:query-param("inherit", "{$inh}", '')
+%rest:query-param("expand", "{$exp}", '')
+function api:get-node-stringify($type as xs:string,
+																$uuid as xs:string,
+																$filter as xs:string,
+																$str as xs:string,
+																$inh as xs:string,
+																$exp as xs:string){
+	let $filters	:= tokenize($filter, ","),
+		$inherit		:= fn:boolean($inh),
+		$expand			:= fn:boolean($exp),
+		$stringify	:= fn:boolean($str),
+		$nodes			:= nodes:get($type, $uuid)
+	return
+	nodes:filter(							(: remove unwanted properties :)
+	  	nodes:expand(					(: get properties from aside :)
+				nodes:inherit(			(: get properties from above :)
+					nodes:stringify(	(: make properties string only :)
+						$nodes, $stringify),
+					$inherit),
+				$expand),
+			$filters)
 };
 
 (:~ 
