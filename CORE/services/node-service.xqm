@@ -34,6 +34,23 @@ declare function nodes:stringify($nodes as element(node)+, $stringify as xs:bool
 declare function nodes:inherit($nodes as element(node)+, $inherit as xs:boolean) as element(node)+{
 	$nodes
 };
+(: Request referenced properties. :)
+declare function nodes:expand($nodes as element(node)+, $expand as xs:boolean) as element(node)+{
+	if($expand) then	
+	for $node in $nodes
+	return element {"node"}{
+		$node/@*,
+		for $child in $node/*
+		let $name := name($child)
+		return switch($name)
+			case "node" return if(not($child/@idref)) then 
+										$child ! nodes:expand(., fn:true()) 
+									else nodes:get($child/@idref)
+			case "property" return $child
+			default return ()
+	}
+	else $nodes
+};
 
 (:~ Removes unwanted slots.
 : @param $nodes the nodes
