@@ -1,4 +1,5 @@
 module namespace nodes = "http://basepim.org/nodes";
+import module namespace search = "http://basepim.org/search" at "search.xqm";
 
 (:~ the database instance, this should be refactored :)
 declare variable $nodes:db := db:open('ws_produkte'); 
@@ -67,6 +68,29 @@ declare function nodes:get($type as xs:string, $uuid as xs:string) as element(no
 		}catch * {
 			 <node>Error!</node>
 		}
+};
+(:~
+: Gets a single product identified by its uuid by searching all workspaces
+: N.B. the $uuid has to be unique for this to work, 
+: otherwise the first matching node will be returned.
+: @param $uuid the unique identifier of the node
+: @return the product <node />
+:)
+declare function nodes:get($uuid as xs:string) as element(node){
+	(db:list()[starts-with(.,"ws_")] ! 
+		db:attribute(., $uuid)/parent::*:node
+	)[1]
+};
+
+(:~
+: *TODO*
+: @param $workspace the workspace to fetch the &lt;slot /&gt; from
+: @param $search the search string
+: @return matching nodes
+:)
+declare function nodes:search($workspace as xs:string,
+    $search as xs:string) as element(node)*{
+		search:search($workspace, $search)
 };
 
 (:~
