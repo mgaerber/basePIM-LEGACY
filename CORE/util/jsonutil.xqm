@@ -37,4 +37,22 @@ declare function jsonutil:atts-to-elems($atts as attribute()*) as element()* {
                         element { name($a) } { data($a)}
 };
 
-
+(:~ 
+: Micheee’s convenience function as I am too stupid to get the upper one working correctly for my purpose.
+: Converts even text() nodes, in order to preserve structure.
+:)
+declare function jsonutil:jsonatts($element as element()+, $wrapper as xs:string){
+	for $e in $element
+		return element {name($e)}{ 
+		 if($e/@*) then	element {$wrapper} {
+				 for $inner in $e/@*
+		 		return element  {name($inner)}
+				 								{$inner/string()}
+		 } else (),
+		for $inner in $e/(*,  text())
+			return typeswitch($inner)
+					case text() return <text>{$inner}</text>
+					case element(*) return jsonutil:jsonatts($inner, $wrapper)
+			 default return ()
+		}
+};
