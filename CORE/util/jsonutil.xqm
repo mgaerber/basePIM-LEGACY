@@ -15,8 +15,9 @@ module namespace jsonutil = "http://basepim.org/jsonutil";
     </attributes>
  : </node>
  :)
-declare function jsonutil:attr-to-elem($elem as element(), $wrapper as xs:string ) as element() {
-
+declare function jsonutil:attr-to-elem($elems as element()+, $wrapper as xs:string ) as element()+ {
+	for $elem in $elems
+	return
     element {name($elem)} {
     
     (if($wrapper ne '') then element {$wrapper}{ jsonutil:atts-to-elems($elem/@*) }
