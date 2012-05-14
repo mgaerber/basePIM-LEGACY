@@ -1,6 +1,29 @@
 module namespace nodes = "http://basepim.org/nodes";
 import module namespace search = "http://basepim.org/search" at "search.xqm";
 
+(:
+: Pipeline for returning nodes:
+
+: * Window					=> node[position() le $m and position() gt $n], function($n, $m)
+:																																		$filter = ("dimensions", "bild")	
+
+: * Inherit					=> include all inherited properties,						$nodes ! inherit(., $filter)
+
+: * Expand					=> include referenced nodes											$nodes ! expand(., $filter)
+
+: * Filter					=> list of properties to be included with each node element 
+:																																		return $nodes ! 
+																																			element 	{"node"}
+																													    				{
+																																			./@*, 
+																													    				for $prop in ./property
+																													    				where $prop/@name = $filter
+																																			return $prop
+																													    				}
+: * Stringify 			=> textual representation of the slots
+:)
+
+
 (:~ the database instance, this should be refactored :)
 declare variable $nodes:db := db:open('ws_produkte'); 
 
