@@ -3,6 +3,31 @@ module namespace nodes = "http://basepim.org/nodes";
 (:~ the database instance, this should be refactored :)
 declare variable $nodes:db := db:open('ws_produkte'); 
 
+
+(:~ Removes unwanted slots.
+: @param $nodes the nodes
+: @param $filter
+:)
+declare function nodes:filter($nodes as element(node)+, $filter as xs:string*) as element(node)+{
+	if(count($filter)) then
+		for $node in $nodes
+		return element {"node"}{
+			$node/@*,
+			for $child in $node/*
+			let $name := name($child)
+			return switch($name)
+				case "node" return $child ! nodes:filter(., $filter)
+				case "property" return if($child/@name = $filter) then
+				 																element	{"property"}
+																				{$child/@*,
+																				 $child/*}
+																			else
+																				()
+				default return ()
+		}
+		else $nodes
+};
+
 (:~
 : Gets a single product identified by its uuid
 : @param $type the workspace to fetch data from
