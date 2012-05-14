@@ -1,0 +1,4 @@
+<command xmlns="http://basex.org/rest">
+<text>create index fulltext</text>
+<parameter name='encoding' value='ISO-8859-1'/>
+</command>

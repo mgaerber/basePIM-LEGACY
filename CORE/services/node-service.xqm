@@ -1,7 +1,103 @@
 module namespace nodes = "http://basepim.org/nodes";
+import module namespace search = "http://basepim.org/search" at "search.xqm";
+
+(:
+: Pipeline for returning nodes:
+
+: * Window					=> node[position() le $m and position() gt $n], function($n, $m)
+:																																		$filter = ("dimensions", "bild")	
+
+: * Inherit					=> include all inherited properties,						$nodes ! inherit(., $filter)
+
+: * Expand					=> include referenced nodes											$nodes ! expand(., $filter)
+
+: * Filter					=> list of properties to be included with each node element 
+:																																		return $nodes ! 
+																																			element 	{"node"}
+																													    				{
+																																			./@*, 
+																													    				for $prop in ./property
+																													    				where $prop/@name = $filter
+																																			return $prop
+																													    				}
+: * Stringify 			=> textual representation of the slots
+:)
+
 
 (:~ the database instance, this should be refactored :)
 declare variable $nodes:db := db:open('ws_produkte'); 
+
+(: All properties have are strings only. :)
+declare function nodes:stringify($nodes as element(node)+, $stringify as xs:boolean) as element(node)+{
+	if($stringify) then 
+		for $node in $nodes
+		return element {"node"}{
+			$node/@*,
+			for $child in $node/*
+			let $name := name($child)
+			return switch($name)
+				case "node" return $child ! nodes:stringify(., fn:true())
+				case "property" return element	{"property"}
+																				{$child/@*,
+																				for $c in $child/value
+																				return element{"value"} {
+																					for $s in $c/slot
+																					return  element{"slot"}{
+																											attribute {"id"} {$s/@id},
+																											$s/string()
+																									}
+																					}
+																					(: function call child ! util:toString(.)) :)
+																				}
+				default return ()
+		}
+	else $nodes
+};
+(: Get inheritable properties from above. :)
+declare function nodes:inherit($nodes as element(node)+, $inherit as xs:boolean) as element(node)+{
+	$nodes
+};
+(: Request referenced properties. :)
+declare function nodes:expand($nodes as element(node)+, $expand as xs:boolean) as element(node)+{
+	if($expand) then	
+	for $node in $nodes
+	return element {"node"}{
+		$node/@*,
+		for $child in $node/*
+		let $name := name($child)
+		return switch($name)
+			case "node" return if(not($child/@idref)) then 
+										$child ! nodes:expand(., fn:true()) 
+									else nodes:get($child/@idref)
+			case "property" return $child
+			default return ()
+	}
+	else $nodes
+};
+
+(:~ Removes unwanted slots.
+: @param $nodes the nodes
+: @param $filter
+:)
+declare function nodes:filter($nodes as element(node)+, $filter as xs:string*) as element(node)+{
+	if(count($filter)) then
+		for $node in $nodes
+		return element {"node"}{
+			$node/@*,
+			for $child in $node/*
+			let $name := name($child)
+			return switch($name)
+				case "node" return $child ! nodes:filter(., $filter)
+				case "property" return if($child/@name = $filter) then
+				 																element	{"property"}
+																				{$child/@*,
+																				 $child/*}
+																			else
+																				()
+				default return ()
+		}
+		else $nodes
+};
 
 (:~
 : Gets a single product identified by its uuid
@@ -9,13 +105,36 @@ declare variable $nodes:db := db:open('ws_produkte');
 : @param $uuid the unique identifier of the node
 : @return the product <node />
 :)
-declare function nodes:get-product($type as xs:string, $uuid as xs:string) as element(node){
+declare function nodes:get($type as xs:string, $uuid as xs:string) as element(node){
     try {
 			let $db := db:open($type)
     	return $db//node[@id eq $uuid]
 		}catch * {
 			 <node>Error!</node>
 		}
+};
+(:~
+: Gets a single product identified by its uuid by searching all workspaces
+: N.B. the $uuid has to be unique for this to work, 
+: otherwise the first matching node will be returned.
+: @param $uuid the unique identifier of the node
+: @return the product <node />
+:)
+declare function nodes:get($uuid as xs:string) as element(node){
+	(db:list()[starts-with(.,"ws_")] ! 
+		db:attribute(., $uuid)/parent::*:node
+	)[1]
+};
+
+(:~
+: *TODO*
+: @param $workspace the workspace to fetch the &lt;slot /&gt; from
+: @param $search the search string
+: @return matching nodes
+:)
+declare function nodes:search($workspace as xs:string,
+    $search as xs:string) as element(node)*{
+		search:search($workspace, $search)
 };
 
 (:~
