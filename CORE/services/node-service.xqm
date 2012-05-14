@@ -3,6 +3,32 @@ module namespace nodes = "http://basepim.org/nodes";
 (:~ the database instance, this should be refactored :)
 declare variable $nodes:db := db:open('ws_produkte'); 
 
+(: All properties have are strings only. :)
+declare function nodes:stringify($nodes as element(node)+, $stringify as xs:boolean) as element(node)+{
+	if($stringify) then 
+		for $node in $nodes
+		return element {"node"}{
+			$node/@*,
+			for $child in $node/*
+			let $name := name($child)
+			return switch($name)
+				case "node" return $child ! nodes:stringify(., fn:true())
+				case "property" return element	{"property"}
+																				{$child/@*,
+																				for $c in $child/value
+																				return element{"value"} {
+																					for $s in $c/slot
+																					return  element{"slot"}{
+																											attribute {"id"} {$s/@id},
+																											$s/string()
+																									}
+																					}
+																					(: function call child ! util:toString(.)) :)
+																				}
+				default return ()
+		}
+	else $nodes
+};
 
 (:~ Removes unwanted slots.
 : @param $nodes the nodes
