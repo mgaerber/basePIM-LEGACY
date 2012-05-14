@@ -30,6 +30,10 @@ declare function nodes:stringify($nodes as element(node)+, $stringify as xs:bool
 		}
 	else $nodes
 };
+(: Get inheritable properties from above. :)
+declare function nodes:inherit($nodes as element(node)+, $inherit as xs:boolean) as element(node)+{
+	$nodes
+};
 
 (:~ Removes unwanted slots.
 : @param $nodes the nodes
