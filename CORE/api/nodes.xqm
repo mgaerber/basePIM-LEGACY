@@ -65,7 +65,7 @@ function api:search($type as xs:string, $search as xs:string,
   $str as xs:string,
   $inh as xs:string,
   $exp as xs:string){
-  <json objects="json node attributes property slot value">
+  <json objects="property attributes slot value" arrays="json node">
   {
     let $filters  := tokenize($filter, ","),
       $inherit    := fn:boolean($inh),

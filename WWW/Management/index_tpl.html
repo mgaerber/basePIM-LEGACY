@@ -27,6 +27,27 @@
 				    /*overflow: scroll;*/
 				}
 				
+				#headerRow{
+				
+			    background: none repeat scroll 0 0 #111111;
+			    height: 47px !important;
+			    color: white;
+			    line-height: 45px;
+			    margin: 0;
+			    padding: 0;
+			    width: 100% !important;
+				}
+				
+				#headerSubRow{
+					/*background: none repeat scroll 0 0 #F5F5F5;*/
+					background-image: -moz-linear-gradient(center top , #F5F5F5, #F1F1F1);
+					height: 33px !important;
+					border-bottom: 3px solid #00A5FF;
+    				box-shadow: 0 5px 5px rgba(0, 0, 0, 0.098);
+    				margin: 0 0 15px;
+    				text-align:right;
+				}
+				
 				#leftCol, #leftColMedia, #leftColClothes, #leftCol {
 				    width: 24em;
 				    padding: 10px;
@@ -41,15 +62,47 @@
                 border: 0.2em solid #DDDDDD;
                 }
                
-               /*
-               .claro .view-combo{
-                	height: 12px;
-               }*/
-               
                .claro .dijitButtonText{
                		font-size: 11px !important;
 					line-height: 11px !important;
                }
+               
+              .search-marked{
+              		background-color: yellow;
+              		font-size: 110%;
+				}
+               
+               .breadcrumb {
+				  padding: 7px 14px;
+				  margin: 0 0 18px;
+				  background-color: #fbfbfb;
+				  background-image: -moz-linear-gradient(top, #ffffff, #f5f5f5);
+				  background-image: -ms-linear-gradient(top, #ffffff, #f5f5f5);
+				  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f5f5f5));
+				  background-image: -webkit-linear-gradient(top, #ffffff, #f5f5f5);
+				  background-image: -o-linear-gradient(top, #ffffff, #f5f5f5);
+				  background-image: linear-gradient(to bottom, #ffffff, #f5f5f5);
+				  background-repeat: repeat-x;
+				  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f5f5f5', GradientType=0);
+				  border: 1px solid #ddd;
+				  -webkit-border-radius: 3px;
+				  -moz-border-radius: 3px;
+				  border-radius: 3px;
+				  -webkit-box-shadow: inset 0 1px 0 #ffffff;
+				  -moz-box-shadow: inset 0 1px 0 #ffffff;
+				  box-shadow: inset 0 1px 0 #ffffff;
+				}
+				.breadcrumb li {
+				  display: inline-block;
+				  text-shadow: 0 1px 0 #ffffff;
+				}
+				.breadcrumb .divider {
+				  padding: 0 5px;
+				  color: #999999;
+				}
+				.breadcrumb .active a {
+				  color: #333333;
+				}
            
            #dropbox {
             	width: 670px;
@@ -92,7 +145,9 @@
     	<link rel="stylesheet" href="dojo/dijit/themes/claro/claro.css" media="screen" />
     	
     	<link rel="stylesheet" href="dojo/dojox/grid/resources/claroGrid.css" media="screen" />
-    	
+    	<!-- fonts -->
+    	<link rel="stylesheet" href="css/foundation-icons-general.css"/>
+    	<!-- tpl -->
     	<link rel="stylesheet" href="/Templates/css/clothes-detail.css" media="screen" />
     	
     	<script>
@@ -126,11 +181,11 @@
     	 <script>
 			<!--//
 			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane",
-			"dijit/Dialog", "dijit/form/ComboButton", "dijit/Menu", "dijit/MenuItem", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query", 
-			"dojox/grid/DataGrid", "dojo/store/Memory", "dojo/data/ObjectStore", "dojo/_base/xhr", "dojox/data/XmlStore", "dojo/on"], 
-			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, ComboButton, Menu, MenuItem, 
+			"dijit/Dialog", "dijit/form/ComboButton", "dijit/Menu", "dijit/MenuItem", "dijit/form/TextBox", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query", 
+			"dojox/grid/DataGrid", "dojo/store/Memory", "dojo/data/ObjectStore", "dojo/_base/xhr", "dojox/data/XmlStore", "dojo/on", "dojo/dom", "dojo/_base/array"], 
+			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, ComboButton, Menu, MenuItem, TextBox, 
 			JsonRest, Observable, Tree, dndSource, query,
-			DataGrid, Memory, ObjectStore, xhr, XmlStore, on) {
+			DataGrid, Memory, ObjectStore, xhr, XmlStore, on, dom, array) {
 				
 				parser.parse();
 				
@@ -199,6 +254,50 @@
 					}
 					
 				}, true);	
+				
+				  // Keep hold of the container node
+       			 var containerNode = dom.byId("resultClothes");
+       			 containerNode.innerHTML = "test content";
+       			 
+       			 //searchbox
+         		var sbox = dijit.byId("searchbox");
+         		dojo.connect(sbox, "onKeyDown", function(value){
+         		//alert("down");
+         		if(value.keyCode == 13){
+			        // Using xhr.get, as we simply want to retrieve information
+			        var stext = this.get('value');
+			       xhr.get({
+			            // The URL of the request
+			            url: "http://localhost:8984/restxq/ws/ws_bekleidung/search/"+stext+"?stringify=true",
+			            // Handle the result as JSON data
+			            handleAs: "json",
+			            // The success handler
+			            load: function(jsonData) {
+			                // Create a local var to append content to
+			                var content = "";
+			                for(var i=0;i<jsonData.length;i++){
+			                	content = content + '<h4><a href="javascript:void();">'+jsonData[i][0].name+'</a></h4>';
+			                	for(var k=1;k<jsonData[i].length;k++){
+			                		var name = jsonData[i][k].attributes.name;
+			                		var propval = jsonData[i][k].value.slot.text;
+			                		if(propval != undefined){
+			                		//poor mans highlighting
+			                		var pattern = new RegExp('('+stext+')', 'gi');
+			                		var marked = propval.replace(pattern, '<span class="search-marked">$1</span>');
+			                		content = content + '<span><strong>'+name+'</strong>: '+marked+' </span>';
+			                		}
+			                	}
+			                }
+			                // Set the content of the news node
+			                containerNode.innerHTML = content;
+			            },
+			            // The error handler
+			            error: function() {
+			                containerNode.innerHTML = "Result is not available at this time."
+			            }
+			        });
+			       }//end if 13
+		     });
 
 				
 			}); /* end ready() */
@@ -219,7 +318,22 @@
     <body class="claro">
     	<div id="appLayout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
     		
-    		<div id="headerRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'"><span style="font-size:125%;">cmp</span>BOX</div>
+    		<div id="headerRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
+    		<!--	<span style="font-size:125%;">cmp</span>BOX-->
+    			<div style="text-align:right;">
+    			<span class="glyph general" style="font-size:20px;color:#F1F1F1;margin-right:15px;">a</span>
+    				</div>
+    			</div>
+    
+    		<div id="headerSubRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
+    			<input type="text" id="searchbox" style="width:400px;" data-dojo-type="dijit.form.TextBox" data-dojo-props="placeHolder:'Suche in Bekleidung'"></input>
+    			
+    			<!--<button id="searchbutton" data-dojo-type="dijit.form.Button"
+    				data-dojo-props="onClick:function(){ console.log('First button was clicked!'); }">
+    				<span class="glyph general">=</span>
+    			</button>-->
+    			
+    		</div>
     		
     		<div id="contentTabs" data-dojo-type="dijit.layout.TabContainer" data-dojo-props="region: 'center', tabPosition: 'top'">
     			
@@ -234,7 +348,7 @@
     				
     				<div id="paneColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center', splitter: false">
 
-    					<div>
+    					<div style="float:right;width:100px;">
     						<div data-dojo-type="dijit.form.ComboButton" class="view-combo">
     							<span>Ansicht</span>
     							<div data-dojo-type="dijit.DropDownMenu">
@@ -248,8 +362,14 @@
     						</select>-->
     					</div>
     					
-    					<h4 id="titleClothes">Bekleidung</h4>
+    					<ul class="breadcrumb" style="margin-right:150px;">
+    						<li><a href="#">Bekleidung</a> <span class="divider">/</span></li>
+    						<li><a href="#">Library</a> <span class="divider">/</span></li>
+    						<li class="active">Data</li>
+    					</ul>
     					
+    					<!--<h4 id="titleClothes">Bekleidung</h4>
+    					-->
     					<div id="tplClothes" data-dojo-type="dijit.layout.ContentPane"></div>
     					
     					<div id="gridClothes"></div>

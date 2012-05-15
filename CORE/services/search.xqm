@@ -29,7 +29,7 @@ declare namespace rest = "http://exquery.org/ns/restxq";
 :)
 declare
 function search:search($type as xs:string, $search as xs:string){
-	search:s($search, $type, "10", 0)
+	search:s($search, $type, "50", 0)
 };
 
 (:~
