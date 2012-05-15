@@ -16,8 +16,8 @@ module namespace jsonutil = "http://basepim.org/jsonutil";
  : </node>
  :)
 declare function jsonutil:attr-to-elem($elems as element()+, $wrapper as xs:string ) as element()+ {
-	for $elem in $elems
-	return
+  for $elem in $elems
+  return
     element {name($elem)} {
     
     (if($wrapper ne '') then element {$wrapper}{ jsonutil:atts-to-elems($elem/@*) }
@@ -42,17 +42,17 @@ declare function jsonutil:atts-to-elems($atts as attribute()*) as element()* {
 : Converts even text() nodes, in order to preserve structure.
 :)
 declare function jsonutil:jsonatts($element as element()+, $wrapper as xs:string){
-	for $e in $element
-		return element {name($e)}{ 
-		 if($e/@*) then	element {$wrapper} {
-				 for $inner in $e/@*
-		 		return element  {name($inner)}
-				 								{$inner/string()}
-		 } else (),
-		for $inner in $e/(*,  text())
-			return typeswitch($inner)
-					case text() return <text>{$inner}</text>
-					case element(*) return jsonutil:jsonatts($inner, $wrapper)
-			 default return ()
-		}
+  for $e in $element
+    return element {name($e)}{ 
+     if($e/@*) then  element {$wrapper} {
+         for $inner in $e/@*
+         return element  {name($inner)}
+                         {$inner/string()}
+     } else (),
+    for $inner in $e/(*,  text())
+      return typeswitch($inner)
+          case text() return <text>{$inner}</text>
+          case element(*) return jsonutil:jsonatts($inner, $wrapper)
+       default return ()
+    }
 };
