@@ -1,0 +1,273 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Index</title>
+
+    	<!-- style + demo .css -->
+    	<style>
+
+    			html, body { 
+	    			height: 100%; 
+	    			/*width: 100%;*/ 
+	    			padding: 0; 
+	    			border: 0;
+	    			overflow: hidden;
+	    			font-family: Lucida Sans,Lucida Grande,Arial !important;
+					font-size: 13px !important;
+					line-height: 13px !important;
+    			}
+				
+				#appLayout {
+				    height: 100%;
+				}
+				
+				#contentTabs {
+				  
+				    /*overflow: scroll;*/
+				}
+				
+				#leftCol, #leftColMedia, #leftColClothes, #leftCol {
+				    width: 24em;
+				    padding: 10px;
+				   /* overflow: scroll; */
+				}
+				
+				#leftColMedia {
+				    width: 24em;
+				   /* overflow: scroll; */
+				}
+				  #multiple_file_upload {
+                border: 0.2em solid #DDDDDD;
+                }
+               
+               /*
+               .claro .view-combo{
+                	height: 12px;
+               }*/
+               
+               .claro .dijitButtonText{
+               		font-size: 11px !important;
+					line-height: 11px !important;
+               }
+           
+           #dropbox {
+            	width: 670px;
+            	height: 150px;
+            	margin: 0 auto 1em;
+            	color: #514721;
+            	border: 0.2em solid #DDDDDD;
+            	background-color: #FFFFEE;
+            	text-align: center;
+            	-moz-border-radius: 4px 4px;
+            	-webkit-border-radius: 4px 4px;
+            	border-bottom-left-radius: 4px 4px;
+            	border-bottom-right-radius: 4px 4px;
+            	border-top-left-radius: 4px 4px;
+            	border-top-right-radius: 4px 4px;
+            }
+            #selected_files, #server_file_list {
+            	width: 670px;
+            	height: 150px;
+            	margin: 0 auto 1em;
+            	color: #514721;
+            	border: 0.2em solid #DDDDDD;
+            	background-color: #EEEEEE;
+            	text-align: left;
+            	-moz-border-radius: 4px 4px;
+            	-webkit-border-radius: 4px 4px;
+            	border-bottom-left-radius: 4px 4px;
+            	border-bottom-right-radius: 4px 4px;
+            	border-top-left-radius: 4px 4px;
+            	border-top-right-radius: 4px 4px;
+            }
+            .thumb {
+                  height: 75px;
+                  border: 1px solid #000;
+                  margin: 10px 5px 0 0;
+            }
+			
+    	</style>
+   	
+    	<link rel="stylesheet" href="dojo/dijit/themes/claro/claro.css" media="screen" />
+    	
+    	<link rel="stylesheet" href="dojo/dojox/grid/resources/claroGrid.css" media="screen" />
+    	
+    	<link rel="stylesheet" href="/Templates/css/clothes-detail.css" media="screen" />
+    	
+    	<script>
+    	dojoConfig = {
+    		parseOnLoad: false,
+    		isDebug: true,
+    		async: true,
+        	has: {
+            	"dojo-firebug": true
+       		 },
+        	app: {
+            	userName: "Anonymous",
+            	currentWorkspace: "",
+            	lastWorkspace: "",
+            	currentNode: "",
+            	lastNode: "",
+            	currentTemplate: "",
+            	lastTemplate: ""
+            	
+        	}
+    	};
+		</script>
+    	<script src="dojo/dojo/dojo.js">
+    	</script>
+    	
+    	<!--<script src="js/file-upload.js"></script>-->
+    	
+    	<script src="js/node-tree.js"></script>
+    	<script src="js/node-grid.js"></script>
+    	
+    	 <script>
+			<!--//
+			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane",
+			"dijit/Dialog", "dijit/form/ComboButton", "dijit/Menu", "dijit/MenuItem", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query", 
+			"dojox/grid/DataGrid", "dojo/store/Memory", "dojo/data/ObjectStore", "dojo/_base/xhr", "dojox/data/XmlStore", "dojo/on"], 
+			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, ComboButton, Menu, MenuItem, 
+			JsonRest, Observable, Tree, dndSource, query,
+			DataGrid, Memory, ObjectStore, xhr, XmlStore, on) {
+				
+				parser.parse();
+				
+				loadSlotEditor = function(object){
+					  _id = object.target.dataset.slot;
+					  _ws = dojo.config.app.currentWorkspace;
+           			 _url = '/restxq/xforms/edit-slot/'+ _ws +'/'+ _id;
+           			 
+           			 if(_id != '' && _id != undefined){
+		             editDialog2 = Dialog({
+		                title: "Template Slot #"+ _id,
+		                style: "height:330px",
+		                content: '<iframe src="'+ _url +'" width="100%" height="300px" />'
+		                //style: "width:200px; height:310px;"
+		              });
+					editDialog2.show();
+					}
+				}
+				
+				loadTemplate = function(template){
+					dojo.config.app.currentTemplate = template;
+					if(template === "clothes"){
+						var myCp= dijit.byId("tplClothes");
+						myCp.set("href", "/restxq/tpl/xsl/clothes-detail.xsl/ws/ws_bekleidung/node/"+dojo.config.app.currentNode);
+						//myCp.set("content", "<b>"+dojo.config.app.currentNode+"</b>");
+					}else{}
+				}
+				
+				ready(function(){
+				
+				dojo.config.app.currentWorkspace = 'ws_bekleidung';
+				
+				if (window.File && window.FileReader && window.FileList && window.Blob) {
+                    // Great success! All the File APIs are supported.
+                   // init_dropbox();
+                } else {
+                    alert('The File APIs are not fully supported in this browser.');
+                }
+				
+				//create tree (products)
+				//tree = createTree("ws_bootsmotoren", "Bootsmotoren und Zubehör", "tree", JsonRest, Tree, dndSource);
+				//tree.startup();
+				
+				//create tree (media)
+				//treeMedia = createTree("ws_ascherlbilder", "Alle", "treeMedia", JsonRest, Tree, dndSource);
+				//treeMedia.startup();
+				
+				//create tree (bekleidung)
+				treeClothes = createTree("ws_bekleidung", "Bekleidung und Accessoires", "treeClothes", JsonRest, Tree, dndSource);
+				treeClothes.startup();
+				
+				//var myCp = dijit.byId("tplClothes");
+				on(document, 'dblclick, *[data-slot]', loadSlotEditor);
+				//myCp.set("onDownloadEnd", hookSlotEvents);
+				
+				treeClothes.on("click", function(object){	
+		
+					//save current and last id
+					dojo.config.app.lastNode = dojo.config.app.currentNode;
+					dojo.config.app.currentNode = object.id;
+					
+					if(dojo.config.app.currentTemplate === "grid"){
+						createGrid("ws_bekleidung", object.id, "gridClothes", Memory, ObjectStore, DataGrid, registry, xhr, Dialog);
+					}else{
+					loadTemplate(dojo.config.app.currentTemplate);
+					}
+					
+				}, true);	
+
+				
+			}); /* end ready() */
+		}); 
+		
+	
+    	//--></script>
+    	<!--<script>
+    		//need to destroy widgets after removing
+    		destroyRecursive();
+    		
+    		//watch tab changes
+    		myTabContainer.watch("selectedChildWidget", function(name, oval, nval){
+    			console.log("selected child changed from ", oval, " to ", nval);
+			});
+    	</script>-->
+    </head>
+    <body class="claro">
+    	<div id="appLayout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
+    		
+    		<div id="headerRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'"><span style="font-size:125%;">cmp</span>BOX</div>
+    		
+    		<div id="contentTabs" data-dojo-type="dijit.layout.TabContainer" data-dojo-props="region: 'center', tabPosition: 'top'">
+    			
+    		<div data-dojo-type="dijit.layout.ContentPane" id="pane_clothes" title="Bekleidung">
+    			<div id="pane_layoutClothes" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
+    				
+    				
+    				<div id="leftColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'left', splitter: true">
+    					
+    					<div id="treeClothes"></div>
+    				</div>
+    				
+    				<div id="paneColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center', splitter: false">
+
+    					<div>
+    						<div data-dojo-type="dijit.form.ComboButton" class="view-combo">
+    							<span>Ansicht</span>
+    							<div data-dojo-type="dijit.DropDownMenu">
+    								<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){loadTemplate('grid')}">Grid</div>
+    								<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){loadTemplate('clothes')}">Bekleidung</div>
+    							</div>
+    							</div>
+    						<!--<select id="view-select" data-dojo-type="dijit.form.Select">
+    							<option value="grid" selected="selected">Grid</option>
+    							<option value="catalog">Katalog Sektion</option>
+    						</select>-->
+    					</div>
+    					
+    					<h4 id="titleClothes">Bekleidung</h4>
+    					
+    					<div id="tplClothes" data-dojo-type="dijit.layout.ContentPane"></div>
+    					
+    					<div id="gridClothes"></div>
+    		
+    					<div id="resultClothes"></div>
+    					
+    				</div>
+    			</div>
+    		</div>
+    			
+    	<!--	<div data-dojo-type="dijit.layout.ContentPane" id="pane_pub" title="Suche">
+    				
+    		</div>    	-->		
+    		</div>
+    		
+    	
+    	</div>
+      
+       
+    </body>
+</html>

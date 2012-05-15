@@ -7,26 +7,24 @@ import module namespace nodes = "http://basepim.org/nodes" at "../services/node-
 
 (:~
 : Transforms a node with given template 
-: @param $type defines *TODO*
-: @param $name defines *TODO*
+: @param $type defines the type of template (xsl, xquery, tal)
+: @param $name defines the name of the template (file name)
+: @param $uuid defines the unique id of a node
 :)
 declare
 %rest:GET
-%rest:path("/tpl/{$type}/{$name}")
+%rest:path("/tpl/{$type}/{$name}/ws/{$ws}/node/{$uuid}")
 %output:method("html")
-function api:execute-tpl($type, $name) {
-    let $node := nodes:get-product-by-name('ws_produkte', 'Powermotor')
+function api:execute-tpl($type, $name, $ws, $uuid) {
+    let $node := nodes:get($ws, $uuid)
     let $tpl := concat('TPL/', $type, '/', $name)
-    return
-    (:<file>{
-        file:resolve-path($tpl)
-        }
-    </file>:)
-    <div>
+    return  tpl:transform-xsl($node, $tpl)
+   (: <div>
     <p>{$xslt:processor} </p>
     <p>{$xslt:version} </p>
     {
      tpl:transform-xsl($node, $tpl)
      }
      </div>
+     :)
 };
