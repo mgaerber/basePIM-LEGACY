@@ -30,25 +30,25 @@ declare
 %rest:query-param("inherit", "{$inh}", '')
 %rest:query-param("expand", "{$exp}", '')
 function api:get-node-stringify($type as xs:string,
-																$uuid as xs:string,
-																$filter as xs:string,
-																$str as xs:string,
-																$inh as xs:string,
-																$exp as xs:string){
-	let $filters	:= tokenize($filter, ","),
-		$inherit		:= fn:boolean($inh),
-		$expand			:= fn:boolean($exp),
-		$stringify	:= fn:boolean($str),
-		$nodes			:= nodes:get($type, $uuid)
-	return
-	nodes:filter(							(: remove unwanted properties :)
-	  	nodes:expand(					(: get properties from aside :)
-				nodes:inherit(			(: get properties from above :)
-					nodes:stringify(	(: make properties string only :)
-						$nodes, $stringify),
-					$inherit),
-				$expand),
-			$filters)
+                                $uuid as xs:string,
+                                $filter as xs:string,
+                                $str as xs:string,
+                                $inh as xs:string,
+                                $exp as xs:string){
+  let $filters  := tokenize($filter, ","),
+    $inherit    := fn:boolean($inh),
+    $expand      := fn:boolean($exp),
+    $stringify  := fn:boolean($str),
+    $nodes      := nodes:get($type, $uuid)
+  return
+  nodes:filter(              (: remove unwanted properties :)
+      nodes:expand(          (: get properties from aside :)
+        nodes:inherit(      (: get properties from above :)
+          nodes:stringify(  (: make properties string only :)
+            $nodes, $stringify),
+          $inherit),
+        $expand),
+      $filters)
 };
 
 declare 
@@ -61,32 +61,32 @@ declare
 %rest:query-param("expand", "{$exp}", '')
 
 function api:search($type as xs:string, $search as xs:string,
-	$filter as xs:string,
-	$str as xs:string,
-	$inh as xs:string,
-	$exp as xs:string){
-	<json objects="json node attributes property slot value">
-	{
-		let $filters	:= tokenize($filter, ","),
-			$inherit		:= fn:boolean($inh),
-			$expand			:= fn:boolean($exp),
-			$stringify	:= fn:boolean($str),
-			$nodes			:= nodes:search($type, $search)
-		return
-		jsonutil:jsonatts(
-		nodes:stringify(
-			nodes:filter(							(: remove unwanted properties :)
-		  	nodes:expand(					(: get properties from aside :)
-					nodes:inherit(			(: get properties from above :)
-							(: make properties string only :)
-							$nodes,$inherit),
-					$expand),
-				$filters),
-		 $stringify),
-			"attributes")
-		}</json>
+  $filter as xs:string,
+  $str as xs:string,
+  $inh as xs:string,
+  $exp as xs:string){
+  <json objects="json node attributes property slot value">
+  {
+    let $filters  := tokenize($filter, ","),
+      $inherit    := fn:boolean($inh),
+      $expand      := fn:boolean($exp),
+      $stringify  := fn:boolean($str),
+      $nodes      := nodes:search($type, $search)
+    return
+    jsonutil:jsonatts(
+    nodes:stringify(
+      nodes:filter(           (: remove unwanted properties :)
+        nodes:expand(         (: get properties from aside :)
+          nodes:inherit(      (: get properties from above :)
+                              (: make properties string only :)
+              $nodes,$inherit),
+          $expand),
+        $filters),
+     $stringify),
+      "attributes")
+    }</json>
 
-	(: <results>{nodes:stringify(, fn:true())}</results> :)
+  (: <results>{nodes:stringify(, fn:true())}</results> :)
 };
 (:~ 
 : This resource returns a single node with all inherited attributes inlined
@@ -98,12 +98,12 @@ declare
 %rest:path("/ws/flat/{$uuid}")
 %rest:produces("application/xml")
 function api:flat($uuid as xs:string){
-	let $prod := nodes:get("ws_produkte", $uuid),
-		$map := nodes:flatten-product($prod)
-	return
-	(
-	nodes:from-map($map)
-	)
+  let $prod := nodes:get("ws_produkte", $uuid),
+    $map := nodes:flatten-product($prod)
+  return
+  (
+  nodes:from-map($map)
+  )
 };
 
 (:~ 
