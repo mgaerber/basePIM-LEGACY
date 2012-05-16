@@ -53,11 +53,26 @@ declare function nodes:stringify($nodes as element(node)+, $stringify as xs:bool
     }
   else $nodes
 };
+
+
 (: Get inheritable properties from above. :)
 declare function nodes:inherit($nodes as element(node)+, $inherit as xs:boolean) as element(node)+{
-  $nodes
+  if($inherit) then 
+    for $node in $nodes/(self::node)
+    let $complete := nodes:from-map(nodes:flatten-product($node))
+    return element {"node"}
+        {
+            $complete/@*,
+            $node/@idref,
+            $complete/child::*,
+            $node/node[not(@idref)] ! nodes:inherit(., fn:true()),
+            $node/node[@idref]
+        }
+       
+     
+   else  $nodes
 };
-(: Request referenced properties. :)
+(: Request referenced properties. *TODO* does not work on the root. :)
 declare function nodes:expand($nodes as element(node)+, $expand as xs:boolean) as element(node)+{
   if($expand) then  
   for $node in $nodes
@@ -248,8 +263,8 @@ declare function nodes:get-product-meta-by-name($type as xs:string, $nodename as
 declare function nodes:flatten-product($prod as element(node)) as map(*)?{
     let $ids := 
      (for $id in 
-         $nodes:db//node[@id = $prod/@id]/ancestor::*/@id
-        return string($id), $prod/@id
+         $prod/ancestor::*/@id
+        return string(trace($id,"ID")), $prod/@id
     )
     let $ws := $prod/ancestor::workspace
     return nodes:flatten($ws, $ids)($prod/@id)
@@ -272,7 +287,6 @@ declare function nodes:flatten(
   $ws as element(workspace),
   $filter as xs:string*
 ) as map(*) {
-
   fold-left(
     nodes:flatten(?, ?, map:new(), tail($filter)),
     map:new(),
@@ -286,7 +300,7 @@ declare function nodes:flatten(
   $props as map(*),
   $filter as xs:string*
 ) as map(*) {
-    let $props := map:new(($props, nodes:get-props($pr))),
+    let $props := map:new(($props, nodes:get-props($pr, $filter))),
         
        $prods2 := map:new((
          $prods,
@@ -307,31 +321,34 @@ declare function nodes:flatten(
       )
 };
 (:~
-    Constructs the properties Map including a node’s referenced properties.
+    Constructs the properties Map.
     @param $pr the current node
     @return a map consisting of the properties
 :)
 declare function nodes:get-props(
-  $pr as element(node)
+  $pr as element(node),
+  $filter as xs:string*
 ) as map(*)* {
-  let $refs := map:new( 
-    (: get referenced properties :)
+ (: let $refs := map:new( 
+    ( : get referenced properties : )
     for $_prop in $pr/property[@idref]
     let $prop := $nodes:db//property[@id eq $_prop/@idref]
-        (: $_ := trace($prop/@name/string(), "PROP") :)
+        ( : $_ := trace($prop/@name/string(), "PROP") : )
     return if($prop/@name) then map:entry($prop/@name,
         map:new(
           for $lang in distinct-values($prop/value/slot/@lang)
           let $vals := $prop/value/slot[@lang = $lang]
-          (: let $trace := trace(string-join($vals), "INH-VAL") :)
+          ( : let $trace := trace(string-join($vals), "INH-VAL") : )
           let $map :=  nodes:vals($vals)
           return map:entry(($lang, 'any')[1], $map)
       ) 
     ) else ()
-  )
+  ) :)
+    let  $_L := trace(string-join($filter, " "), "FILTER")
+
   let $direct := 
   map:new(
-    for $prop in $pr/property[not(@idref)]
+    for $prop in $pr/property[not(@idref) and (count($filter) = 0 or @inheritable)]
     return map:entry($prop/@name,
       map:new(
         (: keep the language to allow per language overwrites of slots :)
@@ -343,8 +360,8 @@ declare function nodes:get-props(
     )
   )
   return 
-  if(map:size($refs)) then map:new(($refs, $direct))
-  else $direct
+  (: if(map:size($refs)) then map:new(($refs, $direct))
+  else :) $direct
 };
 
 declare function nodes:vals($node){
