@@ -1,0 +1,56 @@
+   /* pacific blue #35586C; */
+   
+*[data-slot]:hover{
+    
+    border: 2px solid red;
+    
+}
+         
+ h2.section-title{
+    display:block;
+    padding: 5px;
+    color:white;
+    background-color:#120A8F;
+    font-size: 20px !important;
+ }
+ 
+ div.product-detail{
+    font-size: 12px !important;
+ }
+ 
+ div.product-detail-left{
+    float:left;
+ }
+ 
+ div.product-detail-right{
+       margin-left: 200px;
+       background-color:#f5f5f5;
+ }
+ 
+ h3.product-title{
+    color:#120A8F;
+    font-size: 16px !important;
+    border-bottom: 1px solid #120A8F;
+ }
+ 
+ table.order-table{
+     width:90%;
+ }
+ 
+  table.order-table th{
+    color:white;
+    background-color:#120A8F;
+ }
+ 
+  table.order-table th.product-artno,  table.order-table th.product-prize{
+    background-color:#A1A1A1;
+ }
+ 
+  table.order-table td{
+    border: 1px solid white;
+    background-color:#A1A1A1;
+ }
+ 
+  table.order-table td.product-artno,  table.order-table td.product-prize{
+    background-color:white;
+ }
