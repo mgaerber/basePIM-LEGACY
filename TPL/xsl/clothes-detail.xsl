@@ -31,26 +31,31 @@
     
     <xsl:template match="node" mode="products">
         
+        <!-- test -->
+        <xsl:variable name="img-src" select="if(position() eq 1) then '2462_web.jpg' else '2322_web.jpg'"></xsl:variable>
+        
         <!-- product -->
         <div class="product-detail">
             
             <!-- product image -->
             <div class="product-detail-left">
-                <!--<img class="product-img" data-slot="{property[@name eq 'name']/value/slot[1]/@id}">
-                    <xsl:value-of select="property[@name eq 'name']/value/slot[1]"/>
-                    </img>-->
+                <img class="product-img" title="{property[@name eq 'name']/value/slot[1]}" src="/demo-data/ascherl/img/{$img-src}" data-slot="{property[@name eq 'name']/value/slot[1]/@id}">
+                </img>
             </div>
             
             <div class="product-detail-right">
              <!-- lang flag -->
              <!-- producer img -->
-             <div class="product-icons">flag producer</div>
-             
+             <div class="product-icons" style="text-align:right;">
+                <!-- flag producer-->
+                 
+             </div>
              <h3 class="product-title" data-slot="{property[@name eq 'name']/value/slot[1]/@id}">
                  <xsl:value-of select="property[@name eq 'name']/value/slot[1]"/>
              </h3>
-           
-             
+                
+             <img src="/demo-data/ascherl/img/2081_web.jpg" style="width:70px;"/>
+
              <!-- description -->
              <p class="product-desc" data-slot="{property[@name eq 'PB']/value/slot[1]/@id}">
                  <xsl:value-of select="property[@name eq 'PB']/value/slot[1]"/>
@@ -67,6 +72,9 @@
                  </thead>
                  <tbody>
                    <xsl:for-each select="child::node[not(@idref)]">
+                       
+                       <!-- test -->
+                       <xsl:variable name="price" select="if(position() eq 1) then '79,90' else '69,90'"></xsl:variable>
                        <tr>
                            <td class="product-artno" data-slot="{property[@name eq 'Artikel']/value/slot[1]/@id}">
                                <xsl:value-of select="property[@name eq 'Artikel']/value/slot[1]"/>
@@ -81,7 +89,7 @@
                                <xsl:value-of select="property[@name eq 'Farbe']/value/slot[1]"/>
                            </td>
                            <td class="product-prize">
-                               <xsl:value-of select="'156,33'"/>
+                               <xsl:value-of select="$price"/>
                            </td>
                        </tr>
                    </xsl:for-each>  

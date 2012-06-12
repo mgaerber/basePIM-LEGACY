@@ -8,11 +8,15 @@
     	<style>
 
     			html, body { 
-	    			height: 100%; 
-	    			/*width: 100%;*/ 
-	    			padding: 0; 
-	    			border: 0;
-	    			overflow: hidden;
+	    			height: 100%;
+	    			/*width: 100%;*/
+	    			padding: 0px; 
+	    			margin-top: 0px;
+	    			margin-left: 0px;
+	    			margin-right: 0px;
+	    			margin-bottom: 20px;
+	    			border: 0px;
+	    			/*overflow: hidden;*/
 	    			font-family: Lucida Sans,Lucida Grande,Arial !important;
 					font-size: 13px !important;
 					line-height: 13px !important;
@@ -27,30 +31,50 @@
 				    /*overflow: scroll;*/
 				}
 				
+				#header{
+					width: 100% !important;
+					margin: 0px;
+					padding 0px;
+				}
+				
+				#footerRow{
+					height: 20px;
+					background: none repeat scroll 0 0 #111111;
+				}
+				
 				#headerRow{
 				
 			    background: none repeat scroll 0 0 #111111;
-			    height: 47px !important;
+			    height: 29px !important;
 			    color: white;
-			    line-height: 45px;
+			    line-height: 29px;
 			    margin: 0;
 			    padding: 0;
 			    width: 100% !important;
+			    text-align:right;
 				}
 				
 				#headerSubRow{
 					/*background: none repeat scroll 0 0 #F5F5F5;*/
 					background-image: -moz-linear-gradient(center top , #F5F5F5, #F1F1F1);
 					height: 33px !important;
-					border-bottom: 3px solid #00A5FF;
-    				box-shadow: 0 5px 5px rgba(0, 0, 0, 0.098);
-    				margin: 0 0 15px;
+					padding: 7px;
+					/*border-bottom: 3px solid #00A5FF;*/
+					border-bottom: 1px solid #CCCCCC;
+    				/*box-shadow: 0 5px 5px rgba(0, 0, 0, 0.098);*/
+    				margin: 0px;
+    				text-align:right;
+				}
+				#toolRow{
+					margin: 0 0 0 10px;
+					border-bottom: 1px solid #CCCCCC;
     				text-align:right;
 				}
 				
 				#leftCol, #leftColMedia, #leftColClothes, #leftCol {
 				    width: 24em;
-				    padding: 10px;
+				    /*padding: 10px;*/
+				    margin: 0 !important;
 				   /* overflow: scroll; */
 				}
 				
@@ -61,6 +85,14 @@
 				  #multiple_file_upload {
                 border: 0.2em solid #DDDDDD;
                 }
+                
+                .claro .dijitButtonNode{
+                	border-radius: 1px !important;
+                }
+                
+               .claro .dijitPlaceHolder{
+               		top: 5px !important;
+               }
                
                .claro .dijitButtonText{
                		font-size: 11px !important;
@@ -68,41 +100,12 @@
                }
                
               .search-marked{
-              		background-color: yellow;
+              		background-color: #FFFFE0;
+              		/*#;*/
               		font-size: 110%;
 				}
                
-               .breadcrumb {
-				  padding: 7px 14px;
-				  margin: 0 0 18px;
-				  background-color: #fbfbfb;
-				  background-image: -moz-linear-gradient(top, #ffffff, #f5f5f5);
-				  background-image: -ms-linear-gradient(top, #ffffff, #f5f5f5);
-				  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f5f5f5));
-				  background-image: -webkit-linear-gradient(top, #ffffff, #f5f5f5);
-				  background-image: -o-linear-gradient(top, #ffffff, #f5f5f5);
-				  background-image: linear-gradient(to bottom, #ffffff, #f5f5f5);
-				  background-repeat: repeat-x;
-				  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f5f5f5', GradientType=0);
-				  border: 1px solid #ddd;
-				  -webkit-border-radius: 3px;
-				  -moz-border-radius: 3px;
-				  border-radius: 3px;
-				  -webkit-box-shadow: inset 0 1px 0 #ffffff;
-				  -moz-box-shadow: inset 0 1px 0 #ffffff;
-				  box-shadow: inset 0 1px 0 #ffffff;
-				}
-				.breadcrumb li {
-				  display: inline-block;
-				  text-shadow: 0 1px 0 #ffffff;
-				}
-				.breadcrumb .divider {
-				  padding: 0 5px;
-				  color: #999999;
-				}
-				.breadcrumb .active a {
-				  color: #333333;
-				}
+              
            
            #dropbox {
             	width: 670px;
@@ -180,10 +183,10 @@
     	
     	 <script>
 			<!--//
-			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/ContentPane",
+			require(["dojo/ready", "dojo/parser", "dijit/registry", "dijit/layout/BorderContainer", "dijit/layout/TabContainer", "dijit/layout/AccordionContainer", "dijit/layout/ContentPane",
 			"dijit/Dialog", "dijit/form/ComboButton", "dijit/Menu", "dijit/MenuItem", "dijit/form/TextBox", "dojo/store/JsonRest", "dojo/store/Observable", "dijit/Tree", "dijit/tree/dndSource", "dojo/query", 
 			"dojox/grid/DataGrid", "dojo/store/Memory", "dojo/data/ObjectStore", "dojo/_base/xhr", "dojox/data/XmlStore", "dojo/on", "dojo/dom", "dojo/_base/array"], 
-			function(ready, parser, registry, BorderContainer, TabContainer, ContentPane, Dialog, ComboButton, Menu, MenuItem, TextBox, 
+			function(ready, parser, registry, BorderContainer, TabContainer, AccordionContainer, ContentPane, Dialog, ComboButton, Menu, MenuItem, TextBox, 
 			JsonRest, Observable, Tree, dndSource, query,
 			DataGrid, Memory, ObjectStore, xhr, XmlStore, on, dom, array) {
 				
@@ -196,10 +199,10 @@
            			 
            			 if(_id != '' && _id != undefined){
 		             editDialog2 = Dialog({
-		                title: "Template Slot #"+ _id,
-		                style: "height:330px",
-		                content: '<iframe src="'+ _url +'" width="100%" height="300px" />'
-		                //style: "width:200px; height:310px;"
+		                title: "Segeljacke Canberra > Größen", //"Template Slot #"+ _id,
+		                style: "height:260px",
+		                content: '<iframe src="'+ _url +'" width="100%" height="250px" />'
+		                //style: "width:200px; height:210px;"
 		              });
 					editDialog2.show();
 					}
@@ -257,7 +260,7 @@
 				
 				  // Keep hold of the container node
        			 var containerNode = dom.byId("resultClothes");
-       			 containerNode.innerHTML = "test content";
+       			// containerNode.innerHTML = "test content";
        			 
        			 //searchbox
          		var sbox = dijit.byId("searchbox");
@@ -316,78 +319,105 @@
     	</script>-->
     </head>
     <body class="claro">
-    	<div id="appLayout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
-    		
-    		<div id="headerRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
+    	
+    	<div id="header">
     		<!--	<span style="font-size:125%;">cmp</span>BOX-->
-    			<div style="text-align:right;">
-    			<span class="glyph general" style="font-size:20px;color:#F1F1F1;margin-right:15px;">a</span>
-    				</div>
-    			</div>
-    
-    		<div id="headerSubRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
-    			<input type="text" id="searchbox" style="width:400px;" data-dojo-type="dijit.form.TextBox" data-dojo-props="placeHolder:'Suche in Bekleidung'"></input>
+    		
+    		<div id="headerRow">
+    			<span>demo@cmpbox.de</span>
+    			<span class="glyph general" style="font-size:16px;color:#F1F1F1;margin-right:15px;">a</span>
+    		</div>
+    		<div id="headerSubRow">
+    			
+    			<input type="text" id="searchbox" style="width:400px;vertical-align:center;" data-dojo-type="dijit.form.TextBox" data-dojo-props="placeHolder:'Suche in Bekleidung'"></input>
     			
     			<!--<button id="searchbutton" data-dojo-type="dijit.form.Button"
-    				data-dojo-props="onClick:function(){ console.log('First button was clicked!'); }">
-    				<span class="glyph general">=</span>
-    			</button>-->
+    				data-dojo-props="onClick:function(){ console.log('First button was clicked!'); }">Suche</button>-->
+    			<!--<span class="glyph general">=</span>-->
     			
+    			<div data-dojo-type="dijit.form.ComboButton" class="view-combo">
+    				<span>Ansicht</span>
+    				<div data-dojo-type="dijit.DropDownMenu">
+    					<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){loadTemplate('grid')}">Grid</div>
+    					<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){loadTemplate('clothes')}">Bekleidung</div>
+    				</div>
+    			</div>
     		</div>
+    		<!--<div id="toolRow">
+    			
+    		</div>-->
+    	</div>
+    	
+    	
+    	<!-- data-dojo-props="design: 'headline'" -->
+    	<div id="appLayout" data-dojo-type="dijit.layout.BorderContainer" style="margin-bottom:5px;">
+    		
+    		<!--<div id="toolRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
+    			
+    		</div>-->
     		
     		<div id="contentTabs" data-dojo-type="dijit.layout.TabContainer" data-dojo-props="region: 'center', tabPosition: 'top'">
     			
-    		<div data-dojo-type="dijit.layout.ContentPane" id="pane_clothes" title="Bekleidung">
-    			<div id="pane_layoutClothes" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
-    				
-    				
-    				<div id="leftColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'left', splitter: true">
-    					
-    					<div id="treeClothes"></div>
-    				</div>
-    				
-    				<div id="paneColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center', splitter: false">
+	    		<div data-dojo-type="dijit.layout.ContentPane" id="pane_clothes" title="Produkte">
+	    			
+	    			<div id="pane_layoutClothes" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
 
-    					<div style="float:right;width:100px;">
-    						<div data-dojo-type="dijit.form.ComboButton" class="view-combo">
-    							<span>Ansicht</span>
-    							<div data-dojo-type="dijit.DropDownMenu">
-    								<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){loadTemplate('grid')}">Grid</div>
-    								<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:function(){loadTemplate('clothes')}">Bekleidung</div>
-    							</div>
-    							</div>
-    						<!--<select id="view-select" data-dojo-type="dijit.form.Select">
-    							<option value="grid" selected="selected">Grid</option>
-    							<option value="catalog">Katalog Sektion</option>
-    						</select>-->
-    					</div>
-    					
-    					<ul class="breadcrumb" style="margin-right:150px;">
-    						<li><a href="#">Bekleidung</a> <span class="divider">/</span></li>
-    						<li><a href="#">Library</a> <span class="divider">/</span></li>
-    						<li class="active">Data</li>
-    					</ul>
-    					
-    					<!--<h4 id="titleClothes">Bekleidung</h4>
-    					-->
-    					<div id="tplClothes" data-dojo-type="dijit.layout.ContentPane"></div>
-    					
-    					<div id="gridClothes"></div>
-    		
-    					<div id="resultClothes"></div>
-    					
-    				</div>
-    			</div>
+	    				<!--<div id="leftColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'left', splitter: true">-->
+	    					
+	    					<div id="leftColClothes" data-dojo-type="dijit.layout.AccordionContainer" data-dojo-props="region: 'left', splitter: true">
+	    						<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title:'Bekleidung'">
+	    							<div id="treeClothes"></div>
+	    						</div>
+	    						<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title:'Bootsmotoren'">
+	    							
+	    						</div>
+	    						<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="title:'Zubehör'">
+	    							
+	    						</div>
+	    					</div>
+	    				
+	    				<!--</div>-->
+	    				
+	    				<div id="paneColClothes" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center', splitter: false">
+
+	    					<div id="tplClothes" data-dojo-type="dijit.layout.ContentPane"></div>
+	    					
+	    					<div id="gridClothes"></div>
+	    		
+	    					<div id="resultClothes"></div>
+	    					
+	    				</div>
+	    			</div>
+	    		</div>
+				
+    		<!--	<div data-dojo-type="dijit.layout.ContentPane" id="pane_2" title="Bootsmotoren"></div>-->
+    			<div data-dojo-type="dijit.layout.ContentPane" id="pane_3" title="Medien"></div>
+    			<div data-dojo-type="dijit.layout.ContentPane" id="pane_4" title="Dokumente"></div>
+    			<div data-dojo-type="dijit.layout.ContentPane" id="pane_5" title="Texte"></div>
+    			<div data-dojo-type="dijit.layout.ContentPane" id="pane_6" title="Katalog"></div>
+    			<div data-dojo-type="dijit.layout.ContentPane" id="pane_7" title="Flyer"></div>
+    			<div data-dojo-type="dijit.layout.ContentPane" id="pane_8" title="Webseite"></div>
+    			<!--Sicherheits- und Rettungsmittel
+    			Ankern und Belegen
+    			Tauwerk und Drahtseile
+    			Deck- und Sail-Hardware
+    			Boyen, Fender, Profile
+    			Navigation und Bootselektronik
+    			Elektrik und Beleuchtung
+    			Lüfter, Pumpen und Sanitär
+    			Kochen, Heizen, Kühlen, Essen, Sitzen, ...
+    			Maritime Geschenksideen
+    			Lacke, Harze und Pflegemittel
+    			Falträder, Funsport, Bootszubehör, Boote
+    			Beschläge und Schrauben
+    			Planen, Stoffe, Verkleidungen, Tapes -->
     		</div>
-    			
-    	<!--	<div data-dojo-type="dijit.layout.ContentPane" id="pane_pub" title="Suche">
-    				
-    		</div>    	-->		
+    		
+    		<div id="footerRow" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'bottom'">
+    			zzz
     		</div>
     		
-    	
-    	</div>
-      
+    	</div> <!-- app layout -->
        
     </body>
 </html>

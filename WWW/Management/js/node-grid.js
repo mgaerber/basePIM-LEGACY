@@ -17,8 +17,9 @@ createGrid = function(ws, id, divid, Memory, ObjectStore, DataGrid, registry, xh
 			query: { name: "*" },
 			structure: [
 				{ name: "Name", field: "name", width: "20%" },
-				{ name: "Slot DE", field: "slot-de", width: "70%"},
-				{ name: "Slot DE ID", field: "slot-de-id"}
+				{ name: "Wert [DE]", field: "slot-de", width: "40%"},
+				{ name: "Wert [EN]", field: "slot-en", width: "40%"}
+				//{ name: "Slot DE ID", field: "slot-de-id"}
 			]
 		}, divid);
 	  console.dir(grid);

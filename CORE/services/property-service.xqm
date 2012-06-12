@@ -19,7 +19,9 @@ declare function properties:get-slots($type as xs:string, $id as xs:string) as e
                     <property>
                         <name>{string($prop/@name)}</name>
                         <slot-de>{$prop/value/slot[1]//text()}</slot-de>
+                        <slot-en>{$prop/value/slot[2]//text()}</slot-en>
                         <slot-de-id>{string($prop/value/slot[1]/@id)}</slot-de-id>
+                        <slot-en-id>{string($prop/value/slot[2]/@id)}</slot-en-id>
                     </property>
             }</node>
 

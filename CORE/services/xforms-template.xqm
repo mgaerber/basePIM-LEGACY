@@ -55,7 +55,7 @@ declare function tmpl:body($workspace as xs:string, $model as element(), $bindin
       <br />
       <hr />
       <xf:submit submission="dump">
-        <xf:label>Dump Changes</xf:label>
+        <xf:label>Speichern</xf:label>
       </xf:submit>
      </body>
   </html>
@@ -136,6 +136,7 @@ declare function tmpl:path-to-slot($child as node()){
 : @return XForm
 :)
 declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) as element(div){
+     (: <h3>Merkmal: </h3> :)
   <div xmlns:xf="http://www.w3.org/2002/xforms">
 	{
 		for $child in $slot//(@*, *)
@@ -145,10 +146,10 @@ declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) a
 			case attribute(*) return tmpl:path-to-slot($child) || "/@" || name($child)
 			default return ()
 
-		where typeswitch($child)
+		where (typeswitch($child)
 			case element(*) return $child/text()
 			case attribute(*) return fn:true()
-			default return ()
+			default return ()) and name() ne 'id'
 
 		return <div>
 			<xf:input ref="instance('ii_{$uuid}')/{$path}">
