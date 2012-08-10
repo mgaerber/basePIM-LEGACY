@@ -1,7 +1,4 @@
-xquery version "3.0";
-
 module namespace xforms = "http://basex.org/basePIM/xforms";
-declare namespace rest = "http://exquery.org/ns/restxq";
 
 import module namespace tmpl = "http://basepim.org/tmpl" at "../services/xforms-template.xqm";
 import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
@@ -15,8 +12,8 @@ declare namespace xf = "http://www.w3.org/2002/xforms";
 : @uuid ID of the slot the edit
 :)
 declare
-  %rest:path("/xforms/edit-slot/{$workspace}/{$uuid}")
-  %rest:produces("application/xml")
+  %restxq:path("/xforms/edit-slot/{$workspace}/{$uuid}")
+  %restxq:produces("application/xml")
 function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()+ {
      let $slot  := nodes:get-slot-by-id($workspace, $uuid)
      let $prop  := trace($slot/ancestor::property, "Ancestor")
@@ -42,8 +39,8 @@ function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()
 :)
 
 declare
-  %rest:path("/xforms/dump")
-  %rest:POST("{$body}")
+  %restxq:path("/xforms/dump")
+  %restxq:POST("{$body}")
   %output:method("text")
 function xforms:dump($body){
   <pre>{serialize($body)}</pre>
@@ -57,8 +54,8 @@ function xforms:dump($body){
 :)
 
 declare
-  %rest:path("/xforms/dump/{$workspace}")
-  %rest:POST("{$body}")
+  %restxq:path("/xforms/dump/{$workspace}")
+  %restxq:POST("{$body}")
   %output:method("xml")
  updating  function xforms:dump($body, $workspace as xs:string){
 
@@ -72,8 +69,8 @@ declare
  : This is work in progress, and not finally working.
 :)
 declare
-  %rest:path("/xforms/filterbuilder/{$workspace}")
-	%rest:produces("application/xml")
+  %restxq:path("/xforms/filterbuilder/{$workspace}")
+	%restxq:produces("application/xml")
 function xforms:filterbuilder($workspace as xs:string) as node()+ {
 	tmpl:filterbuilder($workspace)
 };

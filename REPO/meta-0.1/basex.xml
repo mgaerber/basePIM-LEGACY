@@ -1,4 +1,0 @@
-<package xmlns="http://basex.org/modules/meta">
-   <jar>module.jar</jar>
-   <class>org.basex.modules.meta.Meta</class>
-</package>

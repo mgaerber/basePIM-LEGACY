@@ -1,10 +1,7 @@
-xquery version "3.0";
-
 module namespace  upload = "http://basex.org/basePIM/upload";
-declare namespace rest   = "http://exquery.org/ns/restxq";
 
 import module namespace file-service = "http://basex.org/basePIM/file-service" at "../services/file-service.xqm";
-import module namespace meta = 'http://basex.org/modules/meta';
+import module namespace meta = 'http://basex.org/modules/meta/Meta';
 
 (:~
 : Test XMLHttpRequest GET functionality.
@@ -12,8 +9,8 @@ import module namespace meta = 'http://basex.org/modules/meta';
 : Related website: WWW/test/put.html
  :)
 declare
-    %rest:GET
-    %rest:path("/upload/file/get/answer/42")
+    %restxq:GET
+    %restxq:path("/upload/file/get/answer/42")
     %output:method("xml")
 function upload:xmlhttprequest-get() {
     "The answer is 42"
@@ -26,8 +23,8 @@ function upload:xmlhttprequest-get() {
  : Related website: WWW/test/put.html
  :)
 declare
-    %rest:PUT("{$data}")
-    %rest:path("/upload/file/test/put/answer/{$value}")
+    %restxq:PUT("{$data}")
+    %restxq:path("/upload/file/test/put/answer/{$value}")
     %output:method("text")
 function upload:xmlhttprequest-get($data, $value) {
     concat("We all know it. The answer is: ", $value)
@@ -42,8 +39,8 @@ function upload:xmlhttprequest-get($data, $value) {
  : $ curl -s -i -X PUT -H "Content-Type: application/octet-stream" -T "./powermotor.png" "admin:admin@localhost:8984/restxq//upload/file/test/put/pm.png"
  :)
 declare
-    %rest:PUT("{$img}")
-	%rest:path("/upload/file/test/put/{$name}")
+    %restxq:PUT("{$img}")
+	%restxq:path("/upload/file/test/put/{$name}")
 	%output:method("html5")
 function upload:put-file($name, $img) {
     <div>
@@ -57,9 +54,9 @@ function upload:put-file($name, $img) {
  : Returns file list on server.
  :)
 declare
-    %rest:GET
-    %rest:path("/file/list")
-		%rest:produces("text/html")
+    %restxq:GET
+    %restxq:path("/file/list")
+		%restxq:produces("text/html")
     %output:method("html")
 function upload:list-files() {
     <ul>
@@ -84,8 +81,8 @@ function upload:list-files() {
  : @param $name name for the image to save
  :)
 declare
-    %rest:PUT("{$img}")
-	%rest:path("/upload/image/put/{$name}")
+    %restxq:PUT("{$img}")
+	%restxq:path("/upload/image/put/{$name}")
 	%output:method("text")
 updating function upload:put-image($name, $img) {
     db:output("File is uploaded"),
@@ -97,8 +94,8 @@ updating function upload:put-image($name, $img) {
  :)
 
 declare
-    %rest:GET
-	%rest:path("/upload/metadata/")
+    %restxq:GET
+	%restxq:path("/upload/metadata/")
 	%output:method("xml")
 function upload:get-metadata() {
     let $root := "DATA/ws_bilder/raw/"
@@ -116,10 +113,10 @@ function upload:get-metadata() {
  : @param $year the year *TODO*
  :)
 declare
-    %rest:POST("{$payload}")
-	%rest:path("/upload/file/post")
-	%rest:form-param("title", "{$title}", "default title")
-	%rest:form-param("year",  "{$year}",  "default year")
+    %restxq:POST("{$payload}")
+	%restxq:path("/upload/file/post")
+	%restxq:form-param("title", "{$title}", "default title")
+	%restxq:form-param("year",  "{$year}",  "default year")
 	%output:method("html5")
 function upload:post-file($payload, $title, $year) {
 <html>

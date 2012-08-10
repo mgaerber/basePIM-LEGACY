@@ -9,11 +9,9 @@
 : @version 0.8
 :)
 module namespace api = "http://basepim.org/ws";
+
 import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
 import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jsonutil.xqm";
-
-declare namespace rest = "http://exquery.org/ns/restxq";
-
 
 (:~ 
 : This resource returns a single node.
@@ -22,13 +20,13 @@ declare namespace rest = "http://exquery.org/ns/restxq";
 : @return a node
 :)
 declare
-%rest:GET
-%rest:path("/ws/{$type}/node/{$uuid}")
-%rest:produces("application/xml")
-%rest:query-param("filter", "{$filter}", '')
-%rest:query-param("stringify", "{$str}", '')
-%rest:query-param("inherit", "{$inh}", '')
-%rest:query-param("expand", "{$exp}", '')
+%restxq:GET
+%restxq:path("/ws/{$type}/node/{$uuid}")
+%restxq:produces("application/xml")
+%restxq:query-param("filter", "{$filter}", '')
+%restxq:query-param("stringify", "{$str}", '')
+%restxq:query-param("inherit", "{$inh}", '')
+%restxq:query-param("expand", "{$exp}", '')
 function api:get-node-stringify($type as xs:string,
                                 $uuid as xs:string,
                                 $filter as xs:string,
@@ -52,13 +50,13 @@ function api:get-node-stringify($type as xs:string,
 };
 
 declare 
-%rest:GET
-%rest:path("/ws/{$type}/search/{$search}")
+%restxq:GET
+%restxq:path("/ws/{$type}/search/{$search}")
 %output:method("json")
-%rest:query-param("filter", "{$filter}", '')
-%rest:query-param("stringify", "{$str}", '')
-%rest:query-param("inherit", "{$inh}", '')
-%rest:query-param("expand", "{$exp}", '')
+%restxq:query-param("filter", "{$filter}", '')
+%restxq:query-param("stringify", "{$str}", '')
+%restxq:query-param("inherit", "{$inh}", '')
+%restxq:query-param("expand", "{$exp}", '')
 
 function api:search($type as xs:string, $search as xs:string,
   $filter as xs:string,
@@ -94,9 +92,9 @@ function api:search($type as xs:string, $search as xs:string,
 : @return a flat node
 :)
 declare 
-%rest:GET
-%rest:path("/ws/flat/{$uuid}")
-%rest:produces("application/xml")
+%restxq:GET
+%restxq:path("/ws/flat/{$uuid}")
+%restxq:produces("application/xml")
 function api:flat($uuid as xs:string){
   let $prod := nodes:get("ws_produkte", $uuid),
     $map := nodes:flatten-product($prod)
@@ -114,9 +112,9 @@ function api:flat($uuid as xs:string){
 :)
 
 declare
-%rest:GET
-%rest:path("/ws/{$type}/node/n/{$name}")
-%rest:produces("application/xml")
+%restxq:GET
+%restxq:path("/ws/{$type}/node/n/{$name}")
+%restxq:produces("application/xml")
 function api:get-node-by-name($type as xs:string, $name as xs:string){
    nodes:get-product-by-name($type, $name)
 };
@@ -131,9 +129,9 @@ function api:get-node-by-name($type as xs:string, $name as xs:string){
 : @return a node in JSON
 :)
 declare
-%rest:GET
-%rest:path("/ws/{$type}/nodej/n/{$name}")
-%rest:produces("application/json")
+%restxq:GET
+%restxq:path("/ws/{$type}/nodej/n/{$name}")
+%restxq:produces("application/json")
 %output:method("json")
 function api:get-nodej-by-name($type as xs:string, $name as xs:string){
    let $node := nodes:get-product-by-name($type, $name)
@@ -150,9 +148,9 @@ function api:get-nodej-by-name($type as xs:string, $name as xs:string){
 : @return a node with metadata
 :)
 declare
-%rest:GET
-%rest:path("/ws/{$type}/node-meta/n/{$name}")
-%rest:produces("application/xml")
+%restxq:GET
+%restxq:path("/ws/{$type}/node-meta/n/{$name}")
+%restxq:produces("application/xml")
 function api:get-node-by-name-meta($type as xs:string, $name as xs:string){
    let $node := nodes:get-product-meta-by-name($type, $name)
    return $node
@@ -165,9 +163,9 @@ function api:get-node-by-name-meta($type as xs:string, $name as xs:string){
 : @return a node with metadata serialized as JSON
 :)
 declare
-%rest:GET
-%rest:path("/ws/{$type}/nodej-meta/n/{$name}")
-%rest:produces("application/json")
+%restxq:GET
+%restxq:path("/ws/{$type}/nodej-meta/n/{$name}")
+%restxq:produces("application/json")
 %output:method("json")
 function api:get-nodej-by-name-meta($type as xs:string, $name as xs:string){
    let $node := nodes:get-product-meta-by-name($type, $name)
