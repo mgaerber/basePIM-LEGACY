@@ -1,7 +1,6 @@
-module namespace M = "http://basex.org/modules/render";
+module namespace _ = "http://basepim.org/search/render";
 
-import module namespace parse =
-  "http://basex.org/modules/parse" at "parse.xqm";
+import module namespace parse = "http://basepim.org/search/parse";
 
 (:~
  : Renders a result view for the specified results.
@@ -10,10 +9,11 @@ import module namespace parse =
  : @param $fuzzy fuzzy flag
  : @param $hits number of results
  :)
-declare function M:render(
-    $results as element()*,
-    $search as map(*)) as element()* {
-
+declare function _:render(
+  $results as element()*,
+  $search as map(*))
+  as element()*
+{
 	for $node in $results 
 	where count($node/*[name(.)!="node"]) > 1
 	return element {name($node)}
@@ -33,10 +33,10 @@ declare function M:render(
  : @param fuzzy fuzzy flag
  : @param $text text to mark
  :)
-declare function M:mark(
-    $text as item(),
-    $search as map(*)) {
-
+declare function _:mark(
+  $text as item(),
+  $search as map(*))
+{
   let $fuzzy as xs:boolean := $search($parse:FUZZY)
   let $terms as xs:string* := $search($parse:INCLUDED)
   let $mark := 'emph'

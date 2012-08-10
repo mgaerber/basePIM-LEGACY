@@ -1,10 +1,7 @@
-xquery version "3.0";
+module namespace _ = "http://basepim.org/services/xforms-template";  
 
-module namespace tmpl = "http://basepim.org/tmpl";
-declare namespace rest = "http://exquery.org/ns/restxq";
 declare namespace xf = "http://www.w3.org/2002/xforms";
 declare namespace ev = "http://www.w3.org/2001/xml-events";
-(: import module namespace xmldb = "http://basex.org/basePIM/xmldb" at "../services/db-service.xqm"; :)
 
 (:~
 : Wraps any given Content in an XForms compliant container.
@@ -13,8 +10,12 @@ declare namespace ev = "http://www.w3.org/2001/xml-events";
 : @param $bindings optional bindings, a sequence of xf:bind nodes
 : @param $content is placed inside the body of the template
 :)
-declare function tmpl:body($workspace as xs:string, $model as element(), $bindings as element(xf:bind)*, $content as element()){
-	
+declare function _:body(
+  $workspace as xs:string,
+  $model as element(),
+  $bindings as element(xf:bind)*,
+  $content as element())
+{
 	let $id := if($model/@id) then attribute {"id"} {"ii_"||$model/@id/string()} else ()
 	return
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
@@ -59,9 +60,8 @@ declare function tmpl:body($workspace as xs:string, $model as element(), $bindin
       </xf:submit>
      </body>
   </html>
-  
-  
 };
+
 (:~
 : Wraps any given Content in an XForms compliant container and allows the implementor to 
 : specify XML fragments as template instances.
@@ -71,10 +71,12 @@ declare function tmpl:body($workspace as xs:string, $model as element(), $bindin
 : @param $bindings optional bindings, a sequence of xf:bind nodes
 : @param $content is placed inside the body of the template
 :)
-
-declare function tmpl:body-with-filter($tmpls, 
-	$model as element(), $bindings as element(xf:bind)*, $content as element()){
-	
+declare function _:body-with-filter(
+  $tmpls, 
+	$model as element(),
+  $bindings as element(xf:bind)*,
+  $content as element())
+{	
 	let $id := if($model/@id) then attribute {"id"} {"ii_{$model/@id}"} else ()
 	return
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2002/xforms">
@@ -115,17 +117,17 @@ declare function tmpl:body-with-filter($tmpls,
       </xf:submit>
      </body>
   </html>
-  
-  
 };
 
 (:~ 
-: Returns the XPath to a given slot, used to determine the references when generating the
-: generic edit form.
-: @param $child the slot
-: @return path to $child
-:)
-declare function tmpl:path-to-slot($child as node()){
+ : Returns the XPath to a given slot, used to determine the references when generating the
+ : generic edit form.
+ : @param $child the slot
+ : @return path to $child
+ :)
+declare function _:path-to-slot(
+  $child as node())
+{
 	string-join($child/ancestor-or-self::*/name(.)[not(. = ("value", "node", "property", "workspace", "slot"))], "/")
 };
 
@@ -135,15 +137,19 @@ declare function tmpl:path-to-slot($child as node()){
 : @param $slot the slot to edit, used as the model
 : @return XForm
 :)
-declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) as element(div){
-     (: <h3>Merkmal: </h3> :)
+declare function _:edit-generic(
+  $uuid as xs:string,
+  $slot as element(slot))
+  as element(div)
+{
+  (: <h3>Merkmal: </h3> :)
   <div xmlns:xf="http://www.w3.org/2002/xforms">
 	{
 		for $child in $slot//(@*, *)
 
 		let $path := typeswitch($child)
-			case element(*) return tmpl:path-to-slot($child)
-			case attribute(*) return tmpl:path-to-slot($child) || "/@" || name($child)
+			case element(*) return _:path-to-slot($child)
+			case attribute(*) return _:path-to-slot($child) || "/@" || name($child)
 			default return ()
 
 		where (typeswitch($child)
@@ -175,7 +181,10 @@ declare function tmpl:edit-generic($uuid as xs:string, $slot as element(slot)) a
 : @return XForm
 :)
 
-declare function tmpl:edit-gewicht($uuid as xs:string) as element(div){
+declare function _:edit-gewicht(
+  $uuid as xs:string)
+  as element(div)
+{
   <div xmlns:xf="http://www.w3.org/2002/xforms">
   <div>
      <xf:input ref="@lang">
@@ -199,7 +208,9 @@ declare function tmpl:edit-gewicht($uuid as xs:string) as element(div){
 : @param $uuid unique id that has been given to the model instance
 : @return XForm
 :)
-declare function tmpl:gewicht-bind($uuid as xs:string){
+declare function _:gewicht-bind(
+  $uuid as xs:string)
+{
   <xf:bind nodeset="instance('ii_{$uuid}')/num" type="xs:integer" required="true()" constraint=". &gt; 0"/>
 };
 
@@ -208,8 +219,10 @@ declare function tmpl:gewicht-bind($uuid as xs:string){
 : @param $uuid unique id that has been given to the model instance
 : @return XForm
 :)
-declare function tmpl:edit-bezeichnung($uuid as xs:string) as element(div) {
-
+declare function _:edit-bezeichnung(
+  $uuid as xs:string)
+  as element(div)
+{
   <div xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events">
   <div>
      <xf:input ref="instance('ii_{$uuid}')/@brand">
@@ -228,18 +241,20 @@ declare function tmpl:edit-bezeichnung($uuid as xs:string) as element(div) {
   </div>
   </div>
 };
-declare function tmpl:bezeichnung-bind($uuid as xs:string) as empty-sequence(){
+
+declare function _:bezeichnung-bind($uuid as xs:string) as empty-sequence(){
  ()
 };
-
 
 (:~
 : Template for editing <code>slot[@name = "dimensions"]</code>
 : @param $uuid unique id that has been given to the model instance
 : @return XForm
 :)
-declare function tmpl:edit-dimensions($uuid as xs:string) as element(div) {
-
+declare function _:edit-dimensions(
+  $uuid as xs:string)
+  as element(div)
+{
   <div>
   <div>
    <xf:input ref="instance('ii_{$uuid}')/width/num">
@@ -306,20 +321,24 @@ declare function tmpl:edit-dimensions($uuid as xs:string) as element(div) {
   </div>
   </div>
 };
+
 (:~
 : Bindings for <code>slot[@name = "dimensions"]</code>
 : @param $uuid unique id that has been given to the model instance
 : @return XForm
 :)
 
-declare function tmpl:dimensions-bind($uuid){
+declare function _:dimensions-bind(
+  $uuid)
+{
   <xf:bind nodeset="instance('ii_{$uuid}')/width/num" type="xs:integer" required="true()" constraint=". &gt; 0"/>,
   <xf:bind nodeset="instance('ii_{$uuid}')/height/num" type="xs:decimal" required="true()" constraint=". &gt; 0"/>,
   <xf:bind nodeset="instance('ii_{$uuid}')/length/num" type="xs:decimal" required="true()" constraint=". &gt; 0"/>
-  
 };
 
-declare function tmpl:filterbuilder($workspace as xs:string){
+declare function _:filterbuilder(
+  $workspace as xs:string)
+{
 	let $m := <data><filters>
     <any>
       <filter property="bezeichnung" type="contains" value="boot"/>
@@ -343,12 +362,12 @@ declare function tmpl:filterbuilder($workspace as xs:string){
 				 <xf:bind id="anyall" nodeset="filters/any/all"/>,
 				 <xf:bind id="anyany" nodeset="filters/any/any"/>
 			)
-	return tmpl:body-with-filter($filter,$m, $binds, tmpl:generate-search())
+	return _:body-with-filter($filter,$m, $binds, _:generate-search())
 };
 
 (: XForms Filter Builder! :)
-declare function tmpl:generate-search(){
- 
+declare function _:generate-search()
+{
   <div>
 	  <xf:repeat class="all" id="all_1" nodeset="filters/all">
 	    <div>
@@ -357,12 +376,12 @@ declare function tmpl:generate-search(){
 	        <tr>
 	          <td>
 	            <xf:select1 ref="@property">
-							{tmpl:properties("ws_produkte")}
+							{_:properties("ws_produkte")}
 	            </xf:select1>
 	          </td>
 	          <td>
 	            <xf:select1 ref="@type">
-							{tmpl:items()}
+							{_:items()}
 	            </xf:select1>
 	          </td>
 	          <td>
@@ -397,12 +416,12 @@ declare function tmpl:generate-search(){
 	            <tr>
 	              <td>
 	                <xf:select1 ref="@property">
-									{tmpl:properties("ws_produkte")}
+									{_:properties("ws_produkte")}
 	                </xf:select1>
 	              </td>
 	              <td>
 	                <xf:select1 ref="@type">
-									{tmpl:items()}
+									{_:items()}
 	                </xf:select1>
 	              </td>
 	              <td>
@@ -455,12 +474,12 @@ declare function tmpl:generate-search(){
 	              <tr>
 	                <td>
 	                  <xf:select1 ref="@property">
-										{tmpl:properties("ws_produkte")}
+										{_:properties("ws_produkte")}
 	                  </xf:select1>
 	                </td>
 	                <td>
 	                  <xf:select1 ref="@type">
-										{tmpl:items()}
+										{_:items()}
 	                  </xf:select1>
 	                </td>
 	                <td>
@@ -515,12 +534,12 @@ declare function tmpl:generate-search(){
 		      <tr>
 		        <td>
 		          <xf:select1 ref="@property">
-							{tmpl:properties("ws_produkte")}
+							{_:properties("ws_produkte")}
 		          </xf:select1>
 		        </td>
 		        <td>
 		          <xf:select1 ref="@type">
-							{tmpl:items()}
+							{_:items()}
 		          </xf:select1>
 		        </td>
 		        <td>
@@ -555,12 +574,12 @@ declare function tmpl:generate-search(){
 		          <tr>
 		            <td>
 		              <xf:select1 ref="@property">
-									{tmpl:properties("ws_produkte")}
+									{_:properties("ws_produkte")}
 		              </xf:select1>
 		            </td>
 		            <td>
 		              <xf:select1 ref="@type">
-									{tmpl:items()}
+									{_:items()}
 		              </xf:select1>
 		            </td>
 		            <td>
@@ -613,12 +632,12 @@ declare function tmpl:generate-search(){
 		            <tr>
 		              <td>
 		                <xf:select1 ref="@property">
-										{tmpl:properties("ws_produkte")}
+										{_:properties("ws_produkte")}
 		                </xf:select1>
 		              </td>
 		              <td>
 		                <xf:select1 ref="@type">
-										{tmpl:items()}
+										{_:items()}
 		                </xf:select1>
 		              </td>
 		              <td>
@@ -651,14 +670,18 @@ declare function tmpl:generate-search(){
 	</div>
 };
 
-declare function tmpl:properties($name){
+declare function _:properties(
+  $name)
+{
 	(for $prop in distinct-values(db:open($name)//property/@name)
 	return <xf:item>
                     <xf:label>{string($prop)}</xf:label>
                     <xf:value>{string($prop)}</xf:value> 
                 </xf:item>)
 };
-declare function tmpl:items(){
+
+declare function _:items()
+{
                 <data><xf:item>
                     <xf:label>contains text</xf:label>
                     <xf:value>contains</xf:value> 

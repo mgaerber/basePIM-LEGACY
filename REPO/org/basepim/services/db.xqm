@@ -1,5 +1,3 @@
-xquery version "3.0";
-
 (:~ 
  :  This module provides database service functionality.
  : 
@@ -7,11 +5,13 @@ xquery version "3.0";
  :  @since March 22, 2012
  :  @version 1.0
  :)
-module namespace xmldb = "http://basex.org/basePIM/xmldb";
+module namespace _ = "http://basepim.org/services/db";
 
 (:~
  : Returns information on the database system, such as the database path and current database settings.
  :)
-declare function xmldb:system() as element(system) {
+declare function _:system()
+  as element(system)
+{
 	db:system()		
 };

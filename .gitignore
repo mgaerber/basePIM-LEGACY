@@ -8,3 +8,6 @@
 basePIM.xpr
 DATA/*
 !DATA/README
+.basex
+.basexgui
+dummy.xq

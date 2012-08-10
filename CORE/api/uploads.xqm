@@ -1,7 +1,6 @@
-module namespace  upload = "http://basex.org/basePIM/upload";
+module namespace _ = "http://basex.org/basePIM/upload";
 
-import module namespace file-service = "http://basex.org/basePIM/file-service" at "../services/file-service.xqm";
-import module namespace meta = 'http://basex.org/modules/meta/Meta';
+import module namespace meta = "http://basex.org/modules/meta/Meta";
 
 (:~
 : Test XMLHttpRequest GET functionality.
@@ -9,11 +8,12 @@ import module namespace meta = 'http://basex.org/modules/meta/Meta';
 : Related website: WWW/test/put.html
  :)
 declare
-    %restxq:GET
-    %restxq:path("/upload/file/get/answer/42")
-    %output:method("xml")
-function upload:xmlhttprequest-get() {
-    "The answer is 42"
+  %restxq:GET
+  %restxq:path("/upload/file/get/answer/42")
+  %output:method("xml")
+  function _:xmlhttprequest-get()
+{
+  "The answer is 42"
 };
 
 (:~
@@ -23,11 +23,14 @@ function upload:xmlhttprequest-get() {
  : Related website: WWW/test/put.html
  :)
 declare
-    %restxq:PUT("{$data}")
-    %restxq:path("/upload/file/test/put/answer/{$value}")
-    %output:method("text")
-function upload:xmlhttprequest-get($data, $value) {
-    concat("We all know it. The answer is: ", $value)
+  %restxq:PUT("{$data}")
+  %restxq:path("/upload/file/test/put/answer/{$value}")
+  %output:method("text")
+  function _:xmlhttprequest-get(
+    $data,
+    $value)
+{
+  concat("We all know it. The answer is: ", $value)
 };
 
 (:~
@@ -39,35 +42,37 @@ function upload:xmlhttprequest-get($data, $value) {
  : $ curl -s -i -X PUT -H "Content-Type: application/octet-stream" -T "./powermotor.png" "admin:admin@localhost:8984/restxq//upload/file/test/put/pm.png"
  :)
 declare
-    %restxq:PUT("{$img}")
+  %restxq:PUT("{$img}")
 	%restxq:path("/upload/file/test/put/{$name}")
 	%output:method("html5")
-function upload:put-file($name, $img) {
-    <div>
-        <h2>My Image File: {$name}</h2>
-        <pre>{$img}</pre>
-        <img src="data:image/png;base64,{$img}" width="200" height="200" alt="Data URL image"/>
-    </div>
+  function _:put-file(
+    $name,
+    $img)
+{
+  <div>
+    <h2>My Image File: {$name}</h2>
+    <pre>{$img}</pre>
+    <img src="data:image/png;base64,{$img}" width="200" height="200" alt="Data URL image"/>
+  </div>
 };
 
 (:~
  : Returns file list on server.
  :)
 declare
-    %restxq:GET
-    %restxq:path("/file/list")
-		%restxq:produces("text/html")
-    %output:method("html")
-function upload:list-files() {
-    <ul>
-      {
-      for $f in db:list("ws_bilder")
-      return 
-        if ($f)
-        then <li><a href="/rest/ws_bilder/{ $f }" target="_blank">{ $f }</a></li> 
-        else ()
-      }
-    </ul>
+  %restxq:GET
+  %restxq:path("/file/list")
+	%restxq:produces("text/html")
+  %output:method("html")
+  function _:list-files()
+{
+  <ul>{
+    for $f in db:list("ws_bilder")
+    return 
+      if ($f)
+      then <li><a href="/rest/ws_bilder/{ $f }" target="_blank">{ $f }</a></li> 
+      else ()
+  }</ul>
 };
 
 (:~
@@ -80,13 +85,16 @@ function upload:list-files() {
  : @param $img the image to save
  : @param $name name for the image to save
  :)
-declare
-    %restxq:PUT("{$img}")
+declare %updating
+  %restxq:PUT("{$img}")
 	%restxq:path("/upload/image/put/{$name}")
 	%output:method("text")
-updating function upload:put-image($name, $img) {
-    db:output("File is uploaded"),
-    db:store("ws_bilder", $name, $img)
+  function _:put-image(
+    $name,
+    $img)
+{
+  db:output("File is uploaded"),
+  db:store("ws_bilder", $name, $img)
 };
 
 (:~
@@ -94,15 +102,16 @@ updating function upload:put-image($name, $img) {
  :)
 
 declare
-    %restxq:GET
+  %restxq:GET
 	%restxq:path("/upload/metadata/")
 	%output:method("xml")
-function upload:get-metadata() {
-    let $root := "DATA/ws_bilder/raw/"
-    return
-        for $f in file:list($root)
-        let $md := meta:extract($root || $f)
-        return <file name="{ $f }">{$md}</file>
+  function _:get-metadata()
+{
+  let $root := "DATA/ws_bilder/raw/"
+  return
+      for $f in file:list($root)
+      let $md := meta:extract($root || $f)
+      return <file name="{ $f }">{$md}</file>
 };
 
 (:~
@@ -113,13 +122,17 @@ function upload:get-metadata() {
  : @param $year the year *TODO*
  :)
 declare
-    %restxq:POST("{$payload}")
+  %restxq:POST("{$payload}")
 	%restxq:path("/upload/file/post")
 	%restxq:form-param("title", "{$title}", "default title")
 	%restxq:form-param("year",  "{$year}",  "default year")
 	%output:method("html5")
-function upload:post-file($payload, $title, $year) {
-<html>
+  function _:post-file(
+    $payload,
+    $title,
+    $year)
+{
+  <html>
     <head>
     <script type="text/javascript">
     <!--
@@ -136,11 +149,11 @@ function upload:post-file($payload, $title, $year) {
     </script>
     </head>
     <body>
-    <div>
+      <div>
         <h2>Multiple File Upload Form: {$title}, {$year}</h2>
-    </div>
-    <hr/>
-    <form name="b64">
+      </div>
+      <hr/>
+      <form name="b64">
         <p>POSTed base64 data:</p>
         <textarea name="cipher" cols="80" rows="20">{$payload}</textarea><br/>
         <input name="decodeit" onclick="undoit()" type="button" value="Decode"/>
@@ -148,7 +161,7 @@ function upload:post-file($payload, $title, $year) {
         <p>Decoded Text:</p>
         <textarea name="clear" cols="80" rows="20">???</textarea><br/>
         <input name="encodeit" onclick="doit()" type="button" value="Encode"/>
-    </form>
- </body>
- </html>
+      </form>
+    </body>
+  </html>
 };

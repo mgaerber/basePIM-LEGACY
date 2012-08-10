@@ -1,7 +1,8 @@
-module namespace xforms = "http://basex.org/basePIM/xforms";
+module namespace _ = "http://basex.org/basePIM/xforms";
 
-import module namespace tmpl = "http://basepim.org/tmpl" at "../services/xforms-template.xqm";
-import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
+import module namespace tmpl = "http://basepim.org/services/xforms-template";
+import module namespace nodes = "http://basepim.org/services/nodes";
+
 declare namespace xf = "http://www.w3.org/2002/xforms";
 
 (:~
@@ -14,14 +15,18 @@ declare namespace xf = "http://www.w3.org/2002/xforms";
 declare
   %restxq:path("/xforms/edit-slot/{$workspace}/{$uuid}")
   %restxq:produces("application/xml")
-function xforms:edit-slot($workspace as xs:string, $uuid as xs:string) as node()+ {
+  function _:edit-slot(
+    $workspace as xs:string,
+    $uuid as xs:string)
+    as node()+
+{
      let $slot  := nodes:get-slot-by-id($workspace, $uuid)
      let $prop  := trace($slot/ancestor::property, "Ancestor")
      let $binds :=
       switch(string($prop/@name))
         case "bezeichnung" return tmpl:bezeichnung-bind($uuid)
-        case "dimensions" return tmpl:dimensions-bind($uuid)
-        case "gewicht"    return tmpl:gewicht-bind($uuid)
+        case "dimensions"  return tmpl:dimensions-bind($uuid)
+        case "gewicht"     return tmpl:gewicht-bind($uuid)
         default return ()
      let $form  := 
       switch($prop/@name)
@@ -42,9 +47,12 @@ declare
   %restxq:path("/xforms/dump")
   %restxq:POST("{$body}")
   %output:method("text")
-function xforms:dump($body){
+  function _:dump(
+    $body)
+{
   <pre>{serialize($body)}</pre>
 };
+
 (:~
 : Save the edited Slot to the given workspace.
 : This function currently only allows replacing a <code> &lt;slot /&gt;</code> given by its uuid in a given workspace
@@ -53,12 +61,14 @@ function xforms:dump($body){
 : @param $workspace the workspace to save
 :)
 
-declare
+declare %updating
   %restxq:path("/xforms/dump/{$workspace}")
   %restxq:POST("{$body}")
   %output:method("xml")
- updating  function xforms:dump($body, $workspace as xs:string){
-
+  function _:dump(
+    $body,
+    $workspace as xs:string)
+{
 	db:output($body/slot),
 		replace node  db:open($workspace)//slot[@id = $body/slot/@id]
 	 with $body/slot
@@ -71,6 +81,9 @@ declare
 declare
   %restxq:path("/xforms/filterbuilder/{$workspace}")
 	%restxq:produces("application/xml")
-function xforms:filterbuilder($workspace as xs:string) as node()+ {
+  function _:filterbuilder(
+    $workspace as xs:string)
+    as node()+
+{
 	tmpl:filterbuilder($workspace)
 };

@@ -1,7 +1,7 @@
-module namespace api = "http://basepim.org/ws";
+module namespace _ = "http://basepim.org/ws";
 
-import module namespace tpl = "http://basepim.org/tpl" at "../services/template-service.xqm";
-import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
+import module namespace tpl = "http://basepim.org/services/template";
+import module namespace nodes = "http://basepim.org/services/nodes";
 
 (:~
 : Transforms a node with given template 
@@ -10,19 +10,24 @@ import module namespace nodes = "http://basepim.org/nodes" at "../services/node-
 : @param $uuid defines the unique id of a node
 :)
 declare
-%restxq:GET
-%restxq:path("/tpl/{$type}/{$name}/ws/{$ws}/node/{$uuid}")
-%output:method("html")
-function api:execute-tpl($type, $name, $ws, $uuid) {
-    let $node := nodes:get($ws, $uuid)
-    let $tpl := concat('TPL/', $type, '/', $name)
-    return  tpl:transform-xsl($node, $tpl)
-   (: <div>
-    <p>{$xslt:processor} </p>
-    <p>{$xslt:version} </p>
-    {
-     tpl:transform-xsl($node, $tpl)
-     }
-     </div>
-     :)
+  %restxq:GET
+  %restxq:path("/tpl/{$type}/{$name}/ws/{$ws}/node/{$uuid}")
+  %output:method("html")
+  function _:execute-tpl(
+    $type,
+    $name,
+    $ws,
+    $uuid)
+{
+  let $node := nodes:get($ws, $uuid)
+  let $tpl := concat('TPL/', $type, '/', $name)
+  return  tpl:transform-xsl($node, $tpl)
+ (: <div>
+  <p>{$xslt:processor} </p>
+  <p>{$xslt:version} </p>
+  {
+   tpl:transform-xsl($node, $tpl)
+   }
+   </div>
+   :)
 };

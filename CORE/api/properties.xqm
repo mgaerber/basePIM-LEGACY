@@ -1,8 +1,6 @@
-module namespace api = "http://basepim.org/ws";
+module namespace _ = "http://basepim.org/ws";
 
-import module namespace nodes = "http://basepim.org/nodes" at "../services/node-service.xqm";
-import module namespace properties = "http://basepim.org/properties" at "../services/property-service.xqm";
-import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jsonutil.xqm";
+import module namespace properties = "http://basepim.org/services/properties";
 
 (:~ 
 : This resource returns a list of all available properties.
@@ -12,15 +10,16 @@ import module namespace jsonutil = "http://basepim.org/jsonutil" at "../util/jso
 : @return a list of available workspaces in XML.
 :)
 declare
-%restxq:GET
-%restxq:path("/ws/{$type}/n/{$id}/slots.xml")
-%restxq:produces("application/xml")
-function api:get-slots($type as xs:string, $id as xs:string){
-   let $node := properties:get-slots($type, $id)
-   return $node
+  %restxq:GET
+  %restxq:path("/ws/{$type}/n/{$id}/slots.xml")
+  %restxq:produces("application/xml")
+  function _:get-slots(
+    $type as xs:string,
+    $id as xs:string)
+{
+  properties:get-slots($type, $id)
 };
 
-
 (:~ 
 : This resource returns a list of all available properties.
 : A property is a compound of schema defined XML Types, 
@@ -29,14 +28,17 @@ function api:get-slots($type as xs:string, $id as xs:string){
 : @return a list of available workspaces in XML.
 :)
 declare
-%restxq:GET
-%restxq:path("/ws/{$type}/n/{$id}/slots.json")
-%restxq:produces("application/json")
-%output:method("json")
-function api:get-slots-j($type as xs:string, $id as xs:string){
+  %restxq:GET
+  %restxq:path("/ws/{$type}/n/{$id}/slots.json")
+  %restxq:produces("application/json")
+  %output:method("json")
+  function _:get-slots-j(
+    $type as xs:string,
+    $id as xs:string)
+{
   let $node := properties:get-slots($type, $id)
-    return
-     <json objects="json property" arrays="node">
-         { $node }
-     </json>
+  return
+   <json objects="json property" arrays="node">
+       { $node }
+   </json>
 };

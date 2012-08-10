@@ -1,5 +1,6 @@
-module namespace nodes = "http://basepim.org/nodes";
-import module namespace search = "http://basepim.org/search" at "search.xqm";
+module namespace _ = "http://basepim.org/services/nodes";
+
+import module namespace search = "http://basepim.org/services/search";
 
 (:
 : Pipeline for returning nodes:
@@ -23,12 +24,15 @@ import module namespace search = "http://basepim.org/search" at "search.xqm";
 : * Stringify       => textual representation of the slots
 :)
 
-
 (:~ the database instance, this should be refactored :)
-declare variable $nodes:db := db:open('ws_produkte'); 
+declare variable $_:db := db:open('ws_produkte'); 
 
 (: All properties have are strings only. :)
-declare function nodes:stringify($nodes as element(node)+, $stringify as xs:boolean) as element(node)+{
+declare function _:stringify(
+  $nodes as element(node)*,
+  $stringify as xs:boolean)
+  as element(node)*
+{
   if($stringify) then 
     for $node in $nodes
     return element {"node"}{
@@ -36,7 +40,7 @@ declare function nodes:stringify($nodes as element(node)+, $stringify as xs:bool
       for $child in $node/*
       let $name := name($child)
       return switch($name)
-        case "node" return $child ! nodes:stringify(., fn:true())
+        case "node" return $child ! _:stringify(., fn:true())
         case "property" return element  {"property"}
                                         {$child/@*,
                                         for $c in $child/value
@@ -54,26 +58,34 @@ declare function nodes:stringify($nodes as element(node)+, $stringify as xs:bool
   else $nodes
 };
 
-
 (: Get inheritable properties from above. :)
-declare function nodes:inherit($nodes as element(node)+, $inherit as xs:boolean) as element(node)+{
+declare function _:inherit(
+  $nodes as element(node)*,
+  $inherit as xs:boolean)
+  as element(node)*
+{
   if($inherit) then 
     for $node in $nodes/(self::node)
-    let $complete := nodes:from-map(nodes:flatten-product($node))
+    let $complete := _:from-map(_:flatten-product($node))
     return element {"node"}
         {
             $complete/@*,
             $node/@idref,
             $complete/child::*,
-            $node/node[not(@idref)] ! nodes:inherit(., fn:true()),
+            $node/node[not(@idref)] ! _:inherit(., fn:true()),
             $node/node[@idref]
         }
        
      
    else  $nodes
 };
+
 (: Request referenced properties. *TODO* does not work on the root. :)
-declare function nodes:expand($nodes as element(node)+, $expand as xs:boolean) as element(node)+{
+declare function _:expand(
+  $nodes as element(node)*,
+  $expand as xs:boolean)
+  as element(node)*
+{
   if($expand) then  
   for $node in $nodes
   return element {"node"}{
@@ -82,8 +94,8 @@ declare function nodes:expand($nodes as element(node)+, $expand as xs:boolean) a
     let $name := name($child)
     return switch($name)
       case "node" return if(not($child/@idref)) then 
-                    $child ! nodes:expand(., fn:true()) 
-                  else nodes:get($child/@idref)
+                    $child ! _:expand(., fn:true()) 
+                  else _:get($child/@idref)
       case "property" return $child
       default return ()
   }
@@ -94,7 +106,11 @@ declare function nodes:expand($nodes as element(node)+, $expand as xs:boolean) a
 : @param $nodes the nodes
 : @param $filter
 :)
-declare function nodes:filter($nodes as element(node)+, $filter as xs:string*) as element(node)+{
+declare function _:filter(
+  $nodes as element(node)*,
+  $filter as xs:string*)
+  as element(node)*
+{
   if(count($filter)) then
     for $node in $nodes
     return element {"node"}{
@@ -102,7 +118,7 @@ declare function nodes:filter($nodes as element(node)+, $filter as xs:string*) a
       for $child in $node/*
       let $name := name($child)
       return switch($name)
-        case "node" return $child ! nodes:filter(., $filter)
+        case "node" return $child ! _:filter(., $filter)
         case "property" return if($child/@name = $filter) then
                                          element  {"property"}
                                         {$child/@*,
@@ -120,13 +136,17 @@ declare function nodes:filter($nodes as element(node)+, $filter as xs:string*) a
 : @param $uuid the unique identifier of the node
 : @return the product <node />
 :)
-declare function nodes:get($type as xs:string, $uuid as xs:string) as element(node){
-    try {
-      let $db := db:open($type)
-      return $db//node[@id eq $uuid]
-    }catch * {
-       <node>Error!</node>
-    }
+declare function _:get(
+  $type as xs:string,
+  $uuid as xs:string)
+  as element(node)
+{
+  try {
+    let $db := db:open($type)
+    return $db//node[@id eq $uuid]
+  } catch * {
+    <node>Error!</node>
+  }
 };
 (:~
 : Gets a single product identified by its uuid by searching all workspaces
@@ -135,7 +155,10 @@ declare function nodes:get($type as xs:string, $uuid as xs:string) as element(no
 : @param $uuid the unique identifier of the node
 : @return the product <node />
 :)
-declare function nodes:get($uuid as xs:string) as element(node){
+declare function _:get(
+  $uuid as xs:string)
+  as element(node)
+{
   (db:list()[starts-with(.,"ws_")] ! 
     db:attribute(., $uuid)/parent::*:node
   )[1]
@@ -147,8 +170,11 @@ declare function nodes:get($uuid as xs:string) as element(node){
 : @param $search the search string
 : @return matching nodes
 :)
-declare function nodes:search($workspace as xs:string,
-    $search as xs:string) as element(node)*{
+declare function _:search(
+  $workspace as xs:string,
+  $search as xs:string)
+  as element(node)*
+{
     search:search($workspace, $search)
 };
 
@@ -158,27 +184,34 @@ declare function nodes:search($workspace as xs:string,
 : @param $uuid the unique identifier of the slot
 : @return a slot
 :)
-declare function nodes:get-slot-by-id($workspace as xs:string,
-    $uuid as xs:string) as element(slot){
+declare function _:get-slot-by-id(
+  $workspace as xs:string,
+  $uuid as xs:string)
+  as element(slot)
+{
   db:open($workspace)//slot[@id = $uuid]
 };
+
 (:~
  : Returns a map containing all available languages for any given node’s properties.
  : The map contains the language as its key and the number of properties with a given language
  : as its value.
  : @param $node the node to fetch
 :)
-declare function nodes:get-languages-for($node as element(node)) as element(lang)+{
- let $langs :=
+declare function _:get-languages-for(
+  $node as element(node))
+  as element(lang)*
+{
+  let $langs :=
     for $val in $node/descendant-or-self::*/@lang 
     let $langs := fn:tokenize($val, " ")
     return
-        for $lang in $langs
-        return element { "lang" } { $lang }
-   return for $lang in $langs
-   group by $l := $lang/text()
-   return element { "lang" }
-    { (attribute { "count" } { fn:count($lang) }, $l) }
+      for $lang in $langs
+      return element { "lang" } { $lang }
+  return for $lang in $langs
+  group by $l := $lang/text()
+  return element { "lang" }
+   { (attribute { "count" } { fn:count($lang) }, $l) }
 };
 
 (:~
@@ -188,29 +221,38 @@ declare function nodes:get-languages-for($node as element(node)) as element(lang
 : @param $property the property name
 : @return a property
 :)
-
-declare function nodes:get-property-for($workspace as xs:string,
+declare function _:get-property-for(
+  $workspace as xs:string,
   $nodename as xs:string,
-  $property as xs:string) as element(property){
-    db:open($workspace)//node[@name = $nodename]/property[@name = $property]
+  $property as xs:string)
+  as element(property)
+{
+  db:open($workspace)//node[@name = $nodename]/property[@name = $property]
 };
+
 (:~
 :  Returns all properties for a <code>node</code> with a given name in a given <code>workspace</code>
 : Gets a property identified by its uuid
 : @param $workspace the workspace to fetch the <code>property</code> from
 : @param $nodename the nodes name <strong>should be changed to UUID</strong> *TODO*
 :)
-declare function nodes:get-properties-for($workspace as xs:string,
-  $nodename as xs:string) as element(property)*{
-    db:open($workspace)//node[@name = $nodename]/property
+declare function _:get-properties-for(
+  $workspace as xs:string,
+  $nodename as xs:string)
+  as element(property)*
+{
+  db:open($workspace)//node[@name = $nodename]/property
 };
 
 (:~
 : Returns all <code>nodes</code> in a given <code>workspace</code>
 : @param $workspace the workspace to fetch the property from
 :)
-declare function nodes:get-nodes-for($workspace as xs:string) as element(node)+{
-    db:open($workspace)//node
+declare function _:get-nodes-for(
+  $workspace as xs:string)
+  as element(node)*
+{
+  db:open($workspace)//node
 };
 
 (:
@@ -219,38 +261,44 @@ declare function nodes:get-nodes-for($workspace as xs:string) as element(node)+{
 : @param $type the workspace name
 : @param $nodename the name of the node
 :)
-declare function nodes:get-product-by-name($type as xs:string, $nodename as xs:string) as element(node){
-    let $db := db:open($type)
-    let $node := $db//node[@name eq $nodename]
-    let $child-count := count($node/node)
-    return
-        <node>
-        {$node/@*, attribute {'children'}{$child-count},
-        $node/* except $node/node
-        }
-        </node>
+declare function _:get-product-by-name(
+  $type as xs:string,
+  $nodename as xs:string)
+  as element(node)
+{
+  let $db := db:open($type)
+  let $node := $db//node[@name eq $nodename]
+  let $child-count := count($node/node)
+  return
+    <node>{
+      $node/@*, attribute {'children'}{$child-count},
+      $node/* except $node/node
+    }</node>
 }; 
 
 (:
 : Returns a condensed, i.e. only a list of children, <code>node</code> by name.
-
 : @param $type the workspace name
 : @param $nodename the name of the node
 :)
-declare function nodes:get-product-meta-by-name($type as xs:string, $nodename as xs:string) as element(node){
-    let $db := db:open($type)
-    let $node := $db//node[@name eq $nodename]
-    let $child-count := count($node/node)
-    return
-        <node>
-        {$node/@*, attribute {'child-count'}{$child-count},
-        <children>
-            {for $child in $node/node
-            return <node>{$child/@*, (if($child/node) then attribute {'children'}{} else ())
-            }</node>}
-        </children>
-        }
-        </node>
+declare function _:get-product-meta-by-name(
+  $type as xs:string,
+  $nodename as xs:string)
+  as element(node)
+{
+  let $db := db:open($type)
+  let $node := $db//node[@name eq $nodename]
+  let $child-count := count($node/node)
+  return
+      <node>
+      {$node/@*, attribute {'child-count'}{$child-count},
+      <children>
+          {for $child in $node/node
+          return <node>{$child/@*, (if($child/node) then attribute {'children'}{} else ())
+          }</node>}
+      </children>
+      }
+      </node>
 }; 
 
 (:~
@@ -260,14 +308,17 @@ declare function nodes:get-product-meta-by-name($type as xs:string, $nodename as
 :    @param $ws the workspace to flatten
 :    @return a map() containing all products with their properties
 :)
-declare function nodes:flatten-product($prod as element(node)) as map(*)?{
-    let $ids := 
-     (for $id in 
-         $prod/ancestor::*/@id
-        return string(trace($id,"ID")), $prod/@id
-    )
-    let $ws := $prod/ancestor::workspace
-    return nodes:flatten($ws, $ids)($prod/@id)
+declare function _:flatten-product(
+  $prod as element(node))
+  as map(*)?
+{
+  let $ids := 
+   (for $id in 
+       $prod/ancestor::*/@id
+      return string(trace($id,"ID")), $prod/@id
+  )
+  let $ws := $prod/ancestor::workspace
+  return _:flatten($ws, $ids)($prod/@id)
 };
 
 (:~
@@ -275,71 +326,76 @@ declare function nodes:flatten-product($prod as element(node)) as map(*)?{
     @param $ws the workspace to flatten
     @return a map() containing all products with their properties
 :)
-declare function nodes:flatten(
-  $ws as element(workspace)) as map(*){
-  nodes:flatten($ws, (""))
+declare function _:flatten(
+  $ws as element(workspace))
+  as map(*)
+{
+  _:flatten($ws, (""))
 };
+
 (:~
-
-
 :)
-declare function nodes:flatten(
+declare function _:flatten(
   $ws as element(workspace),
-  $filter as xs:string*
-) as map(*) {
+  $filter as xs:string*)
+  as map(*)
+{
   fold-left(
-    nodes:flatten(?, ?, map:new(), tail($filter)),
+    _:flatten(?, ?, map:new(), tail($filter)),
     map:new(),
     if(head($filter)) then $ws/node[@id eq head($filter)]
     else $ws/node  )
 };
 
-declare function nodes:flatten(
+declare function _:flatten(
   $prods as map(*),
   $pr as element(node),
   $props as map(*),
-  $filter as xs:string*
-) as map(*) {
-    let $props := map:new(($props, nodes:get-props($pr, $filter))),
-        
-       $prods2 := map:new((
-         $prods,
-         map:entry($pr/@id,
-           map{
-             'name':=$pr/@name,
-             'type':=$pr/@type,
-             'id':=$pr/@id,
-             'properties':=$props
-           }
-         )
-       ))
-    return fold-left(
-        nodes:flatten(?, ?, $props, tail($filter) (: - 1 :)),
-        $prods2,
-        if(head($filter)) then $pr/node[@id eq head($filter)]
-        else $pr/node
-      )
+  $filter as xs:string*)
+  as map(*)
+{
+  let $props := map:new(($props, _:get-props($pr, $filter))),
+      
+     $prods2 := map:new((
+       $prods,
+       map:entry($pr/@id,
+         map{
+           'name':=$pr/@name,
+           'type':=$pr/@type,
+           'id':=$pr/@id,
+           'properties':=$props
+         }
+       )
+     ))
+  return fold-left(
+      _:flatten(?, ?, $props, tail($filter) (: - 1 :)),
+      $prods2,
+      if(head($filter)) then $pr/node[@id eq head($filter)]
+      else $pr/node
+    )
 };
+
 (:~
-    Constructs the properties Map.
-    @param $pr the current node
-    @return a map consisting of the properties
+  Constructs the properties Map.
+  @param $pr the current node
+  @return a map consisting of the properties
 :)
-declare function nodes:get-props(
+declare function _:get-props(
   $pr as element(node),
-  $filter as xs:string*
-) as map(*)* {
+  $filter as xs:string*)
+  as map(*)*
+{
  (: let $refs := map:new( 
     ( : get referenced properties : )
     for $_prop in $pr/property[@idref]
-    let $prop := $nodes:db//property[@id eq $_prop/@idref]
+    let $prop := $_:db//property[@id eq $_prop/@idref]
         ( : $_ := trace($prop/@name/string(), "PROP") : )
     return if($prop/@name) then map:entry($prop/@name,
         map:new(
           for $lang in distinct-values($prop/value/slot/@lang)
           let $vals := $prop/value/slot[@lang = $lang]
           ( : let $trace := trace(string-join($vals), "INH-VAL") : )
-          let $map :=  nodes:vals($vals)
+          let $map :=  _:vals($vals)
           return map:entry(($lang, 'any')[1], $map)
       ) 
     ) else ()
@@ -364,18 +420,24 @@ declare function nodes:get-props(
   else :) $direct
 };
 
-declare function nodes:vals($node){
+declare function _:vals(
+  $node)
+{
   string-join($node, ", ")
 };
+
 (:~ 
 : Serializes a map to a Node with Property->Slot hierarchies
 :
 ~:)
-declare function nodes:from-map($map as map(*)) as element(node){
+declare function _:from-map(
+  $map as map(*))
+  as element(node)
+{
   <node>{
-  for $k in map:keys($map)
-    where $k = ("name", "id", "type")
-  return attribute {$k} {$map($k)}
+    for $k in map:keys($map)
+      where $k = ("name", "id", "type")
+    return attribute {$k} {$map($k)}
   }
   {
     for $it in map:keys($map("properties"))
@@ -385,6 +447,5 @@ declare function nodes:from-map($map as map(*)) as element(node){
       for $kk in map:keys($item)
       return $item($kk)
     }</property>
-  }
-  </node>
+  }</node>
 };

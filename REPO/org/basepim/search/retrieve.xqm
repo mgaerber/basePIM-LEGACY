@@ -1,20 +1,19 @@
-module namespace M = "http://basex.org/modules/retrieve";
+module namespace _ = "http://basepim.org/search/retrieve";
 
-import module namespace parse =
-  "http://basex.org/modules/parse" at "parse.xqm";
+import module namespace parse = "http://basepim.org/search/parse";
 
 (: Categories to search. :)
-declare variable $M:CATEGORIES := ('slot');
+declare variable $_:CATEGORIES := ('slot');
 (: Root node. :)
-declare variable $M:ROOT := 'node';
+declare variable $_:ROOT := 'node';
 
 (:~
  : Returns the requested hits.
  : @param $search search variables
  :)
-declare function M:retrieve(
-    $search as map(*)) {
-
+declare function _:retrieve(
+  $search as map(*))
+{
   let $terms as xs:string* := $search($parse:INCLUDED)
   let $exc   as xs:string* := $search($parse:EXCLUDED)
   let $db    as xs:string  := $search($parse:DATABASE)
@@ -22,11 +21,11 @@ declare function M:retrieve(
   let $fuzzy as xs:boolean := $search($parse:FUZZY)
   return (
     (: no search terms? show all results :)
-    if(empty($terms)) then db:open($db)/descendant::*[name() = $M:ROOT][.//Text] else
+    if(empty($terms)) then db:open($db)/descendant::*[name() = $_:ROOT][.//Text] else
     (: terms to be excluded? :)
-    if(empty($exc)) then M:retrieve-fast($search)
+    if(empty($exc)) then _:retrieve-fast($search)
     (: use full search? :)
-    else M:retrieve-all($search)
+    else _:retrieve-all($search)
   )[position() <= $hits]
 };
 
@@ -34,31 +33,31 @@ declare function M:retrieve(
  : Returns the requested hits, using a fast approach.
  : @param $search search variables
  :)
-declare function M:retrieve-fast(
-    $search as map(*)) {
-
+declare function _:retrieve-fast(
+  $search as map(*))
+{
   (: return one more result to indicate if more results follow :)
-  let $results := M:retrieve($search, 'all')
+  let $results := _:retrieve($search, 'all')
   return if($results)
          then $results
-         else M:retrieve-all($search)
+         else _:retrieve-all($search)
 };
 
 (:~
  : Returns the requested hits.
  : @param $search search variables
  :)
-declare function M:retrieve-all(
-    $search as map(*)) {
-
+declare function _:retrieve-all(
+  $search as map(*))
+{
   (: return one more result to indicate if more results follow :)
   let $fuzzy as xs:boolean := $search($parse:FUZZY)
   let $terms as xs:string* := $search($parse:INCLUDED)
   let $exc   as xs:string* := $search($parse:EXCLUDED)
   return
     (: check if all terms occur in the relevant categories :)
-    M:retrieve($search, 'any')[
-       let $s := string-join(*[name() = $M:CATEGORIES], ' ')
+    _:retrieve($search, 'any')[
+       let $s := string-join(*[name() = $_:CATEGORIES], ' ')
        return if($fuzzy)
               then ($s contains text { $terms } all using fuzzy
                          ftand ftnot { $exc} using fuzzy)
@@ -71,18 +70,19 @@ declare function M:retrieve-all(
  : @param $search search variables
  : @param $mode search mode
  :)
-declare function M:retrieve(
-    $search as map(*),
-    $mode  as xs:string) as element()* {
-
-   let $db    as xs:string  := $search($parse:DATABASE)
-   let $inc as xs:string* := $search($parse:INCLUDED)
-   let $exc as xs:string* := $search($parse:EXCLUDED)
-   let $fuzzy as xs:boolean := $search($parse:FUZZY)
-   let $options := map { 'fuzzy' := $fuzzy, 'mode' := $mode }
-   let $results := ft:search($db, $inc, $options)
-   return (if(empty($results) or empty($exc))
-           then trace($results, "ERSULTS")
-           else $results except ft:search($db, $exc, $options))
-     /ancestor::*[name() = $M:CATEGORIES]/ancestor::*[name() = $M:ROOT]
+declare function _:retrieve(
+  $search as map(*),
+  $mode  as xs:string)
+  as element()*
+{
+  let $db    as xs:string  := $search($parse:DATABASE)
+  let $inc as xs:string* := $search($parse:INCLUDED)
+  let $exc as xs:string* := $search($parse:EXCLUDED)
+  let $fuzzy as xs:boolean := $search($parse:FUZZY)
+  let $options := map { 'fuzzy' := $fuzzy, 'mode' := $mode }
+  let $results := ft:search($db, $inc, $options)
+  return (if(empty($results) or empty($exc))
+         then $results
+         else $results except ft:search($db, $exc, $options))
+   /ancestor::*[name() = $_:CATEGORIES]/ancestor::*[name() = $_:ROOT]
 };
