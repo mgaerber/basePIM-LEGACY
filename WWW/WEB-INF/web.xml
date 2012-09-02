@@ -91,48 +91,24 @@
   </servlet-mapping>
   
 	<!-- ::betterFORM integration -->
-	<!-- The following parameters may also be passed on as system properties: -->
-	<!-- Operation mode: by default, the value is "local": the servlets will
-       access and store data locally using ${org.basex.path}. If "client" is
-       specified, all operations are performed on a remote server instance. -->
+
 	<context-param>
-		<param-name>org.basex.mode</param-name>
-		<param-value>local</param-value>
+		<param-name>org.basex.httplocal</param-name>
+		<param-value>true</param-value>
 	</context-param>
-	<!-- Database user: by default, no value is specified, and the credentials
-       must be specified by the client. Note that it is a clear security risk to
-       store user credentials in this file. -->
-	<context-param>
-		<param-name>org.basex.user</param-name>
-		<param-value/>
-	</context-param>
-	<!-- Database password: by default, no value is specified, and the credentials
-       must be specified by the client. Note that it is a clear security risk to
-       store user credentials in this file. -->
-	<context-param>
-		<param-name>org.basex.password</param-name>
-		<param-value/>
-	</context-param>
-	<!-- All database main options (DBATH, HTTPPPATH, etc.) can be overwritten by
-       adding additional context-param elements and prefixing the name with
-       "org.basex.". Relative paths will be prefixed with the servlet path.
-  -->
 	<context-param>
 		<param-name>org.basex.dbpath</param-name>
 		<param-value>../DATA</param-value>
 	</context-param>
 	<context-param>
-		<param-name>org.basex.httppath</param-name>
+		<param-name>org.basex.restxqpath</param-name>
 		<param-value>../CORE/api</param-value>
 	</context-param>
 	<context-param>
 		<param-name>org.basex.repopath</param-name>
 		<param-value>../REPO</param-value>
 	</context-param>
-	<context-param>
-		<param-name>org.basex.lang</param-name>
-		<param-value>English</param-value>
-	</context-param>
+
 	<!--  WebDAV Service (can be deactivated by removing this entry) -->
 	<servlet>
 		<servlet-name>WebDAV</servlet-name>
